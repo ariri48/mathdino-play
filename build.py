@@ -3,7 +3,7 @@ import json, os
 R = os.path.dirname(os.path.abspath(__file__))
 rd = lambda p: open(os.path.join(R, p), encoding="utf-8").read()
 shell, defs, data = rd("src/shell.html"), rd("src/defs.svg"), rd("data/books.json")
-js = rd("src/game.js") + rd("src/flow.js")
+js = rd("src/game.js") + rd("src/avatar.js") + rd("src/diag.js") + rd("src/flow.js")
 head = '<!doctype html>\n<html lang="ko">\n<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n<link rel="manifest" href="manifest.webmanifest">\n<link rel="apple-touch-icon" href="icon-180.png">\n'
 def page(noscan):
     flag = "window.__NOSCAN=true;" if noscan else ""

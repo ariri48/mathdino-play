@@ -27,6 +27,6 @@ const {chromium}=require(process.env.PW+'/playwright-core');
    const bad=gs.find(g=>!g.querySelector('.choice')||true); // first choice
    const ev=(n)=>n.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true}));
    let wrong=null; for(const g of gs){ ev(g); await sleep(50); if(document.getElementById('bubble').classList.contains('oops')){ wrong=g; break; } if(T.S.lock) break; }
-   await sleep(1200); const hinted=document.querySelectorAll('.hint').length; return {game:lv,choices:gs.length,hinted,rounds:T.S.rounds}; });
+   await sleep(1200); const hinted=document.querySelectorAll('.glow').length; return {game:lv,choices:gs.length,hinted,rounds:T.S.rounds}; });
  console.log('hint test', JSON.stringify(h));
  console.log('errors', errs.slice(0,10)); await b.close(); })().catch(e=>{console.log('FAIL',e);process.exit(1);});

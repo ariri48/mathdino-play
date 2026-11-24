@@ -11,7 +11,7 @@ var TIER=2, CAPS=[3,5,10,20], NCH=[2,3,3,4], HINTAT=[1,2,3,99], ROUNDS=[2,3,3,3]
 function T(a){ return a[TIER]; }
 function cap(){ return CAPS[TIER]; }
 function clampN(n){ return n>cap()? rnd(1,cap()) : n; }
-function hintNode(n){ if(n&&n.classList) n.classList.add("hint"); }
+function hintNode(n){ if(n&&n.classList) n.classList.add("glow"); }
 function setHint(fn){ S.hintFn=fn; }
 
 /* ---------- 도우미 ---------- */
@@ -22,8 +22,9 @@ function jong(w){ w=String(w); var c=w.charCodeAt(w.length-1); if(c>=0xAC00&&c<=
 function eul(w){ return w+(jong(w)?"을":"를"); }
 function iga(w){ return w+(jong(w)?"이":"가"); }
 function nm(k){ return NAMES[k]||k; }
+var CHARK={};
 var ANIMAL={mosquito:1,fish:1,dog:1,cat:1,rabbit:1,bear:1,chick:1,duck:1,dino:1,ghost:1};
-function unit(k){ return ANIMAL[k]?"마리":"개"; }
+function unit(k){ return CHARK[k]?"명": ANIMAL[k]?"마리":"개"; }
 var ORD = ["첫째","둘째","셋째","넷째","다섯째","여섯째"];
 function el(tag, at, parent){ var e=document.createElementNS(NS,tag); for(var k in at) if(at[k]!==undefined) e.setAttribute(k,at[k]); (parent||svg).appendChild(e); return e; }
 function g(parent){ return el("g",{},parent); }
@@ -83,23 +84,23 @@ function applause(){ var a=ac(); if(!a||S.muted) return; var t0=a.currentTime; v
   [523,659,784,1047].forEach(function(f,i){ tone("triangle",f,null,t0+i*0.1,0.3,0.18); }); }
 function pickVoice(){ try{ var vs=speechSynthesis.getVoices().filter(function(v){ return /^ko/i.test(v.lang); }); S.voice=vs.filter(function(v){ return /yuna|유나|sora|female|여/i.test(v.name); })[0]||vs[0]||null; }catch(e){} }
 try{ speechSynthesis.onvoiceschanged=pickVoice; pickVoice(); }catch(e){}
-function say(s, delay){ if(S.muted) return; var go=function(){ try{ speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(s); u.lang="ko-KR"; if(S.voice) u.voice=S.voice; u.rate=0.95; u.pitch=1.3; speechSynthesis.speak(u); }catch(e){} }; if(delay) setTimeout(go,delay); else go(); }
+function say(s, delay){ if(S.muted) return; var go=function(){ try{ speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(s); u.lang="ko-KR"; if(S.voice) u.voice=S.voice; u.rate=S.vr||0.95; u.pitch=S.vp||1.3; u.onstart=function(){ talk(true); }; u.onend=u.onerror=function(){ talk(false); }; clearTimeout(say._t); say._t=setTimeout(function(){ talk(false); }, 900+String(s).length*170); speechSynthesis.speak(u); }catch(e){} }; if(delay) setTimeout(go,delay); else go(); }
 
 /* ---------- 칭찬과 아쉬움 ---------- */
 var PRAISE=["성공! 멋진데~?","성공! 멋진데~? 짝짝짝!","우와, 성공! 진짜 멋진데~?","성공! 최고야~!"];
 function burst(){ var box=$("fx"); var cols=["#ff6b6b","#ffc83d","#5bb8f2","#6ccb8f","#b38cff","#ff9ec7"];
   for(var i=0;i<46;i++){ var p=document.createElement("i"); p.className="cf"; p.style.left=(10+Math.random()*80)+"%"; p.style.background=pick(cols); p.style.animationDelay=(Math.random()*0.35)+"s"; p.style.setProperty("--dx",(Math.random()*200-100)+"px"); p.style.setProperty("--r",(Math.random()*720)+"deg"); box.appendChild(p); setTimeout((function(q){return function(){ q.remove(); };})(p),2200); } }
 function bubble(text, kind){ var b=$("bubble"); b.textContent=text; b.className="bubble show "+kind; clearTimeout(bubble._t); bubble._t=setTimeout(function(){ b.className="bubble"; }, kind==="yay"?1700:1500); }
-function miss(msg){ S.miss++; if(S.hintFn&&S.miss>=HINTAT[TIER]) setTimeout(S.hintFn,900); boing(); wahwah(); bubble("띠용~ 뿌엥뿌엥~","oops"); say("뿌엥뿌엥~ "+(msg||"다시 해 볼까?"),700); var st=$("stagewrap"); st.classList.remove("shake"); void st.offsetWidth; st.classList.add("shake"); }
+function miss(msg){ if(S.diag){ if(S.lock) return; diagAnswer(false); return; } buddyPose("dizzy",1600); S.miss++; if(S.hintFn&&S.miss>=HINTAT[TIER]) setTimeout(S.hintFn,900); boing(); wahwah(); bubble("띠용~ 뿌엥뿌엥~","oops"); say("뿌엥뿌엥~ "+(msg||"다시 해 볼까?"),700); var st=$("stagewrap"); st.classList.remove("shake"); void st.offsetWidth; st.classList.add("shake"); }
 function good(){ ding(); }
-function win(){ if(S.lock) return; S.lock=true; applause(); burst(); var p=pick(PRAISE); bubble(p,"yay"); say(p,150);
+function win(){ if(S.lock) return; if(S.diag){ diagAnswer(true); return; } S.lock=true; applause(); burst(); var p=pick(PRAISE); bubble(p,"yay"); say(p,150); buddyPose("cheer",2000); $("ptext").textContent=p;
   setTimeout(function(){ S.lock=false; S.round++; updDots(); if(S.round>=S.rounds) levelDone(); else playRound(); }, 2100); }
 
 /* ---------- 게임 종류 ---------- */
 var G={};
 function prompt(s){ $("ptext").textContent=s; S.prompt=s; say(s,250); }
 
-G.count=function(p){ var n=p.dice? rnd(1,Math.max(3,Math.min(6,cap()))) : clampN(pick(p.nums||[1,2,3,4,5])); if(TIER===3&&!p.dice) n=Math.min(10,n+rnd(0,4)); var k=p.icon||"bean";
+G.count=function(p){ var n=p.dice? rnd(1,Math.max(3,Math.min(6,cap()))) : clampN(pick(p.nums||[1,2,3,4,5])); if(TIER===3&&!p.dice) n=Math.min(10,n+rnd(0,4)); var k=(hasMe()&&!S.diag&&S.round===2)?"me":(p.icon||"bean");
   if(p.dice){ var b=g(); setT(b,350,90); el("rect",{x:0,y:0,width:300,height:300,rx:50,"class":"dice"},b);
     var P={1:[[.5,.5]],2:[[.27,.27],[.73,.73]],3:[[.27,.27],[.5,.5],[.73,.73]],4:[[.27,.27],[.73,.27],[.27,.73],[.73,.73]],5:[[.27,.27],[.73,.27],[.5,.5],[.27,.73],[.73,.73]],6:[[.27,.25],[.73,.25],[.27,.5],[.73,.5],[.27,.75],[.73,.75]]}[n];
     P.forEach(function(q){ el("circle",{cx:q[0]*300,cy:q[1]*300,r:30,fill:"#5b3fa8"},b); }); prompt("주사위 눈이 몇 개야?"); }
@@ -142,7 +143,7 @@ G.ordinal=function(p){ var k=pick([p.icon||"apple","ball","star","fish","car","d
   prompt("출발 쪽부터 세어서 "+ORD[t]+" "+eul(nm(k))+" 눌러 줘");
   for(var i=0;i<n;i++){ (function(i){ var b=g(); setT(b,130+i*140,170); icon(k,0,0,125,b); if(i===t) setHint(function(){ hintNode(b); }); tap(b,function(){ if(i===t){ b.classList.add("pop"); win(); } else miss(ORD[t]+"를 찾아봐"); }); })(i); } };
 
-G.order=function(p){ var an=(p.animals||["bear","cat","rabbit"]).slice(0, Math.min(p.kind==="podium"?3:4, T([2,3,4,4]))); var nodes=[]; var steps=shuffle(an.map(function(a,i){return [a,i];})), si=0, n=an.length;
+G.order=function(p){ var an=(p.animals||["bear","cat","rabbit"]).slice(0, Math.min(p.kind==="podium"?3:4, T([2,3,4,4]))); if(hasMe()){ an=an.slice(); an[0]="me"; } var nodes=[]; var steps=shuffle(an.map(function(a,i){return [a,i];})), si=0, n=an.length;
   var slots=[]; var w=p.kind==="podium"?220:200, x0=500-(n*w+(n-1)*16)/2;
   for(var i=0;i<n;i++){ var x=x0+i*(w+16), h=p.kind==="podium"?[60,180,120,90][i]:0;
     if(p.kind==="podium"){ var order=[1,0,2][i]; x=x0+i*(w+16); el("rect",{x:x,y:390-[110,170,70][i],width:w,height:[110,170,70][i],"class":"podium"}); txt((order+1)+"등",x+w/2,390-[110,170,70][i]/2+18,48,null,"#fff"); slots[order]={x:x+w/2-70,y:390-[110,170,70][i]-150}; }
@@ -215,7 +216,7 @@ G.coins=function(p){ var it=pick(p.items||[["milk",2],["apple",1],["toy",4],["cu
     tap(b,function(){ if(!b._in){ b._in=true; cnt++; animT(b,390+((cnt-1)%5)*112,120+Math.floor((cnt-1)/5)*110); good(); if(cnt===price) setTimeout(win,400); else if(cnt>price){ setTimeout(function(){ b._in=false; cnt--; animT(b,hx,hy); },200); miss(price+"개만 넣어야 해"); } } else { b._in=false; cnt--; animT(b,hx,hy); } }); })(i); } };
 
 G.share=function(p){ var people=p.people||2, total=p.total||6, k=p.icon||"cookie"; if(S.round>0){ people=pick([2,3]); total=people*rnd(2,3); } if(TIER===0){ people=2; total=pick([2,4]); } else if(TIER===1&&total>6){ people=2; total=pick([4,6]); }
-  var w=900/people, plates=[], counts=[]; var who=["bear","rabbit","cat","dog"];
+  var w=900/people, plates=[], counts=[]; var who=hasMe()?["me","bear","rabbit","cat"]:["bear","rabbit","cat","dog"];
   for(var i=0;i<people;i++){ var cx=50+i*w+w/2; el("ellipse",{cx:cx,cy:190,rx:w/2-20,ry:140,"class":"plate"}); icon(who[i],cx-40,330,80); plates.push(cx); counts.push(0); }
   prompt(nm(k)+" "+total+"개를 친구 "+people+"명에게 똑같이 나눠 줘"); var placed=0;
   for(var j=0;j<total;j++){ (function(j){ var b=g(); var hx=500-total*55+j*110+5, hy=470; setT(b,hx,hy); icon(k,0,0,95,b); b._p=-1;
@@ -224,7 +225,7 @@ G.share=function(p){ var people=p.people||2, total=p.total||6, k=p.icon||"cookie
       if(placed===total){ setTimeout(function(){ if(counts.every(function(c){ return c===counts[0]; })) win(); else { miss("똑같이 나눠야 해. 세어 볼까?"); } },350); }
       return {x:x,y:y}; }); })(j); } };
 
-G.maze=function(p){ var cols=T([3,4,6,7]), rows=T([2,3,4,4]), cs=140, x0=500-cols*cs/2, y0=Math.max(10,Math.round((610-rows*cs)/2)); var W={}; for(var c=0;c<cols;c++) for(var r=0;r<rows;r++) W[c+","+r]=[1,1,1,1];
+G.maze=function(p){ if(hasMe()) p=Object.assign({},p,{start:"me"}); var cols=T([3,4,6,7]), rows=T([2,3,4,4]), cs=140, x0=500-cols*cs/2, y0=Math.max(10,Math.round((610-rows*cs)/2)); var W={}; for(var c=0;c<cols;c++) for(var r=0;r<rows;r++) W[c+","+r]=[1,1,1,1];
   var seen={"0,0":1}, st=[[0,0]]; while(st.length){ var cur=st[st.length-1], c=cur[0], r=cur[1]; var nb=[[0,-1,0],[1,0,1],[0,1,2],[-1,0,3]].map(function(d){return [c+d[0],r+d[1],d[2]];}).filter(function(q){ return W[q[0]+","+q[1]]&&!seen[q[0]+","+q[1]]; });
     if(!nb.length){ st.pop(); continue; } var q=pick(nb); W[c+","+r][q[2]]=0; W[q[0]+","+q[1]][(q[2]+2)%4]=0; seen[q[0]+","+q[1]]=1; st.push([q[0],q[1]]); }
   var pos=[0,0], goal=[cols-1,rows-1];

@@ -5,3 +5,5 @@ node_modules/
 dist/
 tools/*.png
 tools/*.mjpeg
+tools/*.jpg
+tools/shots2/

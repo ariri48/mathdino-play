@@ -141,7 +141,7 @@ g.found{transform-box:fill-box}
 .kadd input,.kadd select{font-family:var(--disp);font-size:24px;color:var(--ink);border:3px solid #d9cff5;border-radius:16px;padding:10px 14px;background:#fff;min-width:0}
 .ym{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .kprev{font-family:var(--disp);font-size:20px;color:var(--accent);margin:0}
-.note{font-size:14px;color:var(--soft);margin:0}
+.note{font-size:14px;color:var(--soft);margin:0;word-break:keep-all}
 .kadd .pill{align-self:flex-start}
 /* 책 찍기 */
 .scanbtn{display:flex;align-items:center;gap:16px;width:100%;text-align:left;background:var(--accent);color:#fff;border-radius:28px;padding:16px 22px;margin:14px 0 4px;box-shadow:0 6px 0 #3f2a7a}
@@ -163,8 +163,90 @@ body[data-view="scan"]{overflow:hidden}
 .guide i:nth-child(4){right:-6px;bottom:-6px;border-left:0;border-top:0;border-radius:0 0 16px 0}
 #scan .row label{cursor:pointer;font-family:var(--disp)}
 /* 힌트: 반짝반짝 */
-.hint{animation:hint 1s ease-in-out infinite}
-@keyframes hint{0%,100%{filter:drop-shadow(0 0 0 rgba(255,200,61,0))}50%{filter:drop-shadow(0 0 10px #ffb800) drop-shadow(0 0 4px #ffb800)}}
+.glow{animation:glow 1s ease-in-out infinite}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 0 rgba(255,200,61,0))}50%{filter:drop-shadow(0 0 10px #ffb800) drop-shadow(0 0 4px #ffb800)}}
+
+/* 캐릭터 */
+[data-buddy]{display:inline-block;line-height:0}
+.av{width:100%;height:100%;overflow:visible}
+.av .fx>g{opacity:0;transition:opacity .2s}
+.av .jumper,.av .head,.av .armL,.av .armR,.av .whole,.av .tail{transform-box:view-box;transition:transform .25s cubic-bezier(.3,1.5,.5,1)}
+.av .jumper{transform-origin:100px 230px;animation:breathe 2.6s ease-in-out infinite}
+.av .head{transform-origin:100px 130px}
+.av .armL{transform-origin:62px 150px}.av .armR{transform-origin:138px 150px}
+.av.talk .head{animation:bob .32s ease-in-out infinite alternate}
+.av.talk .jumper{animation:bob2 .32s ease-in-out infinite alternate}
+.av.pose-cheer .jumper,.av.pose-crown .jumper{animation:jump .55s ease-in-out 3}
+.av.pose-cheer .armL{transform:rotate(115deg)}
+.av.pose-cheer .armR{transform:rotate(-115deg)}
+.av.pose-crown .armR{transform:rotate(-150deg)}.av.pose-crown .armL{transform:rotate(-25deg)}
+.av.pose-crown .head{transform:rotate(-6deg)}
+.av.pose-cheer .sparkle,.av.pose-crown .sparkle,.av.pose-crown .crown{opacity:1}
+.av.pose-crown .sparkle{animation:twinkle .6s ease-in-out infinite alternate}
+.av.pose-dizzy .jumper{animation:wobble .5s ease-in-out 3}
+.av.pose-dizzy .sweat,.av.pose-dizzy .dizzy{opacity:1}
+.av.pose-dizzy .armL{transform:rotate(60deg)}.av.pose-dizzy .armR{transform:rotate(-60deg)}
+.av.pose-sad .head{transform:rotate(-12deg) translateY(4px)}
+.av.pose-sad .jumper{animation:none;transform:scaleY(.95)}
+.av.pose-sad .tears{opacity:1}
+.av.pose-sad .armL{transform:rotate(-15deg)}.av.pose-sad .armR{transform:rotate(15deg)}
+.av.pose-think .armR{transform:rotate(-140deg)}.av.pose-think .head{transform:rotate(8deg)}
+@keyframes breathe{50%{transform:scale(1.02,.98)}}
+@keyframes bob{to{transform:rotate(-4deg) translateY(-3px)}}
+@keyframes bob2{to{transform:translateY(-4px) scale(1.02,.98)}}
+@keyframes jump{0%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-34px) scale(.96,1.05)}60%{transform:translateY(0) scale(1.06,.92)}}
+@keyframes wobble{25%{transform:rotate(-9deg)}75%{transform:rotate(9deg)}}
+@keyframes twinkle{to{opacity:.4}}
+.prompt{display:flex;align-items:center;gap:12px}
+.pbud{width:64px;height:76px;flex:none;margin:-6px 0}
+.prompt>span:last-child{flex:1;min-width:0;position:relative}
+#track{position:relative;display:flex;align-items:flex-end;margin-left:auto;padding-top:4px}
+#track #dots{margin-left:0}
+.tbud{position:absolute;width:34px;height:40px;bottom:16px;left:calc(var(--p,0) * (100% - 20px) - 7px);transition:left .6s}
+.greetrow{display:flex;align-items:flex-end;gap:10px;margin-top:10px}
+.gbud{width:110px;height:132px;flex:none}
+.gsay{position:relative;background:var(--card);border-radius:24px;padding:14px 18px;font-family:var(--disp);font-size:clamp(20px,3vw,28px);margin:0 0 24px;flex:1;min-width:0;text-wrap:balance}
+.gsay::before{content:"";position:absolute;left:-14px;bottom:18px;border:10px solid transparent;border-right:16px solid var(--card);border-left:0}
+.bigbtns{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.bigbtns .scanbtn{margin:6px 0 4px}
+.diagbtn{background:#2fa36b;box-shadow:0 6px 0 #1f7a4e}
+.diagbtn:active{box-shadow:0 2px 0 #1f7a4e}
+.dbud{width:180px;height:216px}
+.kid{position:relative}
+.kav{position:absolute;right:12px;top:10px;width:70px;height:84px}
+.kpick{padding-right:84px}
+.krow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.kav-btn{font-size:16px;background:var(--sun);border-radius:999px;padding:8px 14px}
+.kdiag{font-size:13px;color:var(--soft)}
+.krow .kdel{margin-left:auto}
+.aved{display:grid;grid-template-columns:minmax(220px,320px) 1fr;gap:20px;align-items:start}
+@media (max-width:760px){.aved{grid-template-columns:1fr}}
+.avside{background:var(--card);border-radius:26px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:10px;position:sticky;top:10px}
+.avbig{width:220px;height:264px}
+.avform{background:var(--card);border-radius:26px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.seg{display:flex;gap:6px;flex-wrap:wrap}.seg button{font-size:20px;background:var(--bg);border-radius:999px;padding:10px 18px}.seg button.on{background:var(--accent);color:#fff}
+.seg.small button{font-size:15px;padding:6px 12px}
+.filebtn{align-self:flex-start;cursor:pointer;font-family:var(--disp)}
+.crop{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+#cropCv{width:min(320px,100%);height:auto;border-radius:20px;touch-action:none;background:#f1ece7}
+#cropHelp{margin:0;font-size:15px;color:var(--soft)}
+.rng{display:flex;flex-direction:column;gap:6px;font-size:16px;color:var(--soft)}
+.rng input[type=range]{width:min(320px,100%);accent-color:var(--accent);height:32px}
+.rng select{font-family:var(--disp);font-size:20px;border:3px solid #d9cff5;border-radius:14px;padding:6px 10px;background:#fff;color:var(--ink)}
+.suits{display:flex;gap:10px;flex-wrap:wrap}.suit{width:44px;height:44px;border-radius:50%;box-shadow:inset 0 0 0 4px #fff,0 0 0 2px #cfc6be}.suit.on{box-shadow:inset 0 0 0 4px #fff,0 0 0 5px var(--ink)}
+.vrow{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}.vrow .ghostbtn{margin-left:0;background:var(--bg)}
+.row.left{justify-content:flex-start;align-items:center}
+.dres{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;justify-content:center;padding-top:10px}
+.dbox{background:var(--card);border-radius:28px;padding:22px;max-width:620px;flex:1;min-width:280px;display:flex;flex-direction:column;gap:10px}
+.dk{margin:0;font-size:17px;color:var(--soft)}
+.drec{font-family:var(--disp);font-weight:400;font-size:clamp(36px,6vw,56px);color:var(--accent);margin:0}
+.ddesc{margin:0;font-size:18px}
+.dlist{list-style:none;margin:6px 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.dlist li{display:flex;gap:10px;align-items:center;font-size:18px}
+.dlist b{font-family:var(--disp);font-weight:400;font-size:15px;border-radius:999px;padding:2px 10px;flex:none}
+.dlist .ok b{background:#d8f5e5;color:#1f7a4e}.dlist .next b{background:#eee8f8;color:#5b3fa8}.dlist .try b{background:#fff1c2;color:#8a6500}
+#done .dbud{margin-bottom:-10px}
+@media (prefers-reduced-motion:reduce){.av *{animation:none!important}}
 
 /* 칭찬 */
 #fx{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden}
@@ -182,7 +264,7 @@ body[data-view="scan"]{overflow:hidden}
 .row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
 .pill{font-size:26px;border-radius:999px;padding:14px 28px;background:var(--card);box-shadow:0 5px 0 #cfe7dc}
 .pill.main{background:var(--sun);box-shadow:0 5px 0 #d9a21a}
-@media (prefers-reduced-motion:reduce){.hint{animation:none;filter:drop-shadow(0 0 8px #ffb800)}.cf{display:none}.shake{animation:none}.bubble{transition:none}}
+@media (prefers-reduced-motion:reduce){.glow{animation:none;filter:drop-shadow(0 0 8px #ffb800)}.cf{display:none}.shake{animation:none}.bubble{transition:none}}
 </style>
 
 <div id="gate">
@@ -194,7 +276,11 @@ body[data-view="scan"]{overflow:hidden}
 
 <section id="home" class="wrap">
   <div class="top"><h1>수학공룡 놀이터</h1><button id="kidchip" class="kidchip" type="button"></button><span class="tally">성공한 놀이 <b id="total">0</b> / 210</span><button id="mute" class="ghostbtn" type="button" aria-pressed="false">소리 끄기</button></div>
+  <div class="greetrow"><div class="gbud" data-buddy></div><p id="greet" class="gsay"></p></div>
+  <div class="bigbtns">
   <button id="scanBtn" class="scanbtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="12" width="40" height="28" rx="7" fill="none" stroke="currentColor" stroke-width="4"/><path d="M16 12l4-6h8l4 6" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/><circle cx="24" cy="26" r="8" fill="none" stroke="currentColor" stroke-width="4"/></svg><span><b>책 보여 주기</b><small>읽은 책을 카메라에 보여 주면 그 책 놀이가 열려요</small></span></button>
+  <button id="diagBtn" class="scanbtn diagbtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 42V6M10 42h30" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M16 34h6M16 26h10M16 18h14M16 10h18" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><span><b>수학 키 재기</b><small>몇 문제 풀면 알맞은 단계를 알려 줘요</small></span></button>
+  </div>
   <p class="hint">또는 아래에서 오늘 읽은 책을 골라요. 놀이 5개를 다 하면 책 한 권 완주!</p>
   <div id="shelf"></div>
   <p class="foot">개인이 아이와 놀려고 만든 놀이예요. 책을 펴낸 출판사와는 관계가 없어요.</p>
@@ -216,8 +302,45 @@ body[data-view="scan"]{overflow:hidden}
 <section id="scan" hidden>
   <div class="pbar"><button id="scanBack" class="back" type="button">← 책 목록</button><span class="stitle">책 보여 주기</span><button id="scanFlip" class="ghostbtn" type="button">카메라 바꾸기</button></div>
   <div class="camwrap"><video id="cam" playsinline muted autoplay></video><div id="guide" class="guide"><i></i><i></i><i></i><i></i></div></div>
-  <p id="scanmsg" class="prompt"></p>
+  <div class="prompt"><span class="pbud" data-buddy></span><span id="scanmsg"></span></div>
   <div class="row"><label class="pill"><input id="scanFile" type="file" accept="image/*" capture="environment" hidden>사진 찍기</label></div>
+</section>
+
+<section id="avedit" class="wrap" hidden>
+  <div class="head"><button id="avBack" class="back" type="button">← 돌아가기</button><h2 class="ktitle"><span id="avWho"></span> 캐릭터 만들기</h2></div>
+  <div class="aved">
+    <div class="avside">
+      <div id="avPrev" class="avbig"></div>
+      <div id="avPoses" class="seg small"><button type="button" data-pose="idle">기본</button><button type="button" data-pose="cheer">성공</button><button type="button" data-pose="dizzy">띠용</button><button type="button" data-pose="sad">속상</button><button type="button" data-pose="crown">완주</button></div>
+    </div>
+    <div class="avform">
+      <div id="avMode" class="seg"><button type="button" data-mode="photo">얼굴 사진</button><button type="button" data-mode="draw">그린 그림</button></div>
+      <label class="pill filebtn"><input id="avFile" type="file" accept="image/*" hidden><span id="avFileLbl">사진 고르기</span></label>
+      <div class="crop"><canvas id="cropCv" width="320" height="320"></canvas><p id="cropHelp"></p></div>
+      <label id="zoomRow" class="rng">크게 작게<input id="avZoom" type="range" min="0.8" max="4" step="0.01" value="1.4"></label>
+      <label id="toonRow" class="rng">만화 느낌<input id="avToon" type="range" min="0" max="3" step="1" value="2"></label>
+      <label id="paperRow" class="rng" hidden>종이 지우기<input id="avPaper" type="range" min="0" max="90" value="35"></label>
+      <div id="avSuitsRow" class="rng">공룡 옷 색<div id="avSuits" class="suits"></div></div>
+      <div class="vrow"><label class="rng">목소리<select id="avVoice"></select></label><button id="avHear" type="button" class="ghostbtn">들어 보기</button></div>
+      <div class="row left"><button id="avSave" type="button" class="pill main">저장하기</button><button id="avDel" type="button" class="kdel">캐릭터 지우기</button></div>
+      <p class="note">사진은 이 아이패드 안에서만 캐릭터로 바뀌고 저장돼요. 인터넷으로 보내지 않아요.</p>
+    </div>
+  </div>
+</section>
+
+<section id="diagres" class="wrap" hidden>
+  <div class="dres">
+    <div class="dbud" data-buddy></div>
+    <div class="dbox">
+      <p class="dk">수학 키 재기 결과</p>
+      <h2 id="drec" class="drec"></h2>
+      <p id="ddesc" class="ddesc"></p>
+      <ul id="dlist" class="dlist"></ul>
+      <p id="dnow" class="note"></p>
+      <div class="row left"><button id="dapply" type="button" class="pill main">이 단계로 놀기</button><button id="dhome2" type="button" class="pill">책 목록으로</button></div>
+      <p class="note">키즈 원리셈 진단평가지가 보는 능력 순서를 참고해 새로 만든 문제예요. 아이 컨디션에 따라 달라질 수 있으니 참고만 해 주세요.</p>
+    </div>
+  </div>
 </section>
 
 <section id="book" class="wrap" hidden>
@@ -226,8 +349,8 @@ body[data-view="scan"]{overflow:hidden}
 </section>
 
 <section id="play" hidden>
-  <div class="pbar"><button id="backBook" class="back" type="button">← 놀이 목록</button><span id="ltitle"></span><span id="dots"></span><button id="again" type="button">다시 듣기</button></div>
-  <div class="prompt" id="ptext"></div>
+  <div class="pbar"><button id="backBook" class="back" type="button">← 놀이 목록</button><span id="ltitle"></span><span id="track"><span id="dots"></span></span><button id="again" type="button">다시 듣기</button></div>
+  <div class="prompt"><span class="pbud" data-buddy></span><span id="ptext"></span></div>
   <div id="stagewrap">
     <svg id="stage" viewBox="0 0 1000 620" preserveAspectRatio="xMidYMid meet"></svg>
     <canvas id="pad" class="hide"></canvas>
@@ -244,7 +367,7 @@ body[data-view="scan"]{overflow:hidden}
 </section>
 
 <section id="done" class="wrap" hidden>
-  <div class="big">참 잘했어요!</div>
+  <div class="dbud" data-buddy></div><div class="big">참 잘했어요!</div>
   <p id="dmsg"></p>
   <div class="row"><button id="dnext" class="pill main" type="button">다음 놀이</button><button id="dbook" class="pill" type="button">놀이 목록</button><button id="dhome" class="pill" type="button">책 목록</button></div>
 </section>
