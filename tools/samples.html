@@ -1,0 +1,22 @@
+<!doctype html><body style="margin:0">
+<canvas id="a" width="900" height="1200"></canvas><canvas id="b" width="1000" height="800"></canvas>
+<script>
+// 가짜 "아이 사진": 배경 + 피부색 얼굴 + 머리카락 + 눈코입, 그라데이션과 잡음
+const a=document.getElementById('a').getContext('2d');
+let g=a.createLinearGradient(0,0,900,1200); g.addColorStop(0,'#9cc3d9'); g.addColorStop(1,'#e9dcc8'); a.fillStyle=g; a.fillRect(0,0,900,1200);
+a.fillStyle='#e8584f'; a.fillRect(200,820,500,400);
+g=a.createRadialGradient(430,520,40,450,560,260); g.addColorStop(0,'#ffd9bf'); g.addColorStop(1,'#e9a986'); a.fillStyle=g; a.beginPath(); a.ellipse(450,560,210,250,0,0,7); a.fill();
+a.fillStyle='#3a2618'; a.beginPath(); a.ellipse(450,400,240,170,0,Math.PI,2*Math.PI); a.fill(); a.fillRect(210,380,60,200); a.fillRect(630,380,60,200);
+a.fillStyle='#2a1a10'; [[370,560],[530,560]].forEach(([x,y])=>{a.beginPath();a.ellipse(x,y,26,32,0,0,7);a.fill();}); a.fillStyle='#fff'; [[378,550],[538,550]].forEach(([x,y])=>{a.beginPath();a.arc(x,y,8,0,7);a.fill();});
+a.strokeStyle='#b5523e'; a.lineWidth=12; a.lineCap='round'; a.beginPath(); a.arc(450,640,70,0.2,Math.PI-0.2); a.stroke();
+a.fillStyle='rgba(255,120,120,.35)'; [[320,640],[580,640]].forEach(([x,y])=>{a.beginPath();a.ellipse(x,y,40,26,0,0,7);a.fill();});
+let d=a.getImageData(0,0,900,1200); for(let i=0;i<d.data.length;i+=4){ const n=(Math.random()-.5)*18; d.data[i]+=n; d.data[i+1]+=n; d.data[i+2]+=n; } a.putImageData(d,0,0);
+// 가짜 "종이에 그린 그림": 누런 종이 + 그림자 + 크레파스 사람
+const b=document.getElementById('b').getContext('2d');
+g=b.createRadialGradient(500,380,100,500,400,700); g.addColorStop(0,'#fbf7ec'); g.addColorStop(1,'#d9d1bd'); b.fillStyle=g; b.fillRect(0,0,1000,800);
+b.lineWidth=14; b.lineCap='round'; b.strokeStyle='#e0457b'; b.beginPath(); b.arc(500,260,110,0,7); b.stroke(); b.fillStyle='#ffd166'; b.fill();
+b.strokeStyle='#2b6cb0'; b.beginPath(); b.moveTo(500,370); b.lineTo(500,580); b.moveTo(380,450); b.lineTo(620,450); b.moveTo(500,580); b.lineTo(400,720); b.moveTo(500,580); b.lineTo(600,720); b.stroke();
+b.fillStyle='#222'; b.beginPath(); b.arc(460,240,12,0,7); b.arc(540,240,12,0,7); b.fill(); b.strokeStyle='#222'; b.lineWidth=8; b.beginPath(); b.arc(500,280,40,0.3,Math.PI-0.3); b.stroke();
+d=b.getImageData(0,0,1000,800); for(let i=0;i<d.data.length;i+=4){ const n=(Math.random()-.5)*14; d.data[i]+=n; d.data[i+1]+=n; d.data[i+2]+=n; } b.putImageData(d,0,0);
+window.__out=[document.getElementById('a').toDataURL('image/jpeg',.9),document.getElementById('b').toDataURL('image/jpeg',.9)];
+</script>

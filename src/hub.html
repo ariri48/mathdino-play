@@ -1,0 +1,59 @@
+<meta charset="utf-8">
+<title>우리 아이 놀이터</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff6e9;--ink:#3b2f2a;--soft:#7a6b62;--card:#fff;--accent:#5b3fa8;--sun:#ffc83d;
+  --disp:"Jua","Apple SD Gothic Neo",sans-serif;--body:"Gowun Dodum","Apple SD Gothic Neo",sans-serif;color-scheme:light}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);background-image:radial-gradient(circle at 12px 12px,#ffe2b8 3px,transparent 3.5px),radial-gradient(circle at 36px 36px,#d8f0e4 3px,transparent 3.5px);background-size:48px 48px;color:var(--ink);font-family:var(--body);-webkit-tap-highlight-color:transparent}
+.wrap{max-width:1100px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-left,0px)) 40px}
+.sky{position:relative;border-radius:36px;background:linear-gradient(#bfe6ff,#e8f7ff 70%);padding:26px 26px 90px;overflow:hidden}
+.sky::after{content:"";position:absolute;left:-5%;right:-5%;bottom:-60px;height:140px;background:#9ddca8;border-radius:50% 50% 0 0 / 100% 100% 0 0;box-shadow:0 -14px 0 #c3ecc9}
+.cloud{position:absolute;background:#fff;border-radius:999px;opacity:.95}
+.cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.c1{width:120px;height:38px;right:8%;top:22px}.c1::before{width:56px;height:56px;left:16px;top:-26px}.c1::after{width:40px;height:40px;left:62px;top:-16px}
+.c2{width:90px;height:30px;left:46%;top:70px;opacity:.8}.c2::before{width:42px;height:42px;left:12px;top:-20px}.c2::after{width:30px;height:30px;left:46px;top:-12px}
+h1{position:relative;z-index:1;font-family:var(--disp);font-weight:400;font-size:clamp(36px,7vw,64px);margin:0;color:var(--accent);text-shadow:0 4px 0 #fff}
+.hello{position:relative;z-index:2;display:flex;align-items:flex-end;gap:12px;margin-top:10px}
+.bud{width:130px;height:156px;flex:none;line-height:0}
+.say{position:relative;background:#fff;border-radius:26px;padding:14px 20px;font-family:var(--disp);font-size:clamp(20px,3.2vw,30px);margin-bottom:34px;box-shadow:0 6px 0 rgba(59,47,42,.08);text-wrap:balance}
+.say::before{content:"";position:absolute;left:-14px;bottom:20px;border:10px solid transparent;border-right:16px solid #fff;border-left:0}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:-50px;position:relative;z-index:3}
+.card{display:flex;flex-direction:column;gap:8px;text-decoration:none;color:var(--ink);background:#fff;border-radius:32px;padding:20px;box-shadow:0 8px 0 var(--sh);border:5px solid var(--c);transition:transform .12s}
+.card:active{transform:translateY(6px);box-shadow:0 2px 0 var(--sh)}
+.art{height:150px;border-radius:24px;background:var(--tint);display:flex;align-items:center;justify-content:center;gap:6px;position:relative;overflow:hidden}
+.art svg{width:96px;height:96px;filter:drop-shadow(0 5px 0 rgba(0,0,0,.08))}
+.art .big{width:120px;height:120px;animation:bob 2.4s ease-in-out infinite}
+.art .sm{width:64px;height:64px;animation:bob 2.4s ease-in-out infinite .4s}
+.letters{font-family:var(--disp);font-size:44px;color:var(--c);display:flex;gap:10px}
+.letters span{background:#fff;border-radius:18px;padding:4px 14px;box-shadow:0 4px 0 rgba(0,0,0,.08);animation:bob 2.4s ease-in-out infinite}
+.letters span:nth-child(2){animation-delay:.3s}.letters span:nth-child(3){animation-delay:.6s}
+@keyframes bob{50%{transform:translateY(-8px)}}
+.card h2{font-family:var(--disp);font-weight:400;font-size:32px;margin:6px 0 0;color:var(--c)}
+.card p{margin:0;font-size:17px;color:var(--soft);word-break:keep-all}
+.prog{display:flex;align-items:center;gap:8px;font-family:var(--disp);font-size:18px}
+.bar{flex:1;height:14px;border-radius:999px;background:#f1ece7;overflow:hidden}.bar i{display:block;height:100%;background:var(--c);border-radius:999px}
+.foot{font-size:13px;color:var(--soft);text-align:center;margin-top:26px;word-break:keep-all}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+<div class="wrap">
+  <div class="sky"><i class="cloud c1"></i><i class="cloud c2"></i>
+    <h1>우리 아이 놀이터</h1>
+    <div class="hello"><div class="bud" id="bud"></div><p class="say" id="say">안녕! 오늘은 뭐 하고 놀까?</p></div>
+  </div>
+  <div class="cards">
+    <a class="card" href="mathdino.html" style="--c:#5b3fa8;--sh:#cbbcf0;--tint:#efe9ff" data-key="prog" data-max="210">
+      <div class="art"><svg class="big" viewBox="0 0 100 100"><use href="#g-dino"/></svg><svg class="sm" viewBox="0 0 100 100"><use href="#g-bean"/></svg></div>
+      <h2>수학공룡</h2><p>그림책 42권 · 책마다 놀이 5개 · 책 보여 주기 · 수학 키 재기</p><div class="prog"><span class="bar"><i></i></span><b></b></div></a>
+    <a class="card" href="mathforce.html" style="--c:#e0679a;--sh:#f6c3d8;--tint:#ffeef5" data-key="prog_mathforce" data-max="210">
+      <div class="art"><svg class="big" viewBox="0 0 100 100"><use href="#g-star"/></svg><svg class="sm" viewBox="0 0 100 100"><use href="#g-triangle"/></svg><svg class="sm" viewBox="0 0 100 100"><use href="#g-clock"/></svg></div>
+      <h2>수학특공대</h2><p>그림책 42권 · 수·도형·규칙·측정·융합 · 책마다 놀이 5개</p><div class="prog"><span class="bar"><i></i></span><b></b></div></a>
+    <a class="card" href="words.html" style="--c:#1f9e8f;--sh:#bfe8e1;--tint:#e8faf6" data-key="prog_words" data-max="105">
+      <div class="art"><div class="letters"><span>A</span><span>あ</span><span>你</span></div></div>
+      <h2>말놀이</h2><p>영어 · 일본어 · 중국어 · 듣고 고르기, 풍선 터뜨리기, 카드 짝 맞추기</p><div class="prog"><span class="bar"><i></i></span><b></b></div></a>
+  </div>
+  <p class="foot">개인이 아이와 놀려고 만든 놀이예요. 책을 펴낸 출판사와는 관계가 없어요. 이름·사진·기록은 이 기기 안에만 저장돼요.</p>
+</div>
