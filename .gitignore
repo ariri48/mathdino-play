@@ -1,0 +1,7 @@
+covers_local/
+.DS_Store
+node_modules/
+.vercel
+dist/
+tools/*.png
+tools/*.mjpeg

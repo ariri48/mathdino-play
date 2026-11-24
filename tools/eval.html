@@ -1,0 +1,75 @@
+<!doctype html><meta charset="utf-8"><title>eval</title>
+<script src="../vendor/tf.min.js"></script>
+<body><pre id="o">loading</pre>
+<script>
+const N=42;
+const log=s=>{document.getElementById('o').textContent+='\n'+s;};
+function rng(seed){ let s=seed>>>0; return ()=>((s=Math.imul(s^s>>>15,1|s)+0x6D2B79F5|0, ((s^s>>>14)>>>0)/4294967296)); }
+async function loadImg(src){ const im=new Image(); im.src=src; await im.decode(); return im; }
+let model;
+function embedCanvas(c){ return tf.tidy(()=>{ let t=tf.browser.fromPixels(c).toFloat().div(255); t=tf.image.resizeBilinear(t,[224,224]).expandDims(0); let e=model.predict(t); e=e.div(e.norm()); return e.dataSync().slice(); }); }
+// render cover into box canvas (W x H) with transform & bg
+function synth(im,R,opt){ const W=250,H=300,c=document.createElement('canvas'); c.width=W;c.height=H; const x=c.getContext('2d');
+  // background
+  const bgs=['#c9a27a','#eee8dd','#6b5b4b','#ffffff','#d6dbe0','#3a3a3a'];
+  x.fillStyle=bgs[Math.floor(R()*bgs.length)]; x.fillRect(0,0,W,H);
+  for(let i=0;i<30;i++){ x.fillStyle=`rgba(${R()*255|0},${R()*255|0},${R()*255|0},.25)`; x.fillRect(R()*W,R()*H,R()*60,R()*60); }
+  const sc=opt.scale[0]+R()*(opt.scale[1]-opt.scale[0]); const rot=(R()*2-1)*opt.rot*Math.PI/180; const skx=(R()*2-1)*opt.skew;
+  x.save(); x.translate(W/2+(R()*2-1)*opt.shift*W, H/2+(R()*2-1)*opt.shift*H); x.rotate(rot); x.transform(1,0,skx,1,0,0);
+  const w=W*sc,h=w*im.height/im.width; x.drawImage(im,-w/2,-h/2,w,h); x.restore();
+  // lighting
+  const b=opt.bri[0]+R()*(opt.bri[1]-opt.bri[0]);
+  const d=x.getImageData(0,0,W,H), p=d.data, tint=R()<.5?[1.08,1,0.85]:[1,1,1];
+  const gx=R()*W, gy=R()*H, gr=opt.glare?R():0;
+  for(let i=0;i<p.length;i+=4){ const k=i/4, px=k%W, py=(k/W)|0; let gl=0; if(gr>0.5){ const dd=Math.hypot(px-gx,py-gy); gl=Math.max(0,1-dd/70)*120; }
+    for(let j=0;j<3;j++) p[i+j]=Math.min(255,p[i+j]*b*tint[j]+gl+(R()-.5)*opt.noise); }
+  x.putImageData(d,0,0);
+  if(opt.blur){ const c2=document.createElement('canvas'); c2.width=W;c2.height=H; const y=c2.getContext('2d'); y.filter=`blur(${opt.blur*R()}px)`; y.drawImage(c,0,0); return c2; }
+  return c; }
+function variants(im){ // reference augmentations
+  const out=[]; const W=250,H=300;
+  const mk=(f)=>{ const c=document.createElement('canvas'); c.width=W;c.height=H; const x=c.getContext('2d'); x.fillStyle='#ddd'; x.fillRect(0,0,W,H); f(x); return c; };
+  out.push(mk(x=>x.drawImage(im,0,0,W,H)));
+  out.push(mk(x=>{ x.drawImage(im,W*.08,H*.08,W*.84,H*.84); }));
+  out.push(mk(x=>{ x.drawImage(im,-W*.08,-H*.08,W*1.16,H*1.16); }));
+  out.push(mk(x=>{ x.translate(W/2,H/2); x.rotate(.1); x.drawImage(im,-W*.45,-H*.45,W*.9,H*.9); }));
+  out.push(mk(x=>{ x.translate(W/2,H/2); x.rotate(-.1); x.drawImage(im,-W*.45,-H*.45,W*.9,H*.9); }));
+  out.push(mk(x=>{ x.filter='brightness(.7) sepia(.2)'; x.drawImage(im,0,0,W,H); }));
+  return out; }
+async function run(name, cfgs){
+  model=await tf.loadGraphModel('../model/'+name+'/model.json');
+  const ims=[]; for(let i=1;i<=N;i++) ims.push(await loadImg('../covers_local/raw_'+String(i).padStart(2,'0')));
+  const refs=[]; const t0=performance.now();
+  const RS=rng(999), Q=new URLSearchParams(location.search), NS=+(Q.get('ns')||0), CEN=Q.get('cen')==='1';
+  ims.forEach((im,i)=>{ const es=variants(im).map(c=>embedCanvas(c)); for(let k=0;k<NS;k++) es.push(embedCanvas(synth(im,RS,CFG.medium)));
+    if(CEN){ const m=new Float32Array(es[0].length); es.forEach(e=>e.forEach((v,j)=>m[j]+=v)); let n=Math.hypot(...m); refs.push({b:i+1,e:m.map(v=>v/n)}); refs.push({b:i+1,e:es[0]}); }
+    else es.forEach(e=>refs.push({b:i+1,e})); });
+  log(name+' refs '+refs.length+' '+((performance.now()-t0)/refs.length).toFixed(1)+'ms/each');
+  if(Q.get('export')==='1'){ const D=refs[0].e.length, buf=new Uint8Array(refs.length*(D+5)); const dv=new DataView(buf.buffer);
+    refs.forEach((r,i)=>{ let mx=0; r.e.forEach(v=>{ if(v>mx) mx=v; }); const o=i*(D+5); buf[o]=r.b; dv.setFloat32(o+1,mx/255,true); for(let j=0;j<D;j++) buf[o+5+j]=Math.max(0,Math.min(255,Math.round(r.e[j]/mx*255))); });
+    let bin=''; for(let i=0;i<buf.length;i++) bin+=String.fromCharCode(buf[i]); window.__export=btoa(bin); window.__done=true; log('exported '+refs.length+'x'+D); return; }
+  const res={}; const Q2=new URLSearchParams(location.search);
+  for(const [cname,opt] of Object.entries(cfgs)){
+    const R=rng(42); let ok=0,tot=0,sims=[],margins=[],bad=[];
+    for(let i=0;i<N;i++) for(let k=0;k<opt.n;k++){ const sc=synth(ims[i],R,opt); let e=embedCanvas(sc); if(Q2.get('tta')==='1'){ const c2=document.createElement('canvas'); c2.width=250;c2.height=300; c2.getContext('2d').drawImage(sc,25,30,200,240,0,0,250,300); const e2=embedCanvas(c2); e=e.map((v,j)=>v+e2[j]); const n=Math.hypot(...e); e=e.map(v=>v/n); } const best={};
+      refs.forEach(r=>{ let s=0; for(let j=0;j<e.length;j++) s+=e[j]*r.e[j]; if(!(best[r.b]>s)) best[r.b]=s; });
+      const srt=Object.entries(best).sort((a,b)=>b[1]-a[1]); tot++; if(+srt[0][0]===i+1){ ok++; sims.push(srt[0][1]); margins.push(srt[0][1]-srt[1][1]); } else bad.push((i+1)+'->'+srt[0][0]);
+    }
+    sims.sort((a,b)=>a-b); margins.sort((a,b)=>a-b);
+    res[cname]={acc:(ok/tot).toFixed(3),simP10:sims[Math.floor(sims.length*.1)]?.toFixed(3),marginP10:margins[Math.floor(margins.length*.1)]?.toFixed(3),bad:bad.slice(0,12).join(' ')};
+    log(name+' '+cname+' '+JSON.stringify(res[cname]));
+  }
+  // non-book negatives: random clutter
+  const R=rng(7); let neg=[]; for(let k=0;k<40;k++){ const c=document.createElement('canvas'); c.width=250;c.height=300; const x=c.getContext('2d'); x.fillStyle=`hsl(${R()*360},40%,60%)`; x.fillRect(0,0,250,300); for(let i=0;i<40;i++){ x.fillStyle=`hsl(${R()*360},60%,${R()*80+10}%)`; x.beginPath(); x.arc(R()*250,R()*300,R()*50,0,7); x.fill(); }
+    const e=embedCanvas(c); let m=-1; refs.forEach(r=>{ let s=0; for(let j=0;j<e.length;j++) s+=e[j]*r.e[j]; if(s>m) m=s; }); neg.push(m); }
+  neg.sort((a,b)=>b-a); log(name+' negatives max sims top5 '+neg.slice(0,5).map(v=>v.toFixed(3)).join(','));
+  window.__res=(window.__res||{}); window.__res[name]=res;
+}
+const CFG={
+  easy:{n:4,scale:[.8,.95],rot:4,skew:.05,shift:.04,bri:[.85,1.1],noise:10,blur:1,glare:false},
+  medium:{n:4,scale:[.65,.95],rot:10,skew:.12,shift:.08,bri:[.6,1.25],noise:20,blur:2,glare:true},
+  hard:{n:4,scale:[.5,1.05],rot:18,skew:.2,shift:.14,bri:[.45,1.35],noise:30,blur:3,glare:true}};
+(async()=>{ await tf.ready(); log('backend '+tf.getBackend());
+  for(const m of (new URLSearchParams(location.search).get('export')==='1'?['mobilenet_v2_100_224']:null)|| (new URLSearchParams(location.search).get('m')||'mobilenet_v2_050_224,mobilenet_v2_100_224').split(',')) await run(m,CFG);
+  if(!window.__done){ window.__done=true; log('DONE'); } })();
+</script>
