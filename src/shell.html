@@ -242,6 +242,7 @@ body[data-view="scan"]{overflow:hidden}
 .rng input[type=range]{width:min(320px,100%);accent-color:var(--accent);height:32px}
 .rng select{font-family:var(--disp);font-size:20px;border:3px solid #d9cff5;border-radius:14px;padding:6px 10px;background:#fff;color:var(--ink)}
 .suits{display:flex;gap:10px;flex-wrap:wrap}.suit{width:44px;height:44px;border-radius:50%;box-shadow:inset 0 0 0 4px #fff,0 0 0 2px #cfc6be}.suit.on{box-shadow:inset 0 0 0 4px #fff,0 0 0 5px var(--ink)}
+.vpick{margin-bottom:16px}.vpick select{font-family:var(--disp);font-size:20px;border:3px solid #d9cff5;border-radius:14px;padding:8px 12px;background:#fff;color:var(--ink);max-width:100%}
 .vrow{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}.vrow .ghostbtn{margin-left:0;background:var(--bg)}
 .row.left{justify-content:flex-start;align-items:center}
 .dres{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;justify-content:center;padding-top:10px}
@@ -300,6 +301,8 @@ body[data-view="scan"]{overflow:hidden}
 <section id="kids" class="wrap" hidden>
   <div class="head"><button id="kidsBack" class="back" type="button">← 책 목록</button><h2 id="kidsTitle" class="ktitle">누가 놀까?</h2></div>
   <div id="kidlist"></div>
+  <div class="kadd vpick"><h3>목소리 고르기</h3><p class="note">이 기기에 있는 한국어 음성 중에서 골라요. 마음에 드는 목소리가 없으면 아이패드 설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성 → 한국어에서 "유나(향상됨)"를 내려받으면 더 자연스러워요.</p>
+    <div class="vrow"><select id="vSel"></select><button id="vHear" type="button" class="ghostbtn">들어 보기</button></div></div>
   <form id="kadd" class="kadd">
     <h3>아이 추가</h3>
     <label>이름이나 별명<input id="kn" maxlength="12" placeholder="예: 첫째, 콩이" autocomplete="off"></label>

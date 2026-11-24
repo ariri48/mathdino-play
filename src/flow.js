@@ -19,7 +19,10 @@ function applyKid(){ var k=curKid(); TIER= k? kidTier(k) : 2; var c=$("kidchip")
   if(c) c.innerHTML= k? '<b>'+esc(k.name)+'</b><span>'+months(k.ym)+'개월 · '+TIERNAME[TIER]+'</span><i>바꾸기</i>' : '<b>누가 놀까?</b><i>고르기</i>'; }
 function esc(t){ return String(t).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 
-function renderKids(){ var o=all(), box=$("kidlist"); box.innerHTML="";
+function renderVoicePick(){ var sel=$("vSel"); if(!sel) return; pickVoice(); var vs=goodVoices("ko").sort(function(a,b){ return rankVoice(a)-rankVoice(b); }); sel.innerHTML="";
+  if(!vs.length){ var o0=document.createElement("option"); o0.textContent="한국어 음성이 없어요"; sel.appendChild(o0); return; }
+  vs.forEach(function(v){ var op=document.createElement("option"); op.value=v.name; op.textContent=v.name.replace(/\s*\(.*?\)\s*/g," ").trim(); if(S.voice&&v.name===S.voice.name) op.selected=true; sel.appendChild(op); }); }
+function renderKids(){ renderVoicePick(); var o=all(), box=$("kidlist"); box.innerHTML="";
   o.kids.forEach(function(k){ var t=kidTier(k), m=months(k.ym); var d=document.createElement("div"); d.className="kid"+(k.id===o.cur?" on":"");
     d.innerHTML='<div class="kav" data-kav></div><button class="kpick" type="button"><b>'+esc(k.name)+'</b><span>'+m+'개월 · '+TIERNAME[t]+'</span><small>'+TIERDESC[t]+'</small></button>'+
       '<div class="adj" role="group" aria-label="난이도 조절"><button type="button" data-a="-1">더 쉽게</button><button type="button" data-a="0">월령대로</button><button type="button" data-a="1">더 어렵게</button></div>'+
@@ -110,6 +113,8 @@ $("startBtn").addEventListener("click",function(){ ac(); pickVoice(); $("gate").
   if(!o.kids.length){ renderKids(); show("kids"); say(CFG.title+"에 온 걸 환영해! 먼저 이름을 알려 줘"); }
   else { renderHome(); show("home"); var k=curKid(); say((k?k.name+", ":"")+CFG.title+"에 온 걸 환영해! "+(CFG.ask||"책을 골라 볼까?")); } });
 $("kidchip").addEventListener("click",function(){ renderKids(); show("kids"); });
+$("vSel").addEventListener("change",function(){ try{ localStorage.setItem("goyu-voice-ko",this.value); }catch(e){} pickVoice(); say("안녕! 이 목소리 어때?"); });
+$("vHear").addEventListener("click",function(){ say("안녕! 나랑 같이 놀자!"); });
 $("kidsBack").addEventListener("click",function(){ renderHome(); show("home"); });
 $("scanBtn").addEventListener("click",openScan);
 $("diagBtn").addEventListener("click",diagStart);

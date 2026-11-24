@@ -2,10 +2,11 @@
 var LANGS={ en:{name:"영어",tag:"en-US",praise:"Great job!",hi:"Hello!"}, ja:{name:"일본어",tag:"ja-JP",praise:"すごいね!",hi:"こんにちは!"}, zh:{name:"중국어",tag:"zh-CN",praise:"真棒!",hi:"你好!"} };
 S.lang=(function(){ try{ return localStorage.getItem("goyu-lang")||"en"; }catch(e){ return "en"; } })();
 ONE_ROUND.lcards=1;
-var LVOICE={};
-function pickLVoice(tag){ if(LVOICE[tag]!==undefined) return LVOICE[tag]; try{ var p=tag.slice(0,2), vs=speechSynthesis.getVoices().filter(function(v){ return v.lang.replace("_","-").toLowerCase().indexOf(p)===0; });
+var LVOICE=window.LVOICE={};
+function pickLVoice(tag){ if(LVOICE[tag]===undefined) LVOICE[tag]=bestVoice(tag.slice(0,2).toLowerCase(), null); return LVOICE[tag]; }
+function _oldPickLVoice(tag){ if(LVOICE[tag]!==undefined) return LVOICE[tag]; try{ var p=tag.slice(0,2), vs=speechSynthesis.getVoices().filter(function(v){ return v.lang.replace("_","-").toLowerCase().indexOf(p)===0; });
   var exact=vs.filter(function(v){ return v.lang.replace("_","-")===tag; }); var list=exact.length?exact:vs; LVOICE[tag]=list.filter(function(v){ return /samantha|kyoko|tingting|ting-ting|google|female/i.test(v.name); })[0]||list[0]||null; }catch(e){ LVOICE[tag]=null; } return LVOICE[tag]; }
-function sayL(text, delay, keep){ if(S.muted) return; var go=function(){ try{ if(!keep) speechSynthesis.cancel(); var L=LANGS[S.lang], u=new SpeechSynthesisUtterance(text); u.lang=L.tag; var v=pickLVoice(L.tag); if(v) u.voice=v; u.rate=0.82; u.pitch=1.15;
+function sayL(text, delay, keep){ if(S.muted) return; var go=function(){ try{ if(!keep) speechSynthesis.cancel(); var L=LANGS[S.lang], u=new SpeechSynthesisUtterance(text); u.lang=L.tag; var v=pickLVoice(L.tag); if(v) u.voice=v; u.rate=0.85; u.pitch=1.0;
   u.onstart=function(){ talk(true); }; u.onend=u.onerror=function(){ talk(false); }; speechSynthesis.speak(u); }catch(e){} }; if(delay) setTimeout(go,delay); else go(); }
 function wt(w){ return w[S.lang][0]; }      /* 그 나라 글자 */
 function wr(w){ return w[S.lang][1]; }      /* 한글로 읽는 법 */

@@ -2,7 +2,7 @@
 /* 사진과 그림은 이 기기 localStorage 에만 저장. 어디로도 보내지 않음. */
 var AVKEY="mathdino-av-";
 var SUITS=[["#7fd49c","#c8f0d4"],["#ffb067","#ffe2c4"],["#8fb8ff","#d6e6ff"],["#ff9ec7","#ffd9ea"],["#b79cff","#e5dbff"],["#ffd84d","#fff1b8"]];
-var VOICES=[["아기 목소리",1.8,1.0],["높은 목소리",1.45,0.95],["보통 목소리",1.15,0.95],["낮은 목소리",0.8,0.9]];
+var VOICES=[["귀여운 목소리",1.2,0.98],["밝은 목소리",1.1,0.96],["보통 목소리",1.0,0.95],["차분한 목소리",0.92,0.9]];
 function avLoad(id){ try{ return JSON.parse(localStorage.getItem(AVKEY+id))||null; }catch(e){ return null; } }
 function avSave(id,o){ try{ if(o) localStorage.setItem(AVKEY+id,JSON.stringify(o)); else localStorage.removeItem(AVKEY+id); return true; }catch(e){ return false; } }
 /* 기본 얼굴(사진이 없을 때) */

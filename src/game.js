@@ -87,9 +87,15 @@ function applause(){ var a=ac(); if(!a||S.muted) return; var t0=a.currentTime; v
   for(var i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3);
   for(var k=0;k<70;k++){ var s=a.createBufferSource(); s.buffer=buf; var f=a.createBiquadFilter(); f.type="bandpass"; f.frequency.value=900+Math.random()*1800; f.Q.value=0.8; var gn=a.createGain(); gn.gain.value=0.25+Math.random()*0.35; s.connect(f); f.connect(gn); gn.connect(a.destination); s.start(t0+Math.random()*1.5*Math.pow(Math.random(),0.5)); }
   [523,659,784,1047].forEach(function(f,i){ tone("triangle",f,null,t0+i*0.1,0.3,0.18); }); }
-function pickVoice(){ try{ var vs=speechSynthesis.getVoices().filter(function(v){ return /^ko/i.test(v.lang); }); S.voice=vs.filter(function(v){ return /yuna|유나|sora|female|여/i.test(v.name); })[0]||vs[0]||null; }catch(e){} }
+/* 장난용·효과음 음성(할아버지, 로봇 등)은 빼고, 차분한 기본 여자 음성을 고름 */
+var ODDVOICE=/grandma|grandpa|eddy|flo|reed|rocko|sandy|shelley|bad news|bahh|bells|boing|bubbles|cellos|wobble|zarvox|whisper|jester|organ|superstar|trinoids|junior|albert|fred|ralph|kathy|good news|hysterical|deranged|pipe|novelty/i;
+function goodVoices(prefix){ try{ return speechSynthesis.getVoices().filter(function(v){ return v.lang.replace("_","-").toLowerCase().indexOf(prefix)===0 && !ODDVOICE.test(v.name); }); }catch(e){ return []; } }
+function rankVoice(v){ var n=v.name; return (/premium|enhanced|고급/i.test(n)?0:10)+(/yuna|유나|sora|소라|samantha|ava|allison|kyoko|tingting|ting-ting|meijia|lili/i.test(n)?0:5)+(/google/i.test(n)?2:0); }
+function bestVoice(prefix, want){ var vs=goodVoices(prefix); if(want){ var w=vs.filter(function(v){ return v.name===want; })[0]; if(w) return w; } return vs.sort(function(a,b){ return rankVoice(a)-rankVoice(b); })[0]||null; }
+function pickVoice(){ var want=null; try{ want=localStorage.getItem("goyu-voice-ko"); }catch(e){} S.voice=bestVoice("ko",want); }
+try{ speechSynthesis.onvoiceschanged=function(){ pickVoice(); if(window.LVOICE) for(var k in LVOICE) delete LVOICE[k]; }; }catch(e){}
 try{ speechSynthesis.onvoiceschanged=pickVoice; pickVoice(); }catch(e){}
-function say(s, delay){ if(S.muted) return; var go=function(){ try{ speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(s); u.lang="ko-KR"; if(S.voice) u.voice=S.voice; u.rate=S.vr||0.95; u.pitch=S.vp||1.3; u.onstart=function(){ talk(true); }; u.onend=u.onerror=function(){ talk(false); }; clearTimeout(say._t); say._t=setTimeout(function(){ talk(false); }, 900+String(s).length*170); speechSynthesis.speak(u); }catch(e){} }; if(delay) setTimeout(go,delay); else go(); }
+function say(s, delay){ if(S.muted) return; var go=function(){ try{ speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(s); u.lang="ko-KR"; if(S.voice) u.voice=S.voice; u.rate=S.vr||0.95; u.pitch=S.vp||1.05; u.onstart=function(){ talk(true); }; u.onend=u.onerror=function(){ talk(false); }; clearTimeout(say._t); say._t=setTimeout(function(){ talk(false); }, 900+String(s).length*170); speechSynthesis.speak(u); }catch(e){} }; if(delay) setTimeout(go,delay); else go(); }
 
 /* ---------- 칭찬과 아쉬움 ---------- */
 var PRAISE=["성공! 멋진데~?","성공! 멋진데~? 짝짝짝!","우와, 성공! 진짜 멋진데~?","성공! 최고야~!"];
