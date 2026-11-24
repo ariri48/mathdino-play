@@ -3,7 +3,7 @@ const D=__dirname+'/shots2/';
 (async()=>{ const b=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});
  const p=await (await b.newContext({viewport:{width:1180,height:820}})).newPage(); const errs=[];
  p.on('pageerror',e=>errs.push(e.stack.split('\n').slice(0,4).join(' | '))); p.on('console',m=>{ if(m.type()==='error'&&!/Failed to load resource/.test(m.text())) errs.push(m.text()); });
- await p.goto('http://127.0.0.1:8766/index.html'); await p.click('#startBtn');
+ await p.goto('http://127.0.0.1:8766/mathdino.html'); await p.click('#startBtn');
  await p.fill('#kn','첫째'); await p.selectOption('#ky','2023'); await p.selectOption('#km','1'); await p.click('#kadd button[type=submit]');
  await p.screenshot({path:D+'1_home_default.png'});
  // 사진 캐릭터

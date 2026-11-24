@@ -7,3 +7,6 @@ tools/*.png
 tools/*.mjpeg
 tools/*.jpg
 tools/shots2/
+tools/shots3/
+tools/iconsheet.*
+tools/v*.png

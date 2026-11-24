@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<title>수학공룡 놀이터</title>
+<title>{{TITLE}}</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,7 +14,7 @@
 }
 [hidden]{display:none!important}
 html,body{height:100%;overscroll-behavior:none}
-body{background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+body{background:var(--bg);background-image:radial-gradient(circle at 14px 14px,#d2efe2 3px,transparent 3.5px),radial-gradient(circle at 42px 42px,#fff3d6 3px,transparent 3.5px);background-size:56px 56px;color:var(--ink);font-family:var(--body);-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
 button{font-family:var(--disp);color:var(--ink);cursor:pointer;border:0;-webkit-tap-highlight-color:transparent}
 button:focus-visible{outline:4px solid var(--sun);outline-offset:3px}
 .wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px}
@@ -23,7 +23,9 @@ button:focus-visible{outline:4px solid var(--sun);outline-offset:3px}
 #gate{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center;padding:24px}
 #gate h1{font-family:var(--disp);font-weight:400;font-size:clamp(44px,9vw,88px);line-height:1.05;margin:0;color:var(--accent);text-wrap:balance}
 #gate p{font-size:20px;margin:0;color:var(--soft)}
-#gate .dino{width:min(220px,40vw);height:auto}
+#gate .dino{width:min(220px,40vw);height:auto;animation:gbob 2.2s ease-in-out infinite}
+@keyframes gbob{50%{transform:translateY(-12px) rotate(-3deg)}}
+#gate{background:radial-gradient(circle at 20% 20%,#fff6d6 0 80px,transparent 81px),radial-gradient(circle at 85% 75%,#ffe0ef 0 110px,transparent 111px),var(--bg)}
 #startBtn{font-size:40px;background:var(--sun);padding:20px 56px;border-radius:999px;box-shadow:0 8px 0 #d9a21a;transition:transform .1s}
 #startBtn:active{transform:translateY(6px);box-shadow:0 2px 0 #d9a21a}
 
@@ -37,12 +39,18 @@ button:focus-visible{outline:4px solid var(--sun);outline-offset:3px}
 #shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
 .bk{position:relative;text-align:left;background:var(--card);border-radius:22px;padding:12px 14px 12px;display:flex;flex-direction:column;gap:6px;min-height:132px;box-shadow:0 5px 0 color-mix(in srgb,var(--c) 45%,#fff);border-top:10px solid var(--c);transition:transform .1s}
 .bk:active{transform:translateY(4px);box-shadow:0 1px 0 color-mix(in srgb,var(--c) 45%,#fff)}
+.bk .stk{position:absolute;right:8px;top:6px;width:48px;height:48px;transform:rotate(8deg);filter:drop-shadow(0 3px 0 rgba(0,0,0,.08))}
+.bk:nth-child(2n) .stk{transform:rotate(-8deg)}
 .bk .no{font-size:34px;line-height:1;color:var(--c)}
 .bk .bt{font-family:var(--body);font-weight:700;font-size:16px;line-height:1.3;min-width:0;word-break:keep-all}
+.bk .bt{padding-right:22px}
+.bk .bc{font-size:13px;color:var(--c);font-family:var(--disp)}
+.tohub{font-family:var(--disp);font-size:18px;color:var(--ink);text-decoration:none;background:var(--card);border-radius:999px;padding:8px 14px}
+.langtabs{margin-top:12px}.langtabs button{font-size:24px;padding:10px 22px;background:var(--card)}.langtabs button.on{background:var(--accent)}
 .bk .pips{display:flex;gap:4px;margin-top:auto}
 .bk .pips i{width:16px;height:16px;border-radius:50%;border:2.5px solid color-mix(in srgb,var(--c) 55%,#fff)}
 .bk .pips i.on{background:var(--c);border-color:var(--c)}
-.bk .crown{position:absolute;right:10px;top:8px;font-size:15px;background:var(--sun);border-radius:999px;padding:2px 10px}
+.bk .crown{position:absolute;right:10px;bottom:10px;font-size:15px;background:var(--sun);border-radius:999px;padding:2px 10px}
 
 /* 책 */
 #book .head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
@@ -81,7 +89,7 @@ body[data-view="play"]{overflow:hidden}
 
 /* svg 안 */
 #stage .t{font-family:var(--disp)}
-.choice{fill:#fff;stroke:var(--accent);stroke-width:6}
+.choice{fill:#fff;stroke:var(--accent);stroke-width:6;filter:drop-shadow(0 6px 0 rgba(91,63,168,.18))}
 g.good .choice{fill:#d8f5e5;stroke:var(--good)} g.bad .choice{fill:#ffe1e1;stroke:var(--bad)}
 .panel{fill:#f7f4ff;stroke:#d9cff5;stroke-width:4}
 .goodp{fill:#d8f5e5;stroke:var(--good)}
@@ -117,7 +125,7 @@ g.found{transform-box:fill-box}
 .ruler{stroke:var(--ink);stroke-width:7;stroke-linecap:round}
 .clock{fill:#fff;stroke:var(--ink);stroke-width:7}.hand{stroke:var(--bad);stroke-width:12;stroke-linecap:round}.hand.long{stroke:var(--ink);stroke-width:7}
 .blk{fill:#b9a3e8;stroke:var(--accent);stroke-width:3}
-.card{fill:#fff;stroke:#d9cff5;stroke-width:4}
+.card{fill:#fff;stroke:#d9cff5;stroke-width:4;filter:drop-shadow(0 5px 0 rgba(91,63,168,.12))}
 .sel .card{stroke:var(--sun);stroke-width:8}.found .card{fill:#e8f8ef;stroke:var(--good)}
 
 .foot{font-size:13px;color:var(--soft);margin:24px 0 8px;text-align:center}
@@ -248,6 +256,8 @@ body[data-view="scan"]{overflow:hidden}
 #done .dbud{margin-bottom:-10px}
 @media (prefers-reduced-motion:reduce){.av *{animation:none!important}}
 
+.bobble{animation:bobl 2.6s ease-in-out infinite;transform-box:view-box}
+@keyframes bobl{50%{transform:translateY(-14px)}}
 /* 칭찬 */
 #fx{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden}
 .cf{position:absolute;top:-20px;width:14px;height:20px;border-radius:3px;animation:fall 1.9s ease-in forwards}
@@ -269,19 +279,20 @@ body[data-view="scan"]{overflow:hidden}
 
 <div id="gate">
   <svg class="dino" viewBox="0 0 100 100" aria-hidden="true"><use href="#g-dino"/></svg>
-  <h1>수학공룡 놀이터</h1>
-  <p>42권 책마다 놀이 5개 · 아이 나이에 맞춰 쉬워지고 어려워져요 · 소리를 켜고 시작해요</p>
+  <h1>{{TITLE}}</h1>
+  <p>{{SUB}} · 아이 나이에 맞춰 쉬워지고 어려워져요 · 소리를 켜고 시작해요</p>
   <button id="startBtn" type="button">놀이 시작!</button>
 </div>
 
 <section id="home" class="wrap">
-  <div class="top"><h1>수학공룡 놀이터</h1><button id="kidchip" class="kidchip" type="button"></button><span class="tally">성공한 놀이 <b id="total">0</b> / 210</span><button id="mute" class="ghostbtn" type="button" aria-pressed="false">소리 끄기</button></div>
+  <div class="top"><a class="tohub" href="./" aria-label="놀이터 처음으로">← 놀이터</a><h1>{{TITLE}}</h1><button id="kidchip" class="kidchip" type="button"></button><span class="tally">성공한 놀이 <b id="total">0</b> / <span id="totmax">0</span></span><button id="mute" class="ghostbtn" type="button" aria-pressed="false">소리 끄기</button></div>
+  <div id="langtabs" class="seg langtabs" hidden></div>
   <div class="greetrow"><div class="gbud" data-buddy></div><p id="greet" class="gsay"></p></div>
   <div class="bigbtns">
   <button id="scanBtn" class="scanbtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="12" width="40" height="28" rx="7" fill="none" stroke="currentColor" stroke-width="4"/><path d="M16 12l4-6h8l4 6" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/><circle cx="24" cy="26" r="8" fill="none" stroke="currentColor" stroke-width="4"/></svg><span><b>책 보여 주기</b><small>읽은 책을 카메라에 보여 주면 그 책 놀이가 열려요</small></span></button>
   <button id="diagBtn" class="scanbtn diagbtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 42V6M10 42h30" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M16 34h6M16 26h10M16 18h14M16 10h18" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><span><b>수학 키 재기</b><small>몇 문제 풀면 알맞은 단계를 알려 줘요</small></span></button>
   </div>
-  <p class="hint">또는 아래에서 오늘 읽은 책을 골라요. 놀이 5개를 다 하면 책 한 권 완주!</p>
+  <p class="hint">{{HINT}}</p>
   <div id="shelf"></div>
   <p class="foot">개인이 아이와 놀려고 만든 놀이예요. 책을 펴낸 출판사와는 관계가 없어요.</p>
 </section>

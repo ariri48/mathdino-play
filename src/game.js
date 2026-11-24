@@ -22,7 +22,7 @@ function jong(w){ w=String(w); var c=w.charCodeAt(w.length-1); if(c>=0xAC00&&c<=
 function eul(w){ return w+(jong(w)?"을":"를"); }
 function iga(w){ return w+(jong(w)?"이":"가"); }
 function nm(k){ return NAMES[k]||k; }
-var CHARK={};
+var CHARK={}; var ONE_ROUND={draw:1}; var CFG=window.__CFG||{title:"수학공룡 놀이터"};
 var ANIMAL={mosquito:1,fish:1,dog:1,cat:1,rabbit:1,bear:1,chick:1,duck:1,dino:1,ghost:1};
 function unit(k){ return CHARK[k]?"명": ANIMAL[k]?"마리":"개"; }
 var ORD = ["첫째","둘째","셋째","넷째","다섯째","여섯째"];
@@ -31,7 +31,12 @@ function g(parent){ return el("g",{},parent); }
 function icon(name,x,y,s,parent){ return el("use",{href:"#g-"+name,x:x,y:y,width:s,height:s},parent); }
 function txt(s,x,y,size,parent,fill,anchor){ var t=el("text",{x:x,y:y,"font-size":size||40,"text-anchor":anchor||"middle",fill:fill||"#3b2f2a","class":"t"},parent); t.textContent=s; return t; }
 function setT(n,x,y){ n._tx=x; n._ty=y; n.setAttribute("transform","translate("+x+","+y+")"); }
-function clear(){ while(svg.firstChild) svg.removeChild(svg.firstChild); svg.classList.remove("hide"); cv.classList.add("hide"); $("padtools").classList.add("hide"); }
+function clear(){ while(svg.firstChild) svg.removeChild(svg.firstChild); svg.classList.remove("hide"); cv.classList.add("hide"); $("padtools").classList.add("hide"); decor(); }
+function decor(){ var d=g(); d.setAttribute("pointer-events","none"); d.setAttribute("class","decor");
+  function cloud(x,y,k){ var c=g(d); c.setAttribute("transform","translate("+x+","+y+") scale("+k+")"); [[0,20,34],[34,4,40],[72,18,32],[36,28,40]].forEach(function(q){ el("circle",{cx:q[0],cy:q[1],r:q[2],fill:"#eef6ff"},c); }); }
+  cloud(40,30,.9); cloud(860,50,.7);
+  el("path",{d:"M0 560 Q180 500 360 545 T720 535 T1000 515 V620 H0Z",fill:"#ecf9f1"},d); el("path",{d:"M0 595 Q220 560 460 588 T1000 572 V620 H0Z",fill:"#dcf3e4"},d);
+  [[120,575],[640,590],[900,580]].forEach(function(q){ var f=g(d); f.setAttribute("transform","translate("+q[0]+","+q[1]+")"); [0,72,144,216,288].forEach(function(a){ var r=a*Math.PI/180; el("circle",{cx:Math.cos(r)*7,cy:Math.sin(r)*7,r:6,fill:"#ffd0e2"},f); }); el("circle",{cx:0,cy:0,r:5,fill:"#ffd34d"},f); }); }
 function pt(e){ var p=svg.createSVGPoint(); p.x=e.clientX; p.y=e.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); }
 function tap(node, fn){ node.style.cursor="pointer"; node.addEventListener("pointerdown", function(e){ e.preventDefault(); if(S.lock) return; fn(e); }); return node; }
 function animT(n,x,y,ms){ var x0=n._tx||0,y0=n._ty||0,t0=performance.now(); ms=ms||220;
@@ -267,6 +272,7 @@ var SORTS={ roll:[["ball","굴러가요",["ball","melon","egg","cookie","coin","
   sea:[["fish","물고기",["fish"]],["shell","조개",["shell"]]], shape:[["circle","동그라미",["circle","ball","cookie","coin"]],["triangle","세모",["triangle"]],["square","네모",["square","box","book"]]],
   tidy:[["toy","장난감",["toy","ball","car"]],["book","책",["book"]],["sock","옷",["sock"]]], fruit:[["apple","과일",["apple","banana","strawberry","grape","cherry"]],["dog","동물",["dog","cat","rabbit","bear","chick","duck"]]],
   tree:[["leaf","나뭇잎",["leaf"]],["flower","꽃",["flower"]],["cherry","열매",["apple","cherry","strawberry"]]], heavy:[["rock","무거워요",["rock","melon","car","milk","house"]],["feather","가벼워요",["feather","balloon","leaf","flower"]]],
+  color:[["apple","빨강",["apple","strawberry","cherry","balloon"]],["banana","노랑",["banana","star","sun","chick"]],["leaf","초록",["leaf","tree","melon","bean"]]],
   season:[["sun","여름",["sun","melon","umbrella","fish"]],["snowman","겨울",["snowman","sock"]]] };
 G.sort=function(p){ var set=SORTS[p.set||"roll"], n=set.length, w=(940-(n-1)*20)/n, bins=[]; var items=[];
   set.forEach(function(c,i){ var x=30+i*(w+20); el("path",{d:"M"+(x+10)+" 120 L"+(x+w-10)+" 120 L"+(x+w-40)+" 380 L"+(x+40)+" 380 Z","class":"basket"}); icon(c[0],x+w/2-110,20,80); txt(c[1],x+w/2-20,80,40,null,"#3b2f2a","start"); bins.push([x,w]);

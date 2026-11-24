@@ -2,7 +2,7 @@ const {chromium}=require(process.env.PW+'/playwright-core');
 (async()=>{ const b=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});
  const ctx=await b.newContext({viewport:{width:1180,height:820},deviceScaleFactor:1}); const p=await ctx.newPage(); const errs=[];
  p.on('pageerror',e=>errs.push(e.message)); p.on('console',m=>{ if(m.type()==='error'&&!/favicon|manifest|icon-180|Failed to load resource/.test(m.text())) errs.push(m.text()); });
- await p.goto('http://127.0.0.1:8766/index.html'); await p.click('#startBtn');
+ await p.goto('http://127.0.0.1:8766/mathdino.html'); await p.click('#startBtn');
  // 첫 실행: 아이 등록 화면
  console.log('view after start:', await p.evaluate(()=>document.body.dataset.view));
  await p.fill('#kn','첫째'); await p.selectOption('#ky','2023'); await p.selectOption('#km','1'); console.log('prev:', await p.textContent('#kprev'));

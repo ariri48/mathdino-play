@@ -9,8 +9,9 @@ function saveAll(o){ try{ localStorage.setItem(PKEY,JSON.stringify(o)); }catch(e
 var MEM=null;
 function all(){ if(!MEM) MEM=loadAll(); return MEM; }
 function curKid(){ var o=all(); return o.kids.filter(function(k){ return k.id===o.cur; })[0]||null; }
-function loadP(){ var o=all(); return (o.cur&&o.prog[o.cur])||{}; }
-function saveP(p){ var o=all(); if(!o.cur) return; o.prog[o.cur]=p; saveAll(o); }
+function progKey(){ var P=window.__PROG||"mathdino"; return P==="mathdino"? "prog" : "prog_"+P+(P==="words"?"_"+S.lang:""); }
+function loadP(){ var o=all(), k=progKey(); return (o.cur&&o[k]&&o[k][o.cur])||{}; }
+function saveP(p){ var o=all(), k=progKey(); if(!o.cur) return; o[k]=o[k]||{}; o[k][o.cur]=p; saveAll(o); }
 function months(ym){ var a=String(ym).split("-"), d=new Date(); return (d.getFullYear()-(+a[0]))*12+(d.getMonth()+1-(+a[1])); }
 function baseTier(m){ return m<36?0: m<48?1: m<60?2:3; }
 function kidTier(k){ return Math.max(0,Math.min(3,baseTier(months(k.ym))+(k.adj||0))); }
@@ -44,12 +45,15 @@ function renderKids(){ var o=all(), box=$("kidlist"); box.innerHTML="";
 function show(id){ ["home","book","play","done","kids","scan","avedit","diagres"].forEach(function(s){ $(s).hidden = s!==id; }); document.body.dataset.view=id; window.scrollTo(0,0); var fx=$("fx"); if(fx) fx.innerHTML=""; if(id!=="scan") stopCam(); }
 function renderHome(){ var P=loadP(), box=$("shelf"); box.innerHTML="";
   DATA.books.forEach(function(b){ var st=P[b.no]||[]; var n=st.filter(Boolean).length; var a=document.createElement("button"); a.className="bk"; a.style.setProperty("--c",b.color);
-    a.innerHTML='<span class="no">'+b.no+'</span><span class="bt">'+b.title+'</span><span class="pips">'+[0,1,2,3,4].map(function(i){ return '<i class="'+(st[i]?"on":"")+'"></i>'; }).join("")+'</span>'+(n===5?'<span class="crown">완주</span>':'');
+    a.innerHTML='<svg class="stk" viewBox="0 0 100 100" aria-hidden="true"><use href="#g-'+bookIcon(b)+'"/></svg><span class="no">'+b.no+'</span><span class="bt">'+b.title+'</span>'+(b.concept?'<span class="bc">'+b.concept+'</span>':'')+'<span class="pips">'+[0,1,2,3,4].map(function(i){ return '<i class="'+(st[i]?"on":"")+'"></i>'; }).join("")+'</span>'+(n===5?'<span class="crown">완주</span>':'');
     a.addEventListener("click",function(){ openBook(b); }); box.appendChild(a); });
-  var tot=0; Object.keys(P).forEach(function(k){ tot+=P[k].filter(Boolean).length; }); $("total").textContent=tot; applyKid(); renderBuddies();
+  var tot=0; Object.keys(P).forEach(function(k){ tot+=P[k].filter(Boolean).length; }); $("total").textContent=tot; $("totmax").textContent=DATA.books.length*5; applyKid(); renderBuddies(); if(typeof renderLangTabs==="function"){ $("langtabs").hidden=false; renderLangTabs(); }
   var k=curKid(), done=Object.keys(P).filter(function(x){ return (P[x]||[]).filter(Boolean).length===5; }).length;
-  $("greet").textContent= !k? "안녕! 누가 놀까?" : tot===0? "안녕, "+k.name+"! 나랑 같이 수학 놀이 하자!" : k.name+", 지금까지 놀이 "+tot+"개 성공"+(done? ", 책 "+done+"권 완주" : "")+"! 오늘은 어떤 책을 읽었어?";
+  $("greet").textContent= !k? "안녕! 누가 놀까?" : tot===0? "안녕, "+k.name+"! 나랑 같이 "+(CFG.play||"수학 놀이")+" 하자!" : k.name+", 지금까지 놀이 "+tot+"개 성공"+(done? ", 책 "+done+"권 완주" : "")+"! 오늘은 어떤 책을 읽었어?";
   $("diagBtn").querySelector("small").textContent= k&&k.diag? "지난번 "+k.diag.d+" · "+TIERNAME[k.diag.rec]+" · 다시 해 볼까요?" : "몇 문제 풀면 알맞은 단계를 알려 줘요"; }
+var GICON={pairs:"sock",clock:"clock",calendar:"book",maze:"dino",puzzle:"triangle",shapefind:"circle",pattern:"star",coins:"coin",heavy:"rock",length:"pencil",measure:"bean",area:"square",graph:"apple",dots:"star",sort:"basket",routine:"sun",position:"bear",leftright:"heart",size:"dino",inout:"ball",draw:"flower",trace:"pencil",numorder:"balloon",findnum:"star",bingo:"star",ordinal:"car",order:"bear",share:"cookie",hidden:"mosquito",frame:"circle",compare:"ghost",add:"apple",subtract:"balloon",makeN:"cookie",count:"bean",tapcount:"apple"};
+function bookIcon(b){ if(b.words){ var w=b.words.filter(function(x){ return x.icon; })[0]; return w? w.icon : (b.words[0].color? "flower" : "balloon"); }
+  for(var i=0;i<b.levels.length;i++){ var p=b.levels[i].p||{}; if(p.icon) return p.icon; if(p.animals) return p.animals[0]; if(p.start) return p.start; } return GICON[b.levels[0].g]||"star"; }
 function openBook(b){ S.book=b; var P=loadP(), st=P[b.no]||[]; $("bno").textContent="책 "+String(b.no).padStart(2,"0"); $("btitle").textContent=b.title; $("book").style.setProperty("--c",b.color);
   var L=$("levels"); L.innerHTML=""; b.levels.forEach(function(lv,i){ var a=document.createElement("button"); a.className="lv"+(st[i]?" clear":""); a.innerHTML='<span class="ln">'+(i+1)+'</span><span class="lt">'+lv.name+'</span><span class="ls">'+(st[i]?"★ 성공":"놀러 가기")+'</span>'; a.addEventListener("click",function(){ startLevel(i); }); L.appendChild(a); });
   show("book"); say(b.title+"! 어떤 놀이를 할까?"); }
@@ -57,8 +61,8 @@ function updDots(){ var d=$("dots"); d.innerHTML=""; for(var i=0;i<S.rounds;i++)
 /* 아기 단계에서 어려운 놀이는 쉬운 놀이로 바꿔 줌 */
 var SWAP0={ bingo:function(lv){ return lv.p&&lv.p.kind==="shape"?"shapefind":"findnum"; }, calendar:"findnum", clock:"routine", graph:"compare" };
 function gameFor(lv){ var s=TIER===0&&SWAP0[lv.g]; if(!s) return lv.g; return typeof s==="function"? s(lv) : s; }
-function startLevel(i){ S.li=i; S.round=0; S.lock=false; show("play"); var lv=S.book.levels[i]; $("ltitle").textContent=lv.name; $("play").style.setProperty("--c",S.book.color); S.rounds = (lv.g==="draw")?1:ROUNDS[TIER]; updDots(); playRound(); }
-function playRound(){ if(S.diag||!S.book||!S.book.levels[S.li]) return; clear(); S.miss=0; S.hintFn=null; var lv=S.book.levels[S.li], gn=gameFor(lv); (G[gn]||G.count)(gn===lv.g?(lv.p||{}):{}); }
+function startLevel(i){ S.li=i; S.round=0; S.lock=false; show("play"); var lv=S.book.levels[i]; $("ltitle").textContent=lv.name; $("play").style.setProperty("--c",S.book.color); S.rounds = ONE_ROUND[lv.g]?1:ROUNDS[TIER]; updDots(); playRound(); }
+function playRound(){ if(S.diag||!S.book||!S.book.levels[S.li]) return; clear(); S.miss=0; S.hintFn=null; S.againFn=null; var lv=S.book.levels[S.li], gn=gameFor(lv); (G[gn]||G.count)(gn===lv.g?(lv.p||{}):{}); }
 function levelDone(){ var P=loadP(); var st=P[S.book.no]||[false,false,false,false,false]; st[S.li]=true; P[S.book.no]=st; saveP(P);
   show("done"); $("done").style.setProperty("--c",S.book.color); var all_=st.filter(Boolean).length; $("dmsg").textContent= all_===5? "책 한 권 완주! 포도알 하나 칠하자!" : "놀이 성공! "+all_+" / 5";
   applause(); burst(); buddyPose(all_===5?"crown":"cheer",4000); say(all_===5?"우와! 책 한 권을 다 했어! 정말 멋진데~?":"놀이 성공! 정말 멋진데~?",200);
@@ -103,8 +107,8 @@ function fromPhoto(file){ var im=new Image(), url=URL.createObjectURL(file); im.
     var r=matchBook(embedTTA(c)); if(r.s>=0.64&&r.m>=0.015) found(r.b); else { boing(); $("scanmsg").textContent="어떤 책인지 모르겠어요. 앞표지가 꽉 차게 다시 찍어 주세요."; say("음… 어떤 책인지 모르겠어. 다시 찍어 줄래?"); } }); }; im.src=url; }
 
 $("startBtn").addEventListener("click",function(){ ac(); pickVoice(); $("gate").hidden=true; var o=all(); renderBuddies();
-  if(!o.kids.length){ renderKids(); show("kids"); say("수학공룡 놀이터에 온 걸 환영해! 먼저 이름을 알려 줘"); }
-  else { renderHome(); show("home"); var k=curKid(); say((k?k.name+", ":"")+"수학공룡 놀이터에 온 걸 환영해! 책을 골라 볼까?"); } });
+  if(!o.kids.length){ renderKids(); show("kids"); say(CFG.title+"에 온 걸 환영해! 먼저 이름을 알려 줘"); }
+  else { renderHome(); show("home"); var k=curKid(); say((k?k.name+", ":"")+CFG.title+"에 온 걸 환영해! "+(CFG.ask||"책을 골라 볼까?")); } });
 $("kidchip").addEventListener("click",function(){ renderKids(); show("kids"); });
 $("kidsBack").addEventListener("click",function(){ renderHome(); show("home"); });
 $("scanBtn").addEventListener("click",openScan);
@@ -116,13 +120,13 @@ $("scanFlip").addEventListener("click",function(){ SC.facing= SC.facing==="user"
 $("scanFile").addEventListener("change",function(){ if(this.files&&this.files[0]) fromPhoto(this.files[0]); this.value=""; });
 $("toHome").addEventListener("click",function(){ renderHome(); show("home"); });
 $("backBook").addEventListener("click",function(){ speechSynthesis&&speechSynthesis.cancel(); if(S.diag){ S.diag=false; DG=null; TIER=curKid()?kidTier(curKid()):2; renderHome(); show("home"); return; } openBook(S.book); });
-$("again").addEventListener("click",function(){ say(S.prompt||""); });
+$("again").addEventListener("click",function(){ if(S.againFn) S.againFn(); else say(S.prompt||""); });
 $("dnext").addEventListener("click",function(){ startLevel(S.li+1); });
 $("dbook").addEventListener("click",function(){ openBook(S.book); });
 $("dhome").addEventListener("click",function(){ renderHome(); show("home"); });
 $("mute").addEventListener("click",function(){ S.muted=!S.muted; this.setAttribute("aria-pressed",S.muted); this.textContent=S.muted?"소리 켜기":"소리 끄기"; if(S.muted) try{speechSynthesis.cancel();}catch(e){} });
 document.addEventListener("gesturestart",function(e){ e.preventDefault(); });
-if(window.__NOSCAN) $("scanBtn").hidden=true;
+if(window.__NOSCAN) $("scanBtn").hidden=true; if(window.__NODIAG) $("diagBtn").hidden=true; if(window.__NOHUB) Array.prototype.forEach.call(document.querySelectorAll(".tohub"),function(a){ a.hidden=true; });
 renderHome(); show("home");
 window.__G=G; window.__T={diagStart:diagStart,DG:function(){ return DG; },avEditOpen:avEditOpen,AE:AE,renderBuddies:renderBuddies,openBook:openBook,startLevel:startLevel,S:S,playRound:playRound,setTier:function(t){ TIER=t; },matchBook:function(c){ return matchBook(embedTTA(c)); },scanPrepare:scanPrepare,fromPhoto:fromPhoto};
 })();
