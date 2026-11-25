@@ -11,15 +11,29 @@ for t in ("tools/words_data.py", "tools/mathforce_data.py"):
     subprocess.run([sys.executable, os.path.join(R, t)], check=True, stdout=subprocess.DEVNULL)
 sys.path.insert(0, os.path.join(R, "tools")); from cute import cute
 shell, defs = rd("src/shell.html"), cute(rd("src/defs_base.svg"))
+# 그림(art/*.webp)이 있는 아이콘은 그림으로 바꿈. 파일 하나짜리 판은 그림을 안에 넣음
+import base64, glob, re
+ART = {os.path.basename(f)[:-5]: f for f in glob.glob(os.path.join(R, "art", "*.webp"))}
+def art_href(k, inline):
+    f = ART[k]
+    return "data:image/webp;base64," + base64.b64encode(open(f, "rb").read()).decode() if inline else "art/%s.webp?v=%d" % (k, int(os.path.getmtime(f)))
+def art_defs(d, inline=False):
+    def rep(m):
+        k = m.group(1)
+        if k not in ART: return m.group(0)
+        return '<symbol id="g-%s" viewBox="0 0 100 100"><image href="%s" x="0" y="0" width="100" height="100"/></symbol>' % (k, art_href(k, inline))
+    return re.sub(r'<symbol id="g-([a-z0-9_-]+)" viewBox="0 0 100 100">.*?</symbol>', rep, d, flags=re.S)
+def art_flags(inline=False):
+    return ("window.__ART_BG=%s;" % json.dumps(art_href("bg_stage", inline))) if "bg_stage" in ART else ""
 base = json.loads(rd("data/books.json"))
-core = rd("src/game.js") + rd("src/voice.js") + rd("src/avatar.js") + rd("src/diag.js")
+core = rd("src/game.js") + rd("src/voice.js") + rd("src/avatar.js") + rd("src/diag.js") + rd("src/chat.js")
 flow = rd("src/flow.js")
 HEAD = '<!doctype html>\n<html lang="ko">\n<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n<link rel="manifest" href="manifest.webmanifest">\n<link rel="apple-touch-icon" href="icon-180.png">\n<link rel="icon" type="image/png" href="icon-180.png">\n'
-def page(cfg, books, prog, flags="", extra_js=""):
-    data = dict(base); data["books"] = books
+def page(cfg, books, prog, flags="", extra_js="", inline=False):
+    data = dict(base); data["books"] = books; flags = flags + art_flags(inline)
     s = shell.replace("{{TITLE}}", cfg["title"]).replace("{{SUB}}", cfg["sub"]).replace("{{HINT}}", cfg["hint"]).replace("{{UNIT}}", cfg.get("unit", "책")).replace("{{FOOT}}", cfg.get("foot", "개인이 아이와 놀려고 만든 놀이예요. 책을 펴낸 출판사와는 관계가 없어요."))
     js = core + extra_js + flow
-    return s + defs + "<script>" + flags + "window.__PROG=" + json.dumps(prog) + ";window.__CFG=" + json.dumps(cfg, ensure_ascii=False) + ";window.__DATA__=" + json.dumps(data, ensure_ascii=False, separators=(",", ":")) + ";</script>\n<script>\n" + js + "\n</script>\n"
+    return s + art_defs(defs, inline) + "<script>" + flags + "window.__PROG=" + json.dumps(prog) + ";window.__CFG=" + json.dumps(cfg, ensure_ascii=False) + ";window.__DATA__=" + json.dumps(data, ensure_ascii=False, separators=(",", ":")) + ";</script>\n<script>\n" + js + "\n</script>\n"
 SITE = "https://play.goyu.studio/"
 OG = {"index.html": ("우리 아이 놀이터", "그림책 수학 놀이와 영어·일본어·중국어 말놀이. 아이 사진으로 만든 캐릭터와 함께 아이패드에서 놀아요."),
       "mathdino.html": ("수학공룡 놀이터", "그림책 42권, 책마다 놀이 5개. 책을 카메라에 보여 주면 그 책 놀이가 열려요."),
@@ -41,7 +55,7 @@ WD = {"title": "말놀이", "sub": "영어·일본어·중국어 · 주제 7개�
 out("mathdino.html", page(MD, base["books"], "mathdino"))
 out("mathforce.html", page(MF, json.loads(rd("data/mathforce.json")), "mathforce", "window.__NOSCAN=true;"))
 out("words.html", page(WD, json.loads(rd("data/words.json")), "words", "window.__NOSCAN=true;window.__NODIAG=true;", rd("src/lang.js")))
-out("dist/수학공룡_놀이터.html", page(MD, base["books"], "mathdino", "window.__NOSCAN=true;window.__NOHUB=true;"), head=False)
+out("dist/수학공룡_놀이터.html", page(MD, base["books"], "mathdino", "window.__NOSCAN=true;window.__NOHUB=true;", inline=True), head=False)
 # 허브: 캐릭터 그리기 함수만 가져옴
 av = rd("src/avatar.js"); av = av[:av.index("/* 사진 → 만화풍")]
 hubjs = """
@@ -55,6 +69,7 @@ Array.prototype.forEach.call(document.querySelectorAll(".card"),function(c){ var
   c.querySelector(".bar i").style.width=Math.round(n/max*100)+"%"; c.querySelector(".prog b").textContent=n+" / "+max; });
 })();"""
 avcss = shell[shell.index("/* 캐릭터 */"):shell.index("/* 칭찬 */")]
-hub = rd("src/hub.html").replace("</style>", avcss + "</style>") + defs + "<script>" + av + hubjs + "</script>\n"
+hubbg = (".sky{background:#cfeeff url(%s) center bottom/cover}.sky::after,.cloud{display:none}" % art_href("bg_hub", False)) if "bg_hub" in ART else ""
+hub = rd("src/hub.html").replace("</style>", avcss + hubbg + "</style>") + art_defs(defs) + "<script>" + av + hubjs + "</script>\n"
 out("index.html", hub)
 print("ok", {n: os.path.getsize(os.path.join(R, n)) // 1024 for n in ("index.html", "mathdino.html", "mathforce.html", "words.html")})

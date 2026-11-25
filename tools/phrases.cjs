@@ -27,7 +27,7 @@ const REPS=+(process.env.REPS||5);
     D.books.forEach(b=>{ o.push(b.title+"! 어떤 놀이를 할까?"); if(page==='mathdino') o.push("『"+b.title+"』 찾았다! 같이 놀아 볼까?","『"+b.title+"』 찾았다! 어떤 놀이를 할까?"); });
     if(page==='mathdino') o.push("잘 안 보여. 책 앞표지를 네모 안에 꽉 차게 보여 줄래?","읽은 책을 보여 줘! 책 앞표지를 네모 안에 보여 줘","음… 어떤 책인지 모르겠어. 다시 찍어 줄래?");
     if(page!=='words'){ o.push("수학 키 재기를 해 볼까? 맞아도 틀려도 괜찮아. 생각나는 대로 눌러 줘!"); TN.forEach(n=>o.push("수학 키 재기 끝! 정말 멋진데~? 오늘은 "+n+" 만큼 자랐어!", n+" 단계로 바꿨어! 같이 놀자!")); }
-    o.push("뿌엥뿌엥~ 다시 해 볼까?");
+    o.push("뿌엥뿌엥~ 다시 해 볼까?"); Object.keys(T.LINES).forEach(k=>T.LINES[k].forEach(s=>o.push(s)));
     return o; },page);
   fixed.forEach(s=>ko.add(s));
   const said=await p.evaluate(()=>[...window.__said].map(x=>x.split('\t')));

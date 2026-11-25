@@ -6,7 +6,7 @@ var VC={map:null, au:null, q:[], busy:false};
   try{ fetch("audio/index.json",{cache:"no-cache"}).then(function(r){ return r.ok?r.json():null; }).then(function(j){ VC.map=j; }).catch(function(){}); }catch(e){} })();
 function vKind(){ if(VC.force) return VC.force; var k=(typeof curKid==="function")?curKid():null; return (k&&k.vk)||"girl"; }
 function vNorm(s){ s=String(s).replace(/\s+/g," ").trim(); var k=(typeof curKid==="function")?curKid():null;
-  if(k&&k.name){ s=s.split(k.name+", ").join("").split("나는 "+k.name+"! ").join(""); } return s; }
+  if(k&&k.name){ s=s.split(voc(k.name)+", ").join("").split(k.name+", ").join("").split("나는 "+k.name+"! ").join(""); } return s; }
 function clipFor(s, lang){ var m=VC.map; if(!m) return null;
   if(lang){ var h=m.l&&m.l[lang]&&m.l[lang][String(s).trim()]; return h? "audio/"+lang+"/"+h+".mp3" : null; }
   var kind=vKind(), key=vNorm(s), h2=m.ko&&m.ko[key];

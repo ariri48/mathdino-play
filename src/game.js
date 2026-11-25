@@ -33,6 +33,7 @@ function txt(s,x,y,size,parent,fill,anchor){ var t=el("text",{x:x,y:y,"font-size
 function setT(n,x,y){ n._tx=x; n._ty=y; n.setAttribute("transform","translate("+x+","+y+")"); }
 function clear(){ while(svg.firstChild) svg.removeChild(svg.firstChild); svg.classList.remove("hide"); cv.classList.add("hide"); $("padtools").classList.add("hide"); decor(); }
 function decor(){ var d=g(); d.setAttribute("pointer-events","none"); d.setAttribute("class","decor");
+  if(window.__ART_BG){ el("image",{href:__ART_BG,x:0,y:0,width:1000,height:620,preserveAspectRatio:"xMidYMid slice"},d); return; }
   function cloud(x,y,k){ var c=g(d); c.setAttribute("transform","translate("+x+","+y+") scale("+k+")"); [[0,20,34],[34,4,40],[72,18,32],[36,28,40]].forEach(function(q){ el("circle",{cx:q[0],cy:q[1],r:q[2],fill:"#eef6ff"},c); }); }
   cloud(40,30,.9); cloud(860,50,.7);
   el("path",{d:"M0 560 Q180 500 360 545 T720 535 T1000 515 V620 H0Z",fill:"#ecf9f1"},d); el("path",{d:"M0 595 Q220 560 460 588 T1000 572 V620 H0Z",fill:"#dcf3e4"},d);
@@ -95,17 +96,18 @@ function bestVoice(prefix, want){ var vs=goodVoices(prefix); if(want){ var w=vs.
 function pickVoice(){ var want=null; try{ want=localStorage.getItem("goyu-voice-ko"); }catch(e){} S.voice=bestVoice("ko",want); }
 try{ speechSynthesis.onvoiceschanged=function(){ pickVoice(); if(window.LVOICE) for(var k in LVOICE) delete LVOICE[k]; }; }catch(e){}
 try{ speechSynthesis.onvoiceschanged=pickVoice; pickVoice(); }catch(e){}
-function say(s, delay){ if(window.__sayHook) __sayHook(s); if(S.muted) return; var go=function(){ var c=clipFor(s); if(c){ clipPlay(c); return; } clipStop(); try{ speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(s); u.lang="ko-KR"; if(S.voice) u.voice=S.voice; u.rate=S.vr||0.95; u.pitch=S.vp||1.05; u.onstart=function(){ talk(true); }; u.onend=u.onerror=function(){ talk(false); }; clearTimeout(say._t); say._t=setTimeout(function(){ talk(false); }, 900+String(s).length*170); speechSynthesis.speak(u); }catch(e){} }; if(delay) setTimeout(go,delay); else go(); }
+function say(s, delay, keep){ if(window.__sayHook) __sayHook(s); if(S.muted) return; var go=function(){ var c=clipFor(s); if(c){ clipPlay(c,keep); return; } if(!keep) clipStop(); try{ if(!keep) speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(s); u.lang="ko-KR"; if(S.voice) u.voice=S.voice; u.rate=S.vr||0.95; u.pitch=S.vp||1.05; u.onstart=function(){ talk(true); }; u.onend=u.onerror=function(){ talk(false); }; clearTimeout(say._t); say._t=setTimeout(function(){ talk(false); }, 900+String(s).length*170); speechSynthesis.speak(u); }catch(e){} }; if(delay) setTimeout(go,delay); else go(); }
 
 /* ---------- 칭찬과 아쉬움 ---------- */
 var PRAISE=["성공! 멋진데~?","성공! 멋진데~? 짝짝짝!","우와, 성공! 진짜 멋진데~?","성공! 최고야~!"];
 function burst(){ var box=$("fx"); var cols=["#ff6b6b","#ffc83d","#5bb8f2","#6ccb8f","#b38cff","#ff9ec7"];
   for(var i=0;i<46;i++){ var p=document.createElement("i"); p.className="cf"; p.style.left=(10+Math.random()*80)+"%"; p.style.background=pick(cols); p.style.animationDelay=(Math.random()*0.35)+"s"; p.style.setProperty("--dx",(Math.random()*200-100)+"px"); p.style.setProperty("--r",(Math.random()*720)+"deg"); box.appendChild(p); setTimeout((function(q){return function(){ q.remove(); };})(p),2200); } }
 function bubble(text, kind){ var b=$("bubble"); b.textContent=text; b.className="bubble show "+kind; clearTimeout(bubble._t); bubble._t=setTimeout(function(){ b.className="bubble"; }, kind==="yay"?1700:1500); }
-function miss(msg){ if(S.diag){ if(S.lock) return; diagAnswer(false); return; } buddyPose("dizzy",1600); S.miss++; if(S.hintFn&&S.miss>=HINTAT[TIER]) setTimeout(S.hintFn,900); boing(); wahwah(); bubble("띠용~ 뿌엥뿌엥~","oops"); say("뿌엥뿌엥~ "+(msg||"다시 해 볼까?"),700); var st=$("stagewrap"); st.classList.remove("shake"); void st.offsetWidth; st.classList.add("shake"); }
+function miss(msg){ if(S.diag){ if(S.lock) return; diagAnswer(false); return; } buddyPose("dizzy",1600); S.miss++; var hintNow=S.hintFn&&S.miss>=HINTAT[TIER]; if(hintNow) setTimeout(S.hintFn,900); boing(); wahwah(); bubble("띠용~ 뿌엥뿌엥~","oops"); say("뿌엥뿌엥~ "+(msg||"다시 해 볼까?"),700); S.streak=0;
+  if(hintNow&&S.miss===HINTAT[TIER]) say(pick(LINES.hint),750,true); else if(!hintNow) cheerUp(); var st=$("stagewrap"); st.classList.remove("shake"); void st.offsetWidth; st.classList.add("shake"); }
 function good(){ ding(); }
-function win(){ if(S.lock) return; if(S.diag){ diagAnswer(true); return; } S.lock=true; applause(); burst(); var p=pick(PRAISE); bubble(p,"yay"); say(p,150); buddyPose("cheer",2000); $("ptext").textContent=p;
-  setTimeout(function(){ S.lock=false; S.round++; updDots(); if(S.round>=S.rounds) levelDone(); else playRound(); }, 2100); }
+function win(){ if(S.lock) return; if(S.diag){ diagAnswer(true); return; } S.lock=true; applause(); burst(); var p=pick(PRAISE); bubble(p,"yay"); say(p,150); buddyPose("cheer",2000); $("ptext").textContent=p; var extra=streakTalk();
+  setTimeout(function(){ S.lock=false; S.round++; updDots(); if(S.round>=S.rounds) levelDone(); else playRound(); }, 2100+extra); }
 
 /* ---------- 게임 종류 ---------- */
 var G={};

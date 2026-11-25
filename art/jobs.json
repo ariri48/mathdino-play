@@ -1,0 +1,272 @@
+[
+{
+"key": "apple",
+"prompt": "A shiny red apple with a small green leaf with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "star",
+"prompt": "A plump yellow five-pointed star with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "fish",
+"prompt": "A cute round orange fish swimming sideways with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "carrot",
+"prompt": "An orange carrot with green leafy top with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "ball",
+"prompt": "A colorful red and blue striped playground ball.",
+"skip_done": true
+},
+{
+"key": "ghost",
+"prompt": "A friendly little white ghost, round and soft, waving with a tiny happy smiling face and rosy cheeks, not scary at all.",
+"skip_done": true
+},
+{
+"key": "bean",
+"prompt": "A plump green bean pea pod with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "mosquito",
+"prompt": "A tiny cute cartoon mosquito with big eyes and small wings, friendly and funny.",
+"skip_done": true
+},
+{
+"key": "strawberry",
+"prompt": "A red strawberry with green leaves on top with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "heart",
+"prompt": "A puffy pink heart with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "flower",
+"prompt": "A pink five-petal flower with a yellow center and green stem.",
+"skip_done": true
+},
+{
+"key": "shell",
+"prompt": "A peach-colored scallop seashell.",
+"skip_done": true
+},
+{
+"key": "cookie",
+"prompt": "A round chocolate chip cookie with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "balloon",
+"prompt": "A shiny red balloon with a curly string.",
+"skip_done": true
+},
+{
+"key": "dino",
+"prompt": "A friendly little green dinosaur, long neck, standing, with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "house",
+"prompt": "A small cozy house with a red roof, round window and wooden door.",
+"skip_done": true
+},
+{
+"key": "car",
+"prompt": "A small round red toy car side view with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "cupcake",
+"prompt": "A cupcake with pink frosting and a cherry on top.",
+"skip_done": true
+},
+{
+"key": "tree",
+"prompt": "A round fluffy green tree with brown trunk.",
+"skip_done": true
+},
+{
+"key": "dog",
+"prompt": "A cute small puppy sitting, brown ears, with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "sun",
+"prompt": "A bright yellow sun with rounded rays with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "moon",
+"prompt": "A yellow crescent moon with a tiny happy smiling face and rosy cheeks, sleepy.",
+"skip_done": true
+},
+{
+"key": "bowl",
+"prompt": "A white bowl of warm rice soup with gentle steam rising.",
+"skip_done": true
+},
+{
+"key": "brush",
+"prompt": "A blue toothbrush lying horizontally with white bristles.",
+"skip_done": true
+},
+{
+"key": "book",
+"prompt": "A closed picture book with a blue cover lying at a slight angle, plain cover with no text.",
+"skip_done": true
+},
+{
+"key": "grape",
+"prompt": "A bunch of purple grapes with a green leaf.",
+"skip_done": true
+},
+{
+"key": "rock",
+"prompt": "A smooth grey pebble rock.",
+"skip_done": true
+},
+{
+"key": "feather",
+"prompt": "A soft light blue feather.",
+"skip_done": true
+},
+{
+"key": "leaf",
+"prompt": "A single green leaf.",
+"skip_done": true
+},
+{
+"key": "melon",
+"prompt": "A whole round green watermelon with dark stripes with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "box",
+"prompt": "A closed cardboard box.",
+"skip_done": true
+},
+{
+"key": "sprout",
+"prompt": "A small green sprout with two leaves growing from a mound of soil.",
+"skip_done": true
+},
+{
+"key": "seed",
+"prompt": "A single brown seed.",
+"skip_done": true
+},
+{
+"key": "sock",
+"prompt": "A single striped sock, red and white.",
+"skip_done": true
+},
+{
+"key": "basket",
+"prompt": "An empty woven wicker basket with a handle.",
+"skip_done": true
+},
+{
+"key": "bear",
+"prompt": "A cute brown teddy bear cub sitting with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "cat",
+"prompt": "A cute small orange cat sitting with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "rabbit",
+"prompt": "A cute white bunny sitting with long ears with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "chick",
+"prompt": "A cute fluffy yellow baby chick with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "duck",
+"prompt": "A cute yellow duckling with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "egg",
+"prompt": "A single white egg.",
+"skip_done": true
+},
+{
+"key": "pencil",
+"prompt": "A yellow pencil lying diagonally with pink eraser.",
+"skip_done": true
+},
+{
+"key": "spoon",
+"prompt": "A silver spoon lying diagonally.",
+"skip_done": true
+},
+{
+"key": "bed",
+"prompt": "A small cozy bed with a blue blanket and white pillow, side view.",
+"skip_done": true
+},
+{
+"key": "toy",
+"prompt": "A small pile of colorful wooden toy blocks.",
+"skip_done": true
+},
+{
+"key": "milk",
+"prompt": "A small carton of milk, white and blue, with no text.",
+"skip_done": true
+},
+{
+"key": "umbrella",
+"prompt": "An open yellow umbrella.",
+"skip_done": true
+},
+{
+"key": "snowman",
+"prompt": "A cute snowman with a red scarf and carrot nose with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "triangle",
+"prompt": "A flat puffy yellow equilateral triangle shape, pointing up, with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "square",
+"prompt": "A flat puffy blue square shape with four equal sides with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "circle",
+"prompt": "A flat puffy round red circle disk shape with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "rect",
+"prompt": "A flat puffy green wide rectangle shape, twice as wide as tall, with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+},
+{
+"key": "cherry",
+"prompt": "Two red cherries joined by green stems.",
+"skip_done": true
+},
+{
+"key": "banana",
+"prompt": "A single yellow banana with a tiny happy smiling face and rosy cheeks.",
+"skip_done": true
+}
+]

@@ -33,7 +33,7 @@ function renderKids(){ renderVoicePick(); var o=all(), box=$("kidlist"); box.inn
       b.addEventListener("click",function(){ k.vk=b.dataset.vk; saveAll(o); if(k.id===o.cur) renderBuddies(); renderKids(); hearKind(k.vk, k.name+", 같이 놀자!"); }); });
     Array.prototype.forEach.call(d.querySelectorAll(".adj button"),function(b){ if(+b.dataset.a===(k.adj||0)) b.classList.add("on");
       b.addEventListener("click",function(){ k.adj=+b.dataset.a; saveAll(o); renderKids(); }); });
-    d.querySelector(".kpick").addEventListener("click",function(){ o.cur=k.id; saveAll(o); applyKid(); renderHome(); show("home"); say(k.name+", 같이 놀자!"); });
+    d.querySelector(".kpick").addEventListener("click",function(){ o.cur=k.id; saveAll(o); applyKid(); renderHome(); show("home"); say(voc(k.name)+", 같이 놀자!"); });
     d.querySelector(".kdel").addEventListener("click",function(){ if(!confirm(k.name+" 기록을 지울까요? 성공한 놀이 기록도 함께 지워져요.")) return; o.kids=o.kids.filter(function(x){ return x!==k; }); delete o.prog[k.id]; if(o.cur===k.id) o.cur=o.kids[0]?o.kids[0].id:null; saveAll(o); applyKid(); renderKids(); });
     box.appendChild(d); });
   $("kidsBack").hidden=!o.kids.length; $("kidsTitle").textContent=o.kids.length?"누가 놀까?":"아이를 등록해 주세요"; }
@@ -55,7 +55,7 @@ function renderHome(){ var P=loadP(), box=$("shelf"); box.innerHTML="";
     a.addEventListener("click",function(){ openBook(b); }); box.appendChild(a); });
   var tot=0; Object.keys(P).forEach(function(k){ tot+=P[k].filter(Boolean).length; }); $("total").textContent=tot; $("totmax").textContent=DATA.books.length*5; applyKid(); renderBuddies(); if(typeof renderLangTabs==="function"){ $("langtabs").hidden=false; renderLangTabs(); }
   var k=curKid(), done=Object.keys(P).filter(function(x){ return (P[x]||[]).filter(Boolean).length===5; }).length;
-  $("greet").textContent= !k? "안녕! 누가 놀까?" : tot===0? "안녕, "+k.name+"! 나랑 같이 "+(CFG.play||"수학 놀이")+" 하자!" : k.name+", 지금까지 놀이 "+tot+"개 성공"+(done? ", 책 "+done+"권 완주" : "")+"! 오늘은 어떤 책을 읽었어?";
+  $("greet").textContent= !k? "안녕! 누가 놀까?" : (S.greet&&S.greet.id===k.id&&S.greet.t)? voc(k.name)+", "+S.greet.t : tot===0? "안녕, "+k.name+"! 나랑 같이 "+(CFG.play||"수학 놀이")+" 하자!" : k.name+", 지금까지 놀이 "+tot+"개 성공"+(done? ", 책 "+done+"권 완주" : "")+"! 오늘은 어떤 책을 읽었어?";
   $("diagBtn").querySelector("small").textContent= k&&k.diag? "지난번 "+k.diag.d+" · "+TIERNAME[k.diag.rec]+" · 다시 해 볼까요?" : "몇 문제 풀면 알맞은 단계를 알려 줘요"; }
 var GICON={pairs:"sock",clock:"clock",calendar:"book",maze:"dino",puzzle:"triangle",shapefind:"circle",pattern:"star",coins:"coin",heavy:"rock",length:"pencil",measure:"bean",area:"square",graph:"apple",dots:"star",sort:"basket",routine:"sun",position:"bear",leftright:"heart",size:"dino",inout:"ball",draw:"flower",trace:"pencil",numorder:"balloon",findnum:"star",bingo:"star",ordinal:"car",order:"bear",share:"cookie",hidden:"mosquito",frame:"circle",compare:"ghost",add:"apple",subtract:"balloon",makeN:"cookie",count:"bean",tapcount:"apple"};
 function bookIcon(b){ if(b.words){ var w=b.words.filter(function(x){ return x.icon; })[0]; return w? w.icon : (b.words[0].color? "flower" : "balloon"); }
@@ -68,10 +68,10 @@ function updDots(){ var d=$("dots"); d.innerHTML=""; for(var i=0;i<S.rounds;i++)
 var SWAP0={ bingo:function(lv){ return lv.p&&lv.p.kind==="shape"?"shapefind":"findnum"; }, calendar:"findnum", clock:"routine", graph:"compare" };
 function gameFor(lv){ var s=TIER===0&&SWAP0[lv.g]; if(!s) return lv.g; return typeof s==="function"? s(lv) : s; }
 function startLevel(i){ S.li=i; S.round=0; S.lock=false; show("play"); var lv=S.book.levels[i]; $("ltitle").textContent=lv.name; $("play").style.setProperty("--c",S.book.color); S.rounds = ONE_ROUND[lv.g]?1:ROUNDS[TIER]; updDots(); playRound(); }
-function playRound(){ if(S.diag||!S.book||!S.book.levels[S.li]) return; clear(); S.miss=0; S.hintFn=null; S.againFn=null; var lv=S.book.levels[S.li], gn=gameFor(lv); (G[gn]||G.count)(gn===lv.g?(lv.p||{}):{}); }
+function playRound(){ if(S.diag||!S.book||!S.book.levels[S.li]) return; clear(); S.miss=0; S.hintFn=null; S.againFn=null; var lv=S.book.levels[S.li], gn=gameFor(lv); (G[gn]||G.count)(gn===lv.g?(lv.p||{}):{}); idleArm(); }
 function levelDone(){ var P=loadP(); var st=P[S.book.no]||[false,false,false,false,false]; st[S.li]=true; P[S.book.no]=st; saveP(P);
   show("done"); $("done").style.setProperty("--c",S.book.color); var all_=st.filter(Boolean).length; $("dmsg").textContent= all_===5? "책 한 권 완주! 포도알 하나 칠하자!" : "놀이 성공! "+all_+" / 5";
-  applause(); burst(); buddyPose(all_===5?"crown":"cheer",4000); say(all_===5?"우와! 책 한 권을 다 했어! 정말 멋진데~?":"놀이 성공! 정말 멋진데~?",200);
+  applause(); burst(); buddyPose(all_===5?"crown":"cheer",4000); say(all_===5?"우와! 책 한 권을 다 했어! 정말 멋진데~?":"놀이 성공! 정말 멋진데~?",200); bragTalk();
   $("dnext").hidden = S.li>=S.book.levels.length-1; }
 
 /* ---------- 책 찍기 (표지 인식) ---------- */
@@ -114,7 +114,8 @@ function fromPhoto(file){ var im=new Image(), url=URL.createObjectURL(file); im.
 
 $("startBtn").addEventListener("click",function(){ ac(); pickVoice(); $("gate").hidden=true; var o=all(); renderBuddies();
   if(!o.kids.length){ renderKids(); show("kids"); say(CFG.title+"에 온 걸 환영해! 먼저 이름을 알려 줘"); }
-  else { renderHome(); show("home"); var k=curKid(); say((k?k.name+", ":"")+CFG.title+"에 온 걸 환영해! "+(CFG.ask||"책을 골라 볼까?")); } });
+  else { var k=curKid(), gl=k?greetLine(k):null; S.greet=k?{id:k.id,t:gl}:null; if(k) markSeen(k); renderHome(); show("home");
+    say(gl? voc(k.name)+", "+gl : (k?k.name+", ":"")+CFG.title+"에 온 걸 환영해! "+(CFG.ask||"책을 골라 볼까?")); } });
 $("kidchip").addEventListener("click",function(){ renderKids(); show("kids"); });
 $("vSel").addEventListener("change",function(){ try{ localStorage.setItem("goyu-voice-ko",this.value); }catch(e){} pickVoice(); VC.force="none"; say("안녕! 이 목소리 어때?"); VC.force=null; });
 $("vHear").addEventListener("click",function(){ VC.force="none"; say("안녕! 나랑 같이 놀자!"); VC.force=null; });
@@ -136,5 +137,5 @@ $("mute").addEventListener("click",function(){ S.muted=!S.muted; this.setAttribu
 document.addEventListener("gesturestart",function(e){ e.preventDefault(); });
 if(window.__NOSCAN) $("scanBtn").hidden=true; if(window.__NODIAG) $("diagBtn").hidden=true; if(window.__NOHUB) Array.prototype.forEach.call(document.querySelectorAll(".tohub"),function(a){ a.hidden=true; });
 renderHome(); show("home");
-window.__G=G; window.__T={DSTEPS:DSTEPS,G:G,CFG:CFG,TIERNAME:TIERNAME,clear:clear,DG:function(){ return DG; },avEditOpen:avEditOpen,AE:AE,renderBuddies:renderBuddies,openBook:openBook,startLevel:startLevel,S:S,playRound:playRound,setTier:function(t){ TIER=t; },matchBook:function(c){ return matchBook(embedTTA(c)); },scanPrepare:scanPrepare,fromPhoto:fromPhoto};
+window.__G=G; window.__T={missFn:miss,winFn:win,LINES:LINES,DSTEPS:DSTEPS,G:G,CFG:CFG,TIERNAME:TIERNAME,clear:clear,DG:function(){ return DG; },avEditOpen:avEditOpen,AE:AE,renderBuddies:renderBuddies,openBook:openBook,startLevel:startLevel,S:S,playRound:playRound,setTier:function(t){ TIER=t; },matchBook:function(c){ return matchBook(embedTTA(c)); },scanPrepare:scanPrepare,fromPhoto:fromPhoto};
 })();

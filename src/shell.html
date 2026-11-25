@@ -272,6 +272,7 @@ body[data-view="scan"]{overflow:hidden}
 /* 완료 */
 #done{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center}
 #done .big{font-family:var(--disp);font-size:clamp(46px,9vw,96px);color:var(--c);line-height:1.1}
+.dtalk{font-family:var(--disp);font-size:clamp(20px,3vw,28px);color:var(--c,#5b3fa8);margin:6px 0 14px;word-break:keep-all}
 #dmsg{font-family:var(--disp);font-size:clamp(24px,4vw,36px);margin:0}
 .row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
 .pill{font-size:26px;border-radius:999px;padding:14px 28px;background:var(--card);box-shadow:0 5px 0 #cfe7dc}
@@ -395,6 +396,7 @@ body[data-view="scan"]{overflow:hidden}
 <section id="done" class="wrap" hidden>
   <div class="dbud" data-buddy></div><div class="big">참 잘했어요!</div>
   <p id="dmsg"></p>
+  <p id="dtalk" class="dtalk"></p>
   <div class="row"><button id="dnext" class="pill main" type="button">다음 놀이</button><button id="dbook" class="pill" type="button">놀이 목록</button><button id="dhome" class="pill" type="button">{{UNIT}} 목록</button></div>
 </section>
 

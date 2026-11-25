@@ -13,3 +13,6 @@ tools/v*.png
 tools/og.html
 audio/_samples/
 tools/m_*.png
+art/raw/
+art/gen.log
+tools/art_*.png
