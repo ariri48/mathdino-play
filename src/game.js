@@ -31,7 +31,7 @@ function g(parent){ return el("g",{},parent); }
 function icon(name,x,y,s,parent){ return el("use",{href:"#g-"+name,x:x,y:y,width:s,height:s},parent); }
 function txt(s,x,y,size,parent,fill,anchor){ var t=el("text",{x:x,y:y,"font-size":size||40,"text-anchor":anchor||"middle",fill:fill||"#3b2f2a","class":"t"},parent); t.textContent=s; return t; }
 function setT(n,x,y){ n._tx=x; n._ty=y; n.setAttribute("transform","translate("+x+","+y+")"); }
-function clear(){ while(svg.firstChild) svg.removeChild(svg.firstChild); svg.classList.remove("hide"); cv.classList.add("hide"); $("padtools").classList.add("hide"); decor(); }
+function clear(){ S.nch={}; while(svg.firstChild) svg.removeChild(svg.firstChild); svg.classList.remove("hide"); cv.classList.add("hide"); $("padtools").classList.add("hide"); decor(); }
 function decor(){ var d=g(); d.setAttribute("pointer-events","none"); d.setAttribute("class","decor");
   if(window.__ART_BG){ el("image",{href:__ART_BG,x:0,y:0,width:1000,height:620,preserveAspectRatio:"xMidYMid slice"},d); return; }
   function cloud(x,y,k){ var c=g(d); c.setAttribute("transform","translate("+x+","+y+") scale("+k+")"); [[0,20,34],[34,4,40],[72,18,32],[36,28,40]].forEach(function(q){ el("circle",{cx:q[0],cy:q[1],r:q[2],fill:"#eef6ff"},c); }); }
@@ -62,7 +62,8 @@ function choices(vals, correct, render){
     var b=g(); setT(b, x0+i*(w+gap), 470); if(v===correct) setHint(function(){ hintNode(b); });
     el("rect",{x:0,y:0,width:w,height:130,rx:34,"class":"choice"},b);
     if(render) render(v,b,w); else txt(v,w/2,96,78,b);
-    tap(b,function(){ if(v===correct){ b.classList.add("good"); win(); } else { b.classList.add("bad"); miss(); setTimeout(function(){ b.classList.remove("bad"); },600); } });
+    var go=function(){ if(S.lock) return; if(v===correct){ b.classList.add("good"); win(); } else { b.classList.add("bad"); miss(); setTimeout(function(){ b.classList.remove("bad"); },600); } };
+    tap(b,go); if(typeof v==="number") S.nch[v]=go; /* 손뼉·말로 대답할 때 씀 */
   });
 }
 function numChoices(n, lo, hi){ var k=NCH[TIER], pool=[]; hi=Math.max(hi,n+2); for(var v=Math.max(lo,n-3); v<=Math.min(hi,n+3); v++) if(v!==n) pool.push(v); return shuffle([n].concat(shuffle(pool).slice(0,k-1))); }
@@ -103,10 +104,11 @@ var PRAISE=["성공! 멋진데~?","성공! 멋진데~? 짝짝짝!","우와, 성�
 function burst(){ var box=$("fx"); var cols=["#ff6b6b","#ffc83d","#5bb8f2","#6ccb8f","#b38cff","#ff9ec7"];
   for(var i=0;i<46;i++){ var p=document.createElement("i"); p.className="cf"; p.style.left=(10+Math.random()*80)+"%"; p.style.background=pick(cols); p.style.animationDelay=(Math.random()*0.35)+"s"; p.style.setProperty("--dx",(Math.random()*200-100)+"px"); p.style.setProperty("--r",(Math.random()*720)+"deg"); box.appendChild(p); setTimeout((function(q){return function(){ q.remove(); };})(p),2200); } }
 function bubble(text, kind){ var b=$("bubble"); b.textContent=text; b.className="bubble show "+kind; clearTimeout(bubble._t); bubble._t=setTimeout(function(){ b.className="bubble"; }, kind==="yay"?1700:1500); }
-function miss(msg){ if(S.diag){ if(S.lock) return; diagAnswer(false); return; } buddyPose("dizzy",1600); S.miss++; var hintNow=S.hintFn&&S.miss>=HINTAT[TIER]; if(hintNow) setTimeout(S.hintFn,900); boing(); wahwah(); bubble("띠용~ 뿌엥뿌엥~","oops"); say("뿌엥뿌엥~ "+(msg||"다시 해 볼까?"),700); S.streak=0;
+function curG(){ var lv=S.book&&S.book.levels[S.li]; return lv? gameFor(lv) : null; }
+function miss(msg){ if(S.diag){ if(S.lock) return; diagAnswer(false); return; } buddyPose("dizzy",1600); S.miss++; if(window.ROOM) ROOM.onMiss(curG()); var hintNow=S.hintFn&&S.miss>=HINTAT[TIER]; if(hintNow) setTimeout(S.hintFn,900); boing(); wahwah(); bubble("띠용~ 뿌엥뿌엥~","oops"); say("뿌엥뿌엥~ "+(msg||"다시 해 볼까?"),700); S.streak=0;
   if(hintNow&&S.miss===HINTAT[TIER]) say(pick(LINES.hint),750,true); else if(!hintNow) cheerUp(); var st=$("stagewrap"); st.classList.remove("shake"); void st.offsetWidth; st.classList.add("shake"); }
 function good(){ ding(); }
-function win(){ if(S.lock) return; if(S.diag){ diagAnswer(true); return; } S.lock=true; applause(); burst(); var p=pick(PRAISE); bubble(p,"yay"); say(p,150); buddyPose("cheer",2000); $("ptext").textContent=p; var extra=streakTalk();
+function win(){ if(S.lock) return; if(S.diag){ diagAnswer(true); return; } S.lock=true; applause(); burst(); var p=pick(PRAISE), pc=window.ROOM&&ROOM.onWin(curG()); bubble(p,"yay"); if(!pc) say(p,150); buddyPose("cheer",2000); $("ptext").textContent=p; var extra=streakTalk();
   setTimeout(function(){ S.lock=false; S.round++; updDots(); if(S.round>=S.rounds) levelDone(); else playRound(); }, 2100+extra); }
 
 /* ---------- 게임 종류 ---------- */

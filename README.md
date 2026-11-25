@@ -33,3 +33,9 @@
 ## 함께 쓴 것
 - TensorFlow.js 4.22.0 (`vendor/tf.min.js`, Apache-2.0)
 - MobileNet V2 1.0 224 feature vector, TF Hub (`model/`, Apache-2.0)
+
+## 아이 방 (놀이터 첫 화면)
+- `src/room.js`·`src/room.css`: 스티커·배지·공룡알 키우기, 놀이 시간(졸린 공룡), 부모님 메뉴(덧셈 확인 → 시간·기록·목소리 녹음·가족 쪽지), 생활 미션·타이머, 내가 선생님, 색칠 그림 넣기, 자랑 카드, 손뼉·말 대답, 콕 찌르기·춤 파티.
+- 기록은 localStorage(`goyu-room-<아이>`, `goyu-parent`), 녹음과 색칠 그림은 IndexedDB(`goyu`)에만 저장해요.
+- `src/hub.js`: 허브 화면. `color.html`: 색칠 종이 인쇄(`art/line/*.png`).
+- 시험: `tools/roomtest.cjs`(기능 흐름), `tools/devices.cjs`(아이폰·아이패드 WebKit, 갤럭시·탭 Chromium).

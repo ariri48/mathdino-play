@@ -177,6 +177,7 @@ body[data-view="scan"]{overflow:hidden}
 /* 캐릭터 */
 [data-buddy]{display:inline-block;line-height:0}
 .av{width:100%;height:100%;overflow:visible}
+.s-cheer{display:none}.av.pose-cheer .s-cheer,.av.pose-crown .s-cheer{display:inline}.av.pose-cheer .s-idle,.av.pose-crown .s-idle{display:none}
 .av .fx>g{opacity:0;transition:opacity .2s}
 .av .jumper,.av .head,.av .armL,.av .armR,.av .whole,.av .tail{transform-box:view-box;transition:transform .25s cubic-bezier(.3,1.5,.5,1)}
 .av .jumper{transform-origin:100px 230px;animation:breathe 2.6s ease-in-out infinite}
@@ -288,6 +289,17 @@ body[data-view="scan"]{overflow:hidden}
   .bigbtns{gap:10px}
   .scanbtn{padding:14px 16px}
 }
+
+/* 손뼉·말 대답, 자랑, 부모 버튼 */
+.ansbar{position:absolute;right:10px;bottom:10px;display:flex;gap:8px;z-index:3}
+.ansbar button{display:flex;flex-direction:column;align-items:center;justify-content:center;width:68px;height:68px;border-radius:22px;background:rgba(255,255,255,.92);box-shadow:0 4px 0 rgba(0,0,0,.1);font-size:30px;line-height:1}
+.ansbar small{font-size:13px;margin-top:2px}
+.pill.brag{font-size:20px;padding:10px 20px;background:#ffeef5;box-shadow:0 5px 0 #f6c3d8}
+.pbtn{margin:0 auto;font-size:15px;color:var(--soft)}
+.filerow{gap:10px;flex-wrap:wrap}
+.note.onb{background:#fff8e6;border-radius:16px;padding:10px 14px;font-size:18px;color:var(--ink)}
+#done{gap:14px}
+#stagewrap{background:linear-gradient(#d7ecfa,#e3f2fb 45%,#e4f3df 55%,#d6ecd0)}
 </style>
 
 <div id="gate">
@@ -298,7 +310,7 @@ body[data-view="scan"]{overflow:hidden}
 </div>
 
 <section id="home" class="wrap">
-  <div class="top"><a class="tohub" href="./" aria-label="놀이터 처음으로">← 놀이터</a><h1>{{TITLE}}</h1><button id="kidchip" class="kidchip" type="button"></button><span class="tally">성공한 놀이 <b id="total">0</b> / <span id="totmax">0</span></span><button id="mute" class="ghostbtn" type="button" aria-pressed="false">소리 끄기</button></div>
+  <div class="top"><a class="tohub" href="./" aria-label="놀이터 처음으로">← 놀이터</a><h1>{{TITLE}}</h1><button id="kidchip" class="kidchip" type="button"></button><span class="tally">성공한 놀이 <b id="total">0</b> / <span id="totmax">0</span></span><span class="tgauge" data-tgauge hidden><i></i><b></b></span><button id="mute" class="ghostbtn" type="button" aria-pressed="false">소리 끄기</button></div>
   <div id="langtabs" class="seg langtabs" hidden></div>
   <div class="greetrow"><div class="gbud" data-buddy></div><p id="greet" class="gsay"></p></div>
   <div class="bigbtns">
@@ -308,6 +320,7 @@ body[data-view="scan"]{overflow:hidden}
   <p class="hint">{{HINT}}</p>
   <div id="shelf"></div>
   <p class="foot">{{FOOT}}</p>
+  <p class="foot"><button class="ghostbtn pbtn" type="button" data-parent>부모님 메뉴</button></p>
 </section>
 
 <section id="kids" class="wrap" hidden>
@@ -342,7 +355,8 @@ body[data-view="scan"]{overflow:hidden}
     </div>
     <div class="avform">
       <div id="avMode" class="seg"><button type="button" data-mode="photo">얼굴 사진</button><button type="button" data-mode="draw">그린 그림</button></div>
-      <label class="pill filebtn"><input id="avFile" type="file" accept="image/*" hidden><span id="avFileLbl">사진 고르기</span></label>
+      <div class="row left filerow"><label class="pill main filebtn" id="avCamLbl"><input id="avCam" type="file" accept="image/*" capture="user" hidden><span>지금 사진 찍기</span></label><label class="pill filebtn"><input id="avFile" type="file" accept="image/*" hidden><span id="avFileLbl">사진 고르기</span></label></div>
+      <p id="avOnboard" class="note onb" hidden></p>
       <div class="crop"><canvas id="cropCv" width="320" height="320"></canvas><p id="cropHelp"></p></div>
       <label id="zoomRow" class="rng">크게 작게<input id="avZoom" type="range" min="0.8" max="4" step="0.01" value="1.4"></label>
       <label id="toonRow" class="rng">만화 느낌<input id="avToon" type="range" min="0" max="3" step="1" value="2"></label>
@@ -381,6 +395,7 @@ body[data-view="scan"]{overflow:hidden}
   <div id="stagewrap">
     <svg id="stage" viewBox="0 0 1000 620" preserveAspectRatio="xMidYMid meet"></svg>
     <canvas id="pad" class="hide"></canvas>
+    <div id="ansbar" class="ansbar" hidden><button id="ansClap" type="button" aria-label="손뼉으로 대답하기">👏<small>손뼉</small></button><button id="ansMic" type="button" aria-label="말로 대답하기">🎤<small>말로</small></button></div>
     <div id="padtools" class="hide">
       <button class="sw on" type="button" data-c="#5b3fa8" style="--sw:#5b3fa8" aria-label="보라"></button>
       <button class="sw" type="button" data-c="#e05252" style="--sw:#e05252" aria-label="빨강"></button>
@@ -396,8 +411,10 @@ body[data-view="scan"]{overflow:hidden}
 <section id="done" class="wrap" hidden>
   <div class="dbud" data-buddy></div><div class="big">참 잘했어요!</div>
   <p id="dmsg"></p>
+  <div id="dreward" class="dreward"></div>
   <p id="dtalk" class="dtalk"></p>
   <div class="row"><button id="dnext" class="pill main" type="button">다음 놀이</button><button id="dbook" class="pill" type="button">놀이 목록</button><button id="dhome" class="pill" type="button">{{UNIT}} 목록</button></div>
+  <div class="row"><button id="dbrag" class="pill brag" type="button">가족에게 자랑하기</button><button id="dteach" class="pill brag" type="button">내가 문제 낼래!</button></div>
 </section>
 
 <div id="fx" aria-hidden="true"></div>

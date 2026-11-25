@@ -22,10 +22,10 @@ function greetLine(k){ var gap=Date.now()-lastSeen(k), h=new Date().getHours();
   if(gap<3*3600e3) return pick(LINES.again);
   if(h<11) return pick(LINES.morning); if(h>=18) return pick(LINES.evening); return pick(LINES.hello); }
 /* 틀렸을 때: 두 번째부터는 꼭, 처음엔 가끔 응원 한마디 */
-function cheerUp(){ if(S.miss>=2||Math.random()<0.4){ var c=pick(LINES.cheer); setTimeout(function(){ bubble(c,"oops"); },1900); say(c,750,true); } }
+function cheerUp(){ if(S.miss>=2||Math.random()<0.4){ if(window.ROOM&&S.miss>=2&&ROOM.cheerClip()) return; var c=pick(LINES.cheer); setTimeout(function(){ bubble(c,"oops"); },1900); say(c,750,true); } }
 /* 맞혔을 때: 연속 정답 세기. 덧붙인 말이 있으면 다음 판을 조금 늦게 */
 function streakTalk(){ if(S.miss===0) S.streak=(S.streak||0)+1; else S.streak=0;
-  var s= S.streak===3? pick(LINES.streak3) : S.streak===6? pick(LINES.streak6) : null; if(!s) return 0;
+  if(window.ROOM) ROOM.onStreak(S.streak); var s= S.streak===3? pick(LINES.streak3) : S.streak===6? pick(LINES.streak6) : null; if(!s) return 0;
   say(s,200,true); setTimeout(function(){ bubble(s,"yay"); $("ptext").textContent=s; },1500); return 1600; }
 /* 놀이 끝: 자랑하자 */
 function bragTalk(){ var b=pick(LINES.brag), k=curKid(); $("dtalk").textContent=(k?voc(k.name)+", ":"")+b; say(b,200,true); }

@@ -10,6 +10,7 @@ function avSave(id,o){ try{ if(o) localStorage.setItem(AVKEY+id,JSON.stringify(o
 /* 기본 얼굴(사진이 없을 때) */
 var DEFFACE='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffe3c8"/><circle cx="34" cy="46" r="6" fill="#3b2f2a"/><circle cx="66" cy="46" r="6" fill="#3b2f2a"/><circle cx="36" cy="44" r="2" fill="#fff"/><circle cx="68" cy="44" r="2" fill="#fff"/><ellipse cx="24" cy="62" rx="8" ry="5" fill="#ffb3b3"/><ellipse cx="76" cy="62" rx="8" ry="5" fill="#ffb3b3"/><path d="M38 64 Q50 76 62 64" fill="none" stroke="#3b2f2a" stroke-width="4" stroke-linecap="round"/></svg>');
 var AVN=0;
+var SUITART={idle:"art/suit_idle.webp",cheer:"art/suit_cheer.webp"};
 /* 캐릭터 SVG 문자열. a={mode:'photo'|'draw', img, suit} */
 function avatarSVG(a, cls){ a=a||{}; var n=++AVN, s=SUITS[a.suit||0]||SUITS[0], img=a.img||DEFFACE, ink="#3b2f2a";
   var fx='<g class="fx"><g class="sparkle"><path d="M30 40 l5 -12 l5 12 l12 5 l-12 5 l-5 12 l-5 -12 l-12 -5z" fill="#ffd34d"/><path d="M168 30 l4 -9 l4 9 l9 4 l-9 4 l-4 9 l-4 -9 l-9 -4z" fill="#ffd34d"/><path d="M175 120 l3 -7 l3 7 l7 3 l-7 3 l-3 7 l-3 -7 l-7 -3z" fill="#ff9ec7"/></g>'+
@@ -19,18 +20,17 @@ function avatarSVG(a, cls){ a=a||{}; var n=++AVN, s=SUITS[a.suit||0]||SUITS[0], 
     '<g class="crown"><path d="M70 2 l10 -18 l10 12 l10 -18 l10 18 l10 -12 l10 18z" fill="#ffd34d" stroke="'+ink+'" stroke-width="3" stroke-linejoin="round"/></g></g>';
   if(a.mode==="draw"){
     return '<svg class="av '+(cls||"")+'" viewBox="0 0 200 240" aria-hidden="true"><g transform="translate(10 24) scale(.9)"><g class="whole"><ellipse cx="100" cy="232" rx="60" ry="7" fill="rgba(0,0,0,.12)" class="shadow"/><g class="jumper"><image href="'+img+'" x="14" y="36" width="172" height="194" preserveAspectRatio="xMidYMax meet"/></g></g>'+fx+'</g></svg>'; }
-  return '<svg class="av '+(cls||"")+'" viewBox="0 0 200 240" aria-hidden="true"><g transform="translate(10 24) scale(.9)"><defs><clipPath id="avc'+n+'"><circle cx="100" cy="86" r="44"/></clipPath></defs>'+
-   '<ellipse cx="100" cy="232" rx="58" ry="7" fill="rgba(0,0,0,.12)" class="shadow"/>'+
-   '<g class="jumper"><g class="tail"><path d="M140 190 q40 10 50 -20 q-14 30 -48 34z" fill="'+s[0]+'" stroke="'+ink+'" stroke-width="4" stroke-linejoin="round"/></g>'+
-   '<g class="armL"><path d="M66 150 q-26 6 -30 28" fill="none" stroke="'+ink+'" stroke-width="24" stroke-linecap="round"/><path d="M66 150 q-26 6 -30 28" fill="none" stroke="'+s[0]+'" stroke-width="16" stroke-linecap="round"/></g>'+
-   '<g class="armR"><path d="M134 150 q26 6 30 28" fill="none" stroke="'+ink+'" stroke-width="24" stroke-linecap="round"/><path d="M134 150 q26 6 30 28" fill="none" stroke="'+s[0]+'" stroke-width="16" stroke-linecap="round"/></g>'+
-   '<g class="legs"><rect x="66" y="196" width="26" height="30" rx="12" fill="'+s[0]+'" stroke="'+ink+'" stroke-width="4"/><rect x="108" y="196" width="26" height="30" rx="12" fill="'+s[0]+'" stroke="'+ink+'" stroke-width="4"/></g>'+
-   '<path d="M56 160 q0 -38 44 -38 q44 0 44 38 v18 q0 30 -44 30 q-44 0 -44 -30z" fill="'+s[0]+'" stroke="'+ink+'" stroke-width="4"/>'+
-   '<path d="M76 158 q24 -12 48 0 v22 q-24 16 -48 0z" fill="'+s[1]+'"/>'+
-   '<g class="head"><path d="M100 22 l10 -14 l8 16 l14 -8 l2 18 l14 2 l-6 14 q12 18 6 40 q-6 34 -48 38 q-42 -4 -48 -38 q-6 -22 6 -40 l-6 -14 l14 -2 l2 -18 l14 8 l8 -16z" fill="'+s[0]+'" stroke="'+ink+'" stroke-width="4" stroke-linejoin="round"/>'+
-   '<circle cx="100" cy="86" r="46" fill="#fff" stroke="'+ink+'" stroke-width="4"/>'+
-   '<image href="'+img+'" x="56" y="42" width="88" height="88" clip-path="url(#avc'+n+')" preserveAspectRatio="xMidYMid slice"/>'+
-   '<circle cx="100" cy="86" r="44" fill="none" stroke="'+ink+'" stroke-width="3"/></g></g>'+fx+'</g></svg>'; }
+  /* 얼굴 사진 + 클레이 공룡 옷 (가만히 / 만세 두 자세). 옷 색은 색상 돌리기로 바꿔요 */
+  var hue=[0,-70,115,-130,160,-50][a.suit||0]||0, fl=hue?' filter="url(#avh'+n+')"':'';
+  function pose(cl,src,cx,cy,r){ return '<g class="'+cl+'"><image href="'+src+'" x="0" y="0" width="200" height="240"'+fl+'/>'+
+     '<circle cx="'+cx+'" cy="'+cy+'" r="'+(r+1.5)+'" fill="#f3e2cf"/><image href="'+img+'" x="'+(cx-r)+'" y="'+(cy-r)+'" width="'+(2*r)+'" height="'+(2*r)+'" clip-path="url(#avc'+n+cl+')" preserveAspectRatio="xMidYMid slice"/>'+
+     '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="rgba(80,60,40,.25)" stroke-width="2"/></g>'; }
+  return '<svg class="av '+(cls||"")+'" viewBox="0 0 200 240" aria-hidden="true"><g transform="translate(10 18) scale(.9)"><defs>'+
+   '<clipPath id="avc'+n+'s-idle"><circle cx="95" cy="81" r="37"/></clipPath><clipPath id="avc'+n+'s-cheer"><circle cx="98.5" cy="71" r="31"/></clipPath>'+
+   (hue?'<filter id="avh'+n+'" color-interpolation-filters="sRGB"><feColorMatrix type="hueRotate" values="'+hue+'"/></filter>':'')+'</defs>'+
+   '<ellipse cx="100" cy="236" rx="62" ry="7" fill="rgba(0,0,0,.12)" class="shadow"/>'+
+   '<g class="jumper">'+pose("s-idle",SUITART.idle,95,81,37)+pose("s-cheer",SUITART.cheer,98.5,71,31)+'</g>'+
+   '<g transform="translate(-4 -10)">'+fx+'</g></g></svg>'; }
 /* 사진 → 만화풍: 부드럽게 + 색 단계 줄이기 + 윤곽선 */
 function cartoonize(c, k){ var w=c.width, h=c.height, x=c.getContext("2d"), d=x.getImageData(0,0,w,h), p=d.data, i, j;
   var a=new Float32Array(p.length); for(i=0;i<p.length;i++) a[i]=p[i];
@@ -65,7 +65,7 @@ function talk(on){ Array.prototype.forEach.call(document.querySelectorAll("[data
 /* 놀이 안에서도 내 캐릭터를 쓸 수 있게 심볼(g-me) 등록 */
 function regMe(a){ var k=curKid(); var old=document.getElementById("g-me"); if(old) old.remove(); delete CHARK.me;
   if(!k) return; var defs=document.querySelector("svg defs"); if(!defs) return;
-  var sym=document.createElementNS(NS,"symbol"); sym.setAttribute("id","g-me"); sym.setAttribute("viewBox","0 0 200 240"); sym.innerHTML=avatarSVG(a,"pose-idle").replace(/^<svg[^>]*>/,"").replace(/<\/svg>$/,"").replace(/<g class="fx">[\s\S]*$/,"</g>");
+  var sym=document.createElementNS(NS,"symbol"); sym.setAttribute("id","g-me"); sym.setAttribute("viewBox","0 0 200 240"); sym.innerHTML=avatarSVG(a,"pose-idle").replace(/^<svg[^>]*>/,"").replace(/<\/svg>$/,"").replace(/(<g transform="translate\(-4 -10\)">)?<g class="fx">[\s\S]*$/,"</g>");
   defs.appendChild(sym); CHARK.me=1; NAMES.me=k.name; }
 function hasMe(){ return !!CHARK.me; }
 
@@ -76,7 +76,7 @@ function avEditOpen(k){ AE.kid=k; var a=avLoad(k.id)||{}; AE.mode=a.mode||"photo
   avModeUI(); avDrawCrop(); avPreview(); show("avedit"); }
 function avModeUI(){ Array.prototype.forEach.call(document.querySelectorAll("#avMode button"),function(b){ b.classList.toggle("on",b.dataset.mode===AE.mode); });
   $("toonRow").hidden=AE.mode!=="photo"; $("paperRow").hidden=AE.mode!=="draw"; $("avSuitsRow").hidden=AE.mode!=="photo"; $("zoomRow").hidden=AE.mode!=="photo";
-  $("cropHelp").textContent= AE.mode==="photo"? "손가락으로 끌어서 얼굴을 동그라미 안에 맞춰요" : "종이에 그린 그림을 찍어서 올려요. 종이 색은 저절로 지워져요"; $("avFileLbl").textContent= AE.mode==="photo"? "아이 사진 고르기" : "그림 사진 고르기"; }
+  $("cropHelp").textContent= AE.mode==="photo"? "손가락으로 끌어서 얼굴을 동그라미 안에 맞춰요" : "종이에 그린 그림을 찍어서 올려요. 종이 색은 저절로 지워져요"; $("avFileLbl").textContent= AE.mode==="photo"? "사진 고르기" : "그림 사진 고르기"; $("avCam").setAttribute("capture",AE.mode==="photo"?"user":"environment"); }
 function avDrawCrop(){ var c=$("cropCv"), x=c.getContext("2d"), W=c.width; x.clearRect(0,0,W,W); x.fillStyle="#f1ece7"; x.fillRect(0,0,W,W);
   if(!AE.img){ x.fillStyle="#7a6b62"; x.font="20px sans-serif"; x.textAlign="center"; x.fillText("사진을 골라 주세요",W/2,W/2); return; }
   var im=AE.img, s=AE.mode==="photo"? AE.zoom*W/Math.min(im.width,im.height) : Math.min(W/im.width,W/im.height), w=im.width*s, h=im.height*s;
@@ -95,9 +95,10 @@ function avPreview(rebuild){ if(rebuild){ clearTimeout(AE.t); AE.t=setTimeout(fu
   VOICES.forEach(function(v,i){ var o=document.createElement("option"); o.value=i; o.textContent=v[0]; $("avVoice").appendChild(o); });
   Array.prototype.forEach.call(document.querySelectorAll("#avMode button"),function(b){ b.addEventListener("click",function(){ AE.mode=b.dataset.mode; AE.ox=AE.oy=0; avModeUI(); avDrawCrop(); avPreview(true); }); });
   Array.prototype.forEach.call(document.querySelectorAll("#avPoses button"),function(b){ b.addEventListener("click",function(){ AE.pose=b.dataset.pose; avPreview(); }); });
-  $("avFile").addEventListener("change",function(){ var f=this.files&&this.files[0]; this.value=""; if(!f) return; var url=URL.createObjectURL(f), im=new Image();
+  function onPick(){ var f=this.files&&this.files[0]; this.value=""; if(!f) return; var url=URL.createObjectURL(f), im=new Image();
     im.onload=function(){ URL.revokeObjectURL(url); var sc=Math.min(1,1400/Math.max(im.width,im.height)), c=document.createElement("canvas"); c.width=Math.round(im.width*sc); c.height=Math.round(im.height*sc); c.getContext("2d").drawImage(im,0,0,c.width,c.height); AE.img=c; AE.ox=AE.oy=0; avDrawCrop(); avPreview(true); };
-    im.onerror=function(){ alert("이 사진은 열 수 없어요. 다른 사진을 골라 주세요."); }; im.src=url; });
+    im.onerror=function(){ alert("이 사진은 열 수 없어요. 다른 사진을 골라 주세요."); }; im.src=url; }
+  $("avFile").addEventListener("change",onPick); $("avCam").addEventListener("change",onPick);
   var cv=$("cropCv"), drag=null; cv.addEventListener("pointerdown",function(e){ if(!AE.img||AE.mode!=="photo") return; e.preventDefault(); cv.setPointerCapture(e.pointerId); var r=cv.getBoundingClientRect(); drag={x:e.clientX,y:e.clientY,ox:AE.ox,oy:AE.oy,k:cv.width/r.width}; });
   cv.addEventListener("pointermove",function(e){ if(!drag) return; AE.ox=drag.ox+(e.clientX-drag.x)*drag.k; AE.oy=drag.oy+(e.clientY-drag.y)*drag.k; avDrawCrop(); });
   function up(){ if(drag){ drag=null; avPreview(true); } } cv.addEventListener("pointerup",up); cv.addEventListener("pointercancel",up);
@@ -107,7 +108,7 @@ function avPreview(rebuild){ if(rebuild){ clearTimeout(AE.t); AE.t=setTimeout(fu
   $("avVoice").addEventListener("change",function(){ AE.voice=+this.value; });
   $("avHear").addEventListener("click",function(){ hearKind(VOICES[AE.voice][1], "안녕! 나는 "+AE.kid.name+"! 같이 놀자!"); });
   $("avSave").addEventListener("click",function(){ var k=AE.kid; var a={mode:AE.mode,img:AE.out,suit:AE.suit}; k.vk=VOICES[AE.voice][1];
-    if(!avSave(k.id,a)){ alert("저장 공간이 모자라요. 사진을 조금 더 작게 잘라 주세요."); return; } var o=all(); o.kids.forEach(function(x){ if(x.id===k.id) x.vk=k.vk; }); o.cur=k.id; saveAll(o); renderBuddies(); renderHome(); show("home"); buddyPose("cheer",2000); say("짠! 나는 "+k.name+"! 같이 놀자!"); });
+    if(!avSave(k.id,a)){ alert("저장 공간이 모자라요. 사진을 조금 더 작게 잘라 주세요."); return; } var o=all(); o.kids.forEach(function(x){ if(x.id===k.id) x.vk=k.vk; }); o.cur=k.id; saveAll(o); AE.onboard=false; $("avOnboard").hidden=true; renderBuddies(); renderHome(); show("home"); buddyPose("cheer",2000); say("짠! 나는 "+k.name+"! 오늘부터 이 놀이터의 주인공이야! 같이 놀자!"); });
   $("avDel").addEventListener("click",function(){ if(!confirm("캐릭터를 지울까요?")) return; avSave(AE.kid.id,null); renderBuddies(); renderKids(); show("kids"); });
-  $("avBack").addEventListener("click",function(){ renderKids(); show("kids"); });
+  $("avBack").addEventListener("click",function(){ if(AE.onboard){ AE.onboard=false; $("avOnboard").hidden=true; renderHome(); show("home"); return; } renderKids(); show("kids"); });
 })();

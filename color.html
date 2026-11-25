@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-180.png">
+<meta name="description" content="놀이터 그림을 색칠 종이로 인쇄해요. 색칠한 그림을 찍으면 놀이에 나와요.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="우리 아이 놀이터">
+<meta property="og:title" content="색칠 종이">
+<meta property="og:description" content="놀이터 그림을 색칠 종이로 인쇄해요. 색칠한 그림을 찍으면 놀이에 나와요.">
+<meta property="og:url" content="https://play.goyu.studio/color.html">
+<meta property="og:image" content="https://play.goyu.studio/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="우리 아이 놀이터 - 공룡, 사과, 별 캐릭터">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://play.goyu.studio/og.png">
+<meta name="theme-color" content="#5b3fa8">
+<meta charset="utf-8">
+<title>색칠 종이</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#3b2f2a;--soft:#7a6b62;--accent:#5b3fa8;--sun:#ffc83d;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:#fff6e9;color:var(--ink);font-family:"Gowun Dodum","Apple SD Gothic Neo",sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:18px 16px 40px}
+h1{font-family:"Jua",sans-serif;font-weight:400;font-size:clamp(30px,6vw,48px);color:var(--accent);margin:0 0 6px}
+p{font-size:17px;word-break:keep-all}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0 16px}
+button,a.b{font-family:"Jua",sans-serif;font-size:20px;border:0;border-radius:999px;padding:10px 20px;min-height:46px;background:#fff;color:var(--ink);cursor:pointer;text-decoration:none;box-shadow:0 4px 0 rgba(0,0,0,.08)}
+button.main{background:var(--sun);box-shadow:0 4px 0 #d9a21a}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.c{background:#fff;border-radius:20px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;border:4px solid transparent;font-family:"Jua",sans-serif;font-size:18px}
+.c img{width:100%;aspect-ratio:1;object-fit:contain}
+.c input{position:absolute;opacity:0}
+.c:has(input:checked){border-color:var(--sun);background:#fffbe9}
+#print{display:none}
+@media print{
+  @page{size:A4;margin:12mm}
+  body{background:#fff}.wrap{display:none}#print{display:block}
+  .pg{page-break-after:always;height:270mm;display:flex;flex-direction:column;align-items:center;justify-content:space-between}
+  .pg:last-child{page-break-after:auto}
+  .pg .top{width:100%;display:flex;justify-content:space-between;font-family:"Jua",sans-serif;font-size:16pt}
+  .pg img{width:165mm;height:165mm;object-fit:contain}
+  .pg .nm{font-family:"Jua",sans-serif;font-size:30pt}
+  .pg .tip{font-size:11pt;color:#555;text-align:center}
+}
+</style>
+<div class="wrap">
+  <h1>색칠 종이</h1>
+  <p>색칠할 그림을 골라 인쇄해요. 한 장에 그림 하나가 크게 나와요. 색칠한 뒤 놀이터의 <b>"색칠 그림 넣기"</b>에서 사진을 찍으면 그 그림이 놀이에 나와요.</p>
+  <div class="bar"><button class="main" id="go" type="button">고른 그림 인쇄하기</button><button id="all" type="button">모두 고르기</button><button id="none" type="button">모두 풀기</button><a class="b" href="./">← 놀이터</a></div>
+  <div class="grid"><label class="c"><input type="checkbox" value="apple"><img src="art/line/apple.png" alt=""><span>사과</span></label><label class="c"><input type="checkbox" value="ball"><img src="art/line/ball.png" alt=""><span>공</span></label><label class="c"><input type="checkbox" value="balloon"><img src="art/line/balloon.png" alt=""><span>풍선</span></label><label class="c"><input type="checkbox" value="banana"><img src="art/line/banana.png" alt=""><span>바나나</span></label><label class="c"><input type="checkbox" value="basket"><img src="art/line/basket.png" alt=""><span>basket</span></label><label class="c"><input type="checkbox" value="bean"><img src="art/line/bean.png" alt=""><span>콩</span></label><label class="c"><input type="checkbox" value="bear"><img src="art/line/bear.png" alt=""><span>곰</span></label><label class="c"><input type="checkbox" value="bed"><img src="art/line/bed.png" alt=""><span>침대</span></label><label class="c"><input type="checkbox" value="book"><img src="art/line/book.png" alt=""><span>책</span></label><label class="c"><input type="checkbox" value="bowl"><img src="art/line/bowl.png" alt=""><span>밥</span></label><label class="c"><input type="checkbox" value="box"><img src="art/line/box.png" alt=""><span>상자</span></label><label class="c"><input type="checkbox" value="brush"><img src="art/line/brush.png" alt=""><span>칫솔</span></label><label class="c"><input type="checkbox" value="car"><img src="art/line/car.png" alt=""><span>자동차</span></label><label class="c"><input type="checkbox" value="carrot"><img src="art/line/carrot.png" alt=""><span>당근</span></label><label class="c"><input type="checkbox" value="cat"><img src="art/line/cat.png" alt=""><span>고양이</span></label><label class="c"><input type="checkbox" value="cherry"><img src="art/line/cherry.png" alt=""><span>체리</span></label><label class="c"><input type="checkbox" value="chick"><img src="art/line/chick.png" alt=""><span>병아리</span></label><label class="c"><input type="checkbox" value="cookie"><img src="art/line/cookie.png" alt=""><span>쿠키</span></label><label class="c"><input type="checkbox" value="cupcake"><img src="art/line/cupcake.png" alt=""><span>컵케이크</span></label><label class="c"><input type="checkbox" value="dino"><img src="art/line/dino.png" alt=""><span>공룡</span></label><label class="c"><input type="checkbox" value="dog"><img src="art/line/dog.png" alt=""><span>강아지</span></label><label class="c"><input type="checkbox" value="duck"><img src="art/line/duck.png" alt=""><span>오리</span></label><label class="c"><input type="checkbox" value="egg"><img src="art/line/egg.png" alt=""><span>알</span></label><label class="c"><input type="checkbox" value="feather"><img src="art/line/feather.png" alt=""><span>깃털</span></label><label class="c"><input type="checkbox" value="fish"><img src="art/line/fish.png" alt=""><span>물고기</span></label><label class="c"><input type="checkbox" value="flower"><img src="art/line/flower.png" alt=""><span>꽃</span></label><label class="c"><input type="checkbox" value="ghost"><img src="art/line/ghost.png" alt=""><span>유령</span></label><label class="c"><input type="checkbox" value="grape"><img src="art/line/grape.png" alt=""><span>포도</span></label><label class="c"><input type="checkbox" value="heart"><img src="art/line/heart.png" alt=""><span>하트</span></label><label class="c"><input type="checkbox" value="house"><img src="art/line/house.png" alt=""><span>집</span></label><label class="c"><input type="checkbox" value="leaf"><img src="art/line/leaf.png" alt=""><span>나뭇잎</span></label><label class="c"><input type="checkbox" value="melon"><img src="art/line/melon.png" alt=""><span>수박</span></label><label class="c"><input type="checkbox" value="milk"><img src="art/line/milk.png" alt=""><span>우유</span></label><label class="c"><input type="checkbox" value="moon"><img src="art/line/moon.png" alt=""><span>달</span></label><label class="c"><input type="checkbox" value="mosquito"><img src="art/line/mosquito.png" alt=""><span>모기</span></label><label class="c"><input type="checkbox" value="pencil"><img src="art/line/pencil.png" alt=""><span>연필</span></label><label class="c"><input type="checkbox" value="rabbit"><img src="art/line/rabbit.png" alt=""><span>토끼</span></label><label class="c"><input type="checkbox" value="rock"><img src="art/line/rock.png" alt=""><span>돌</span></label><label class="c"><input type="checkbox" value="seed"><img src="art/line/seed.png" alt=""><span>씨앗</span></label><label class="c"><input type="checkbox" value="shell"><img src="art/line/shell.png" alt=""><span>조개</span></label><label class="c"><input type="checkbox" value="snowman"><img src="art/line/snowman.png" alt=""><span>눈사람</span></label><label class="c"><input type="checkbox" value="sock"><img src="art/line/sock.png" alt=""><span>양말</span></label><label class="c"><input type="checkbox" value="spoon"><img src="art/line/spoon.png" alt=""><span>숟가락</span></label><label class="c"><input type="checkbox" value="sprout"><img src="art/line/sprout.png" alt=""><span>새싹</span></label><label class="c"><input type="checkbox" value="star"><img src="art/line/star.png" alt=""><span>별</span></label><label class="c"><input type="checkbox" value="strawberry"><img src="art/line/strawberry.png" alt=""><span>딸기</span></label><label class="c"><input type="checkbox" value="sun"><img src="art/line/sun.png" alt=""><span>해</span></label><label class="c"><input type="checkbox" value="toy"><img src="art/line/toy.png" alt=""><span>장난감</span></label><label class="c"><input type="checkbox" value="tree"><img src="art/line/tree.png" alt=""><span>나무</span></label><label class="c"><input type="checkbox" value="umbrella"><img src="art/line/umbrella.png" alt=""><span>우산</span></label></div>
+</div>
+<div id="print"></div>
+<script>
+(function(){ var q=new URLSearchParams(location.search).get("k"), boxes=[].slice.call(document.querySelectorAll(".c input"));
+  if(q) boxes.forEach(function(b){ if(b.value===q) b.checked=true; });
+  document.getElementById("all").onclick=function(){ boxes.forEach(function(b){ b.checked=true; }); };
+  document.getElementById("none").onclick=function(){ boxes.forEach(function(b){ b.checked=false; }); };
+  document.getElementById("go").onclick=function(){ var sel=boxes.filter(function(b){ return b.checked; }); if(!sel.length){ alert("인쇄할 그림을 골라 주세요."); return; }
+    var nm=""; try{ var o=JSON.parse(localStorage.getItem("mathdino-play-v2"))||{}; var k=(o.kids||[]).filter(function(x){ return x.id===o.cur; })[0]; nm=k?k.name:""; }catch(e){}
+    document.getElementById("print").innerHTML=sel.map(function(b){ var lab=b.parentNode.querySelector("span").textContent;
+      return '<div class="pg"><div class="top"><span>이름: '+(nm?nm.replace(/[<>&]/g,""):"________")+'</span><span>날짜: ____월 ____일</span></div><img src="art/line/'+b.value+'.png" alt=""><div class="nm">'+lab+'</div><div class="tip">다 칠하면 놀이터의 "색칠 그림 넣기"에서 사진을 찍어요. 선 밖은 하얗게 두면 더 예쁘게 나와요.</div></div>'; }).join("");
+    var imgs=[].slice.call(document.querySelectorAll("#print img")), n=0; if(!imgs.length) return;
+    imgs.forEach(function(im){ if(im.complete){ if(++n===imgs.length) print(); } else im.onload=im.onerror=function(){ if(++n===imgs.length) print(); }; }); }; })();
+</script>

@@ -44,7 +44,10 @@ function renderKids(){ renderVoicePick(); var o=all(), box=$("kidlist"); box.inn
   $("kadd").addEventListener("submit",function(e){ e.preventDefault(); var name=$("kn").value.trim()||"우리 아이"; var ym=y.value+"-"+mo.value; if(months(ym)<0) return;
     var o=all(), id="k"+Date.now().toString(36); o.kids.push({id:id,name:name.slice(0,12),ym:ym,adj:0,vk:$("kvk").value});
     if(o.legacy&&o.kids.length===1){ o.prog[id]=o.legacy; delete o.legacy; } else o.prog[id]={};
-    o.cur=id; saveAll(o); $("kn").value=""; applyKid(); renderHome(); show("home"); say(name+", 반가워! 책을 골라 볼까?"); });
+    o.cur=id; saveAll(o); $("kn").value=""; applyKid(); renderHome();
+    /* 등록하자마자 얼굴 사진으로 주인공 캐릭터 만들기 */
+    var nk=o.kids[o.kids.length-1]; avEditOpen(nk); AE.onboard=true; $("avOnboard").hidden=false; $("avOnboard").textContent="얼굴 사진을 찍으면 "+name+"의 얼굴로 공룡 옷을 입은 주인공 캐릭터가 생겨요. 지금 안 해도 돼요. 나중에 '← 돌아가기'를 누르면 바로 놀 수 있어요.";
+    say(voc(name)+", 반가워! 얼굴 사진을 찍으면 네가 이 놀이터의 주인공이 돼!"); if(window.ROOM) ROOM.markVisit(); });
 })();
 
 /* ---------- 화면 흐름 ---------- */
@@ -68,10 +71,19 @@ function updDots(){ var d=$("dots"); d.innerHTML=""; for(var i=0;i<S.rounds;i++)
 var SWAP0={ bingo:function(lv){ return lv.p&&lv.p.kind==="shape"?"shapefind":"findnum"; }, calendar:"findnum", clock:"routine", graph:"compare" };
 function gameFor(lv){ var s=TIER===0&&SWAP0[lv.g]; if(!s) return lv.g; return typeof s==="function"? s(lv) : s; }
 function startLevel(i){ S.li=i; S.round=0; S.lock=false; show("play"); var lv=S.book.levels[i]; $("ltitle").textContent=lv.name; $("play").style.setProperty("--c",S.book.color); S.rounds = ONE_ROUND[lv.g]?1:ROUNDS[TIER]; updDots(); playRound(); }
-function playRound(){ if(S.diag||!S.book||!S.book.levels[S.li]) return; clear(); S.miss=0; S.hintFn=null; S.againFn=null; var lv=S.book.levels[S.li], gn=gameFor(lv); (G[gn]||G.count)(gn===lv.g?(lv.p||{}):{}); idleArm(); }
+function playRound(){ if(S.diag||!S.book||!S.book.levels[S.li]) return; clear(); S.miss=0; S.hintFn=null; S.againFn=null; var lv=S.book.levels[S.li], gn=gameFor(lv); (G[gn]||G.count)(gn===lv.g?(lv.p||{}):{}); idleArm(); ansBar(); }
+/* 숫자 고르기 문제는 손뼉이나 말로도 대답할 수 있어요 */
+function ansBar(){ var on=window.ROOM&&Object.keys(S.nch||{}).length>0; $("ansbar").hidden=!(on&&(ROOM.canClap()||ROOM.canListen())); if(on){ $("ansClap").hidden=!ROOM.canClap(); $("ansMic").hidden=!ROOM.canListen()||!!window.__NOMIC; } }
+function ansPick(nums, heard){ if(S.lock) return; var hit=nums.filter(function(n){ return S.nch[n]; })[0];
+  if(hit!==undefined){ S.nch[hit](); return; }
+  if(heard===undefined&&nums.length&&nums[0]>0){ bubble("손뼉 "+nums[0]+"번!","oops"); say("손뼉을 "+nums[0]+"번 쳤어! 다시 세어 볼까?"); return; }
+  say("잘 못 들었어. 한 번 더 말해 줄래?"); }
+$("ansClap").addEventListener("click",function(){ ROOM.claps(function(n){ ansPick([n]); }); });
+$("ansMic").addEventListener("click",function(){ ROOM.listen("ko-KR",function(nums,t){ ansPick(nums,t); }); });
 function levelDone(){ var P=loadP(); var st=P[S.book.no]||[false,false,false,false,false]; st[S.li]=true; P[S.book.no]=st; saveP(P);
   show("done"); $("done").style.setProperty("--c",S.book.color); var all_=st.filter(Boolean).length; $("dmsg").textContent= all_===5? "책 한 권 완주! 포도알 하나 칠하자!" : "놀이 성공! "+all_+" / 5";
   applause(); burst(); buddyPose(all_===5?"crown":"cheer",4000); say(all_===5?"우와! 책 한 권을 다 했어! 정말 멋진데~?":"놀이 성공! 정말 멋진데~?",200); bragTalk();
+  if(window.ROOM&&curKid()){ var rw=ROOM.onLevelDone({all5:all_===5}), t=ROOM.showReward(rw,$("dreward")); if(!ROOM.checkTired()&&Math.random()<0.25) setTimeout(function(){ if(document.body.dataset.view==="done") ROOM.party(); },Math.max(4200,t+600)); } else $("dreward").innerHTML="";
   $("dnext").hidden = S.li>=S.book.levels.length-1; }
 
 /* ---------- 책 찍기 (표지 인식) ---------- */
@@ -112,7 +124,9 @@ function fromPhoto(file){ var im=new Image(), url=URL.createObjectURL(file); im.
     var iw=im.naturalWidth, ih=im.naturalHeight, w=Math.min(iw,ih*250/300)*0.9, h=w*300/250; var c=document.createElement("canvas"); c.width=250; c.height=300; c.getContext("2d").drawImage(im,(iw-w)/2,(ih-h)/2,w,h,0,0,250,300);
     var r=matchBook(embedTTA(c)); if(r.s>=0.64&&r.m>=0.015) found(r.b); else { boing(); $("scanmsg").textContent="어떤 책인지 모르겠어요. 앞표지가 꽉 차게 다시 찍어 주세요."; say("음… 어떤 책인지 모르겠어. 다시 찍어 줄래?"); } }); }; im.src=url; }
 
-$("startBtn").addEventListener("click",function(){ ac(); pickVoice(); $("gate").hidden=true; var o=all(); renderBuddies();
+$("startBtn").addEventListener("click",function(){ ac(); pickVoice(); $("gate").hidden=true; var o=all(); renderBuddies(); if(window.ROOM&&curKid()) ROOM.markVisit();
+  var hs=location.hash; if(hs==="#kids"||(hs==="#avatar"&&!curKid())){ history.replaceState(null,"",location.pathname); renderKids(); show("kids"); say("아이를 고르거나 새로 등록해 주세요"); return; }
+  if(hs==="#avatar"){ history.replaceState(null,"",location.pathname); avEditOpen(curKid()); say("얼굴 사진을 찍어서 주인공 캐릭터를 만들어 보자!"); return; }
   if(!o.kids.length){ renderKids(); show("kids"); say(CFG.title+"에 온 걸 환영해! 먼저 이름을 알려 줘"); }
   else { var k=curKid(), gl=k?greetLine(k):null; S.greet=k?{id:k.id,t:gl}:null; if(k) markSeen(k); renderHome(); show("home");
     say(gl? voc(k.name)+", "+gl : (k?k.name+", ":"")+CFG.title+"에 온 걸 환영해! "+(CFG.ask||"책을 골라 볼까?")); } });
@@ -133,6 +147,9 @@ $("again").addEventListener("click",function(){ if(S.againFn) S.againFn(); else 
 $("dnext").addEventListener("click",function(){ startLevel(S.li+1); });
 $("dbook").addEventListener("click",function(){ openBook(S.book); });
 $("dhome").addEventListener("click",function(){ renderHome(); show("home"); });
+$("dbrag").addEventListener("click",function(){ if(window.ROOM) ROOM.brag(); });
+$("dteach").addEventListener("click",function(){ if(window.ROOM) ROOM.teach(); });
+if(window.ROOM){ ROOM.fx={say:function(t){ say(t); },avatarSVG:avatarSVG,curAv:curAv,S:S,clipStop:clipStop}; ROOM.applyColors(); ROOM.gauge(); }
 $("mute").addEventListener("click",function(){ S.muted=!S.muted; this.setAttribute("aria-pressed",S.muted); this.textContent=S.muted?"소리 켜기":"소리 끄기"; if(S.muted) try{speechSynthesis.cancel();}catch(e){} });
 document.addEventListener("gesturestart",function(e){ e.preventDefault(); });
 if(window.__NOSCAN) $("scanBtn").hidden=true; if(window.__NODIAG) $("diagBtn").hidden=true; if(window.__NOHUB) Array.prototype.forEach.call(document.querySelectorAll(".tohub"),function(a){ a.hidden=true; });

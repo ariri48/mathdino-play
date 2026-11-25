@@ -6,8 +6,8 @@ const {chromium}=require(process.env.PW+'/playwright-core');
  // 첫 실행: 아이 등록 화면
  console.log('view after start:', await p.evaluate(()=>document.body.dataset.view));
  await p.fill('#kn','첫째'); await p.selectOption('#ky','2023'); await p.selectOption('#km','1'); console.log('prev:', await p.textContent('#kprev'));
- await p.click('#kadd button[type=submit]'); console.log('view:', await p.evaluate(()=>document.body.dataset.view), 'chip:', await p.textContent('#kidchip'));
- await p.click('#kidchip'); await p.fill('#kn','둘째'); await p.selectOption('#ky','2024'); await p.selectOption('#km','8'); await p.click('#kadd button[type=submit]');
+ await p.click('#kadd button[type=submit]'); await p.click('#avBack'); console.log('view:', await p.evaluate(()=>document.body.dataset.view), 'chip:', await p.textContent('#kidchip'));
+ await p.click('#kidchip'); await p.fill('#kn','둘째'); await p.selectOption('#ky','2024'); await p.selectOption('#km','8'); await p.click('#kadd button[type=submit]'); await p.click('#avBack');
  console.log('chip2:', await p.textContent('#kidchip'));
  await p.screenshot({path:'tools/shot_home.png'});
  await p.click('#kidchip'); await p.screenshot({path:'tools/shot_kids.png'});

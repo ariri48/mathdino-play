@@ -196,6 +196,7 @@ body[data-view="scan"]{overflow:hidden}
 /* 캐릭터 */
 [data-buddy]{display:inline-block;line-height:0}
 .av{width:100%;height:100%;overflow:visible}
+.s-cheer{display:none}.av.pose-cheer .s-cheer,.av.pose-crown .s-cheer{display:inline}.av.pose-cheer .s-idle,.av.pose-crown .s-idle{display:none}
 .av .fx>g{opacity:0;transition:opacity .2s}
 .av .jumper,.av .head,.av .armL,.av .armR,.av .whole,.av .tail{transform-box:view-box;transition:transform .25s cubic-bezier(.3,1.5,.5,1)}
 .av .jumper{transform-origin:100px 230px;animation:breathe 2.6s ease-in-out infinite}
@@ -307,6 +308,110 @@ body[data-view="scan"]{overflow:hidden}
   .bigbtns{gap:10px}
   .scanbtn{padding:14px 16px}
 }
+
+/* 손뼉·말 대답, 자랑, 부모 버튼 */
+.ansbar{position:absolute;right:10px;bottom:10px;display:flex;gap:8px;z-index:3}
+.ansbar button{display:flex;flex-direction:column;align-items:center;justify-content:center;width:68px;height:68px;border-radius:22px;background:rgba(255,255,255,.92);box-shadow:0 4px 0 rgba(0,0,0,.1);font-size:30px;line-height:1}
+.ansbar small{font-size:13px;margin-top:2px}
+.pill.brag{font-size:20px;padding:10px 20px;background:#ffeef5;box-shadow:0 5px 0 #f6c3d8}
+.pbtn{margin:0 auto;font-size:15px;color:var(--soft)}
+.filerow{gap:10px;flex-wrap:wrap}
+.note.onb{background:#fff8e6;border-radius:16px;padding:10px 14px;font-size:18px;color:var(--ink)}
+#done{gap:14px}
+#stagewrap{background:linear-gradient(#d7ecfa,#e3f2fb 45%,#e4f3df 55%,#d6ecd0)}
+/* ---------- 내 방 공통 (겹쳐 뜨는 창·알림·스티커·타이머) ---------- */
+.rov{position:fixed;inset:0;background:rgba(40,30,60,.45);display:flex;align-items:center;justify-content:center;padding:max(12px,env(safe-area-inset-top,0px)) 12px max(12px,env(safe-area-inset-bottom,0px));opacity:0;transition:opacity .2s;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.rov.on{opacity:1}
+.rbox{position:relative;background:#fff;border-radius:32px;padding:26px 22px 22px;width:min(560px,100%);max-height:100%;overflow-y:auto;text-align:center;box-shadow:0 12px 0 rgba(0,0,0,.12);transform:scale(.92);transition:transform .25s cubic-bezier(.3,1.5,.5,1);font-family:var(--body);color:var(--ink)}
+.rov.on .rbox{transform:scale(1)}
+.rbox h2{font-family:var(--disp);font-weight:400;font-size:clamp(28px,6vw,40px);margin:4px 0 8px;color:var(--accent);word-break:keep-all}
+.rbox h3{font-family:var(--disp);font-weight:400;font-size:22px;margin:16px 0 6px;text-align:left}
+.rbox p{font-size:19px;margin:6px 0 12px;word-break:keep-all}
+.rx{position:absolute;right:12px;top:12px;min-height:40px;padding:6px 14px;border-radius:999px;background:#f1ece7;font-family:var(--disp);font-size:17px;border:0;color:var(--ink);cursor:pointer;z-index:2}
+.rrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px}.rrow.left{justify-content:flex-start}
+.rpill{display:inline-flex;align-items:center;justify-content:center;min-height:48px;font-family:var(--disp);font-size:22px;border-radius:999px;padding:10px 22px;background:#f4efff;color:var(--ink);border:0;box-shadow:0 4px 0 #d9cff3;text-decoration:none;cursor:pointer}
+.rpill.main{background:var(--sun);box-shadow:0 4px 0 #d9a21a}.rpill.ghost{background:#f1ece7;box-shadow:none;font-size:18px}
+.rpill:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.1)}
+.rmini{min-height:40px;padding:6px 12px;border-radius:14px;border:0;background:#f4efff;font-family:var(--disp);font-size:16px;color:var(--ink);cursor:pointer}.rmini:disabled{opacity:.35}
+.rnote2{font-size:15px!important;color:var(--soft);text-align:left;word-break:keep-all}
+.rbig{width:min(240px,60vw);height:auto}
+.rwig{animation:rwig .5s ease-in-out 5}
+@keyframes rwig{25%{transform:rotate(-8deg) scale(1.05)}75%{transform:rotate(8deg) scale(1.05)}}
+.rsnore{animation:rsnore 3s ease-in-out infinite}
+@keyframes rsnore{50%{transform:scale(1.04,.97)}}
+.rburst{position:absolute;inset:0;background:repeating-conic-gradient(from 0deg,rgba(255,200,61,.18) 0 10deg,transparent 10deg 20deg);border-radius:32px;animation:rspin 8s linear infinite;pointer-events:none}
+@keyframes rspin{to{transform:rotate(360deg)}}
+.rtoast{position:fixed;left:50%;bottom:max(20px,env(safe-area-inset-bottom,0px));transform:translate(-50%,140%);display:flex;align-items:center;gap:12px;background:#fff;border-radius:24px;padding:10px 18px 10px 10px;box-shadow:0 8px 24px rgba(0,0,0,.18);transition:transform .35s cubic-bezier(.3,1.4,.5,1);max-width:calc(100% - 24px);font-family:var(--disp);color:var(--ink)}
+.rtoast.on{transform:translate(-50%,0)}
+.rtoast b{display:block;font-weight:400;font-size:22px}.rtoast small{display:block;font-family:var(--body);font-size:15px;color:var(--soft)}
+.rtoast .rti{width:52px;height:52px}
+.rbadge{width:62px;height:62px;flex:none;border-radius:50%;background:radial-gradient(circle,#fff6d0 55%,#ffc83d 56% 70%,#f0a91a 71%);display:flex;align-items:center;justify-content:center}.rbadge img{width:42px;height:42px}
+.rstk{display:flex;flex-direction:column;align-items:center;gap:2px;font-family:var(--disp)}
+.rstk img{width:96px;height:96px;background:#fff;border-radius:50%;border:5px dashed #ffc83d;padding:6px;animation:rstk .7s cubic-bezier(.3,1.6,.5,1)}
+.rstk b{font-weight:400;font-size:20px}
+.rstk.small{flex-direction:row;gap:10px}.rstk.small img{width:56px;height:56px;border-width:3px;padding:3px}
+@keyframes rstk{from{transform:scale(0) rotate(-180deg)}}
+.dreward{display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap}
+.regg{display:flex;align-items:center;gap:10px;background:#fff;border-radius:24px;padding:8px 16px 8px 8px;font-family:var(--disp);text-align:left}
+.regg img{width:70px;height:70px}.regg b{font-weight:400;font-size:20px;display:block}.regg small{font-family:var(--body);font-size:14px;color:var(--soft)}
+.rbar{display:block;width:150px;height:12px;background:#f1ece7;border-radius:999px;overflow:hidden;margin:3px 0}.rbar>i{display:block;height:100%;background:linear-gradient(90deg,#6ccb8f,#2fa36b);border-radius:999px}
+/* 부모님 확인 */
+.rin{font-family:var(--disp);font-size:40px;min-height:58px;border-radius:18px;background:#f6f2ff;margin:0 auto 12px;width:140px;line-height:58px}
+.rpad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:300px;margin:0 auto}
+.rpad button{min-height:56px;border-radius:16px;border:0;background:#f4efff;font-family:var(--disp);font-size:24px;color:var(--ink);cursor:pointer}
+.rshake{animation:rshake .4s}@keyframes rshake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+/* 부모 메뉴 */
+.parent .rbox{text-align:left}
+.parent details{border-top:2px dashed #eee;padding:10px 0}
+.parent summary{font-family:var(--disp);font-size:22px;cursor:pointer;min-height:40px;display:flex;align-items:center}
+.rseg{display:flex;flex-wrap:wrap;gap:6px}.rseg button{min-height:44px;padding:6px 14px;border-radius:999px;border:0;background:#f1ece7;font-family:var(--disp);font-size:18px;color:var(--ink);cursor:pointer}.rseg button.on{background:var(--accent);color:#fff}
+.rrec{display:flex;align-items:center;gap:6px;padding:8px 0;border-bottom:1px solid #f3f0ec;flex-wrap:wrap}.rrec>span{flex:1;min-width:150px}.rrec b{font-family:var(--disp);font-weight:400;font-size:19px;display:block}.rrec small{color:var(--soft);font-size:14px}
+.rrec.have b::after{content:" ✓";color:#2fa36b}.rrec.on .rec{background:#e05252;color:#fff}
+.rnoteform{display:flex;gap:6px;flex-wrap:wrap}.rnoteform select,.rnoteform input{font:inherit;font-size:17px;padding:8px 10px;border-radius:12px;border:2px solid #eee;min-height:44px}.rnoteform input{flex:1;min-width:160px}
+.rmemo{background:#fff8e6;border-radius:18px;padding:12px 14px;margin:6px 0}.rmemo>b{font-family:var(--disp);font-weight:400;font-size:19px}.rmemo p{font-size:16px;margin:4px 0}.rtip{color:var(--soft)}
+.rday{display:flex;align-items:center;gap:8px;font-size:15px;margin:4px 0}.rday span{width:64px;flex:none}.rday .rbar{flex:1;width:auto}.rday b{font-weight:400;width:120px;text-align:right;flex:none}
+.rnote{background:#fff8e6;border-radius:20px;padding:14px;margin:6px 0 10px}.rnote b{font-family:var(--disp);font-weight:400;font-size:24px;color:#e0679a}.rnote p{font-size:22px}
+/* 콕 찌르기 */
+.rtickle{animation:rtk .6s ease-in-out}
+@keyframes rtk{20%{transform:rotate(-10deg) scale(1.06)}40%{transform:rotate(9deg) scale(.96)}60%{transform:rotate(-6deg)}80%{transform:rotate(4deg)}}
+.rpuff{position:fixed;font-family:var(--disp);font-size:34px;color:#8a6d3b;background:radial-gradient(circle,#f3e6b8 40%,rgba(243,230,184,0) 70%);padding:18px 22px;border-radius:50%;pointer-events:none;animation:rpuff 1.3s ease-out forwards}
+@keyframes rpuff{from{transform:scale(.3);opacity:1}to{transform:scale(1.6) translate(20px,-30px);opacity:0}}
+/* 춤 파티 */
+.party .rbox{background:#2b1f4d;color:#fff;overflow:hidden}.party .rbox h2{color:#ffd34d}
+.rdisco i{position:absolute;width:160px;height:160px;border-radius:50%;filter:blur(30px);opacity:.7;animation:rdisco 1s ease-in-out infinite alternate}
+.rdisco i:nth-child(1){background:#ff5fa2;left:-20px;top:-20px}.rdisco i:nth-child(2){background:#5bb8f2;right:-20px;top:20px;animation-delay:.25s}.rdisco i:nth-child(3){background:#ffd34d;left:30%;bottom:-40px;animation-delay:.5s}.rdisco i:nth-child(4){background:#6ccb8f;right:20%;bottom:10px;animation-delay:.75s}
+@keyframes rdisco{to{transform:translate(30px,20px) scale(1.3)}}
+.rdance{width:190px;height:228px;margin:0 auto;position:relative;animation:rdance .5s ease-in-out infinite alternate}
+@keyframes rdance{from{transform:rotate(-12deg) translateY(0)}to{transform:rotate(12deg) translateY(-18px)}}
+/* 손뼉·말 대답 */
+.rclap{font-size:80px;line-height:1;animation:rwig .5s ease-in-out infinite}
+.rcount{font-family:var(--disp);font-size:96px;color:var(--accent);line-height:1.1}
+.rpopn{animation:rpopn .3s}@keyframes rpopn{50%{transform:scale(1.4)}}
+/* 선생님 놀이 */
+.rplate{min-height:200px;border-radius:50%/40%;background:radial-gradient(ellipse,#fff 55%,#f1ece7 56% 64%,#e6ded5 65%);display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:4px;padding:30px 40px;margin:8px 0}
+.rplate img{width:56px;height:56px;animation:rstk .4s cubic-bezier(.3,1.6,.5,1)}
+.rnums{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}
+.rnum{min-height:60px;border-radius:18px;border:0;background:#f4efff;font-family:var(--disp);font-size:30px;color:var(--ink);cursor:pointer}.rnum.good{background:#c9f0d8}.rnum.bad{background:#ffd6d6}
+/* 생활 타이머 */
+.rring{--f:1;position:relative;width:min(260px,64vw);aspect-ratio:1;margin:6px auto;border-radius:50%;background:conic-gradient(var(--sun) calc(var(--f)*360deg),#f1ece7 0);display:flex;align-items:center;justify-content:center}
+.rring::before{content:"";position:absolute;inset:16px;border-radius:50%;background:#fff}
+.rring img{position:relative;width:52%;height:auto;animation:rwig 1s ease-in-out infinite}
+.rring b{position:absolute;bottom:18%;font-family:var(--disp);font-weight:400;font-size:30px}
+.rring.rdone{background:conic-gradient(#6ccb8f 360deg,#6ccb8f 0)}
+.rstep{font-family:var(--disp);font-size:clamp(24px,5vw,32px)!important;color:var(--accent);min-height:1.4em}
+.rlifebud{width:110px;height:132px;margin:0 auto;animation:rdance .6s ease-in-out infinite alternate}
+/* 색칠 */
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px;margin-top:10px}
+.rcell{aspect-ratio:1;border-radius:16px;border:3px solid #eee;background:#fff;padding:6px;cursor:pointer}.rcell img{width:100%;height:100%;object-fit:contain}.rcell.have{border-color:#6ccb8f;background:#f0fbf4}
+.rcrop{width:min(360px,100%);height:auto;aspect-ratio:1;border-radius:18px;touch-action:none;background:#eee}
+.rrng{display:flex;align-items:center;gap:8px;justify-content:center;font-size:16px;color:var(--soft)}.rrng input{width:180px}
+.rprev{display:flex;justify-content:center}.rprev img{width:96px;height:96px;background:repeating-conic-gradient(#eee 0 25%,#fff 0 50%) 0/16px 16px;border-radius:14px}
+.rcard{width:min(320px,80%);border-radius:18px;box-shadow:0 6px 18px rgba(0,0,0,.15)}
+/* 남은 놀이 시간 */
+.tgauge{--f:1;display:inline-flex;align-items:center;gap:6px;font-family:var(--disp);font-size:16px;background:#fff;border-radius:999px;padding:4px 12px 4px 6px;min-height:36px}
+.tgauge i{width:56px;height:12px;border-radius:999px;background:linear-gradient(90deg,#ffc83d calc(var(--f)*100%),#eee 0);display:block}
+.tgauge::before{content:"";width:22px;height:22px;background:url(art/sun.webp) center/contain no-repeat}
+@media (prefers-reduced-motion:reduce){.rov *{animation:none!important}}
 </style>
 
 <div id="gate">
@@ -317,7 +422,7 @@ body[data-view="scan"]{overflow:hidden}
 </div>
 
 <section id="home" class="wrap">
-  <div class="top"><a class="tohub" href="./" aria-label="놀이터 처음으로">← 놀이터</a><h1>수학공룡 놀이터</h1><button id="kidchip" class="kidchip" type="button"></button><span class="tally">성공한 놀이 <b id="total">0</b> / <span id="totmax">0</span></span><button id="mute" class="ghostbtn" type="button" aria-pressed="false">소리 끄기</button></div>
+  <div class="top"><a class="tohub" href="./" aria-label="놀이터 처음으로">← 놀이터</a><h1>수학공룡 놀이터</h1><button id="kidchip" class="kidchip" type="button"></button><span class="tally">성공한 놀이 <b id="total">0</b> / <span id="totmax">0</span></span><span class="tgauge" data-tgauge hidden><i></i><b></b></span><button id="mute" class="ghostbtn" type="button" aria-pressed="false">소리 끄기</button></div>
   <div id="langtabs" class="seg langtabs" hidden></div>
   <div class="greetrow"><div class="gbud" data-buddy></div><p id="greet" class="gsay"></p></div>
   <div class="bigbtns">
@@ -327,6 +432,7 @@ body[data-view="scan"]{overflow:hidden}
   <p class="hint">또는 아래에서 오늘 읽은 책을 골라요. 놀이 5개를 다 하면 책 한 권 완주!</p>
   <div id="shelf"></div>
   <p class="foot">개인이 아이와 놀려고 만든 놀이예요. 책을 펴낸 출판사와는 관계가 없어요.</p>
+  <p class="foot"><button class="ghostbtn pbtn" type="button" data-parent>부모님 메뉴</button></p>
 </section>
 
 <section id="kids" class="wrap" hidden>
@@ -361,7 +467,8 @@ body[data-view="scan"]{overflow:hidden}
     </div>
     <div class="avform">
       <div id="avMode" class="seg"><button type="button" data-mode="photo">얼굴 사진</button><button type="button" data-mode="draw">그린 그림</button></div>
-      <label class="pill filebtn"><input id="avFile" type="file" accept="image/*" hidden><span id="avFileLbl">사진 고르기</span></label>
+      <div class="row left filerow"><label class="pill main filebtn" id="avCamLbl"><input id="avCam" type="file" accept="image/*" capture="user" hidden><span>지금 사진 찍기</span></label><label class="pill filebtn"><input id="avFile" type="file" accept="image/*" hidden><span id="avFileLbl">사진 고르기</span></label></div>
+      <p id="avOnboard" class="note onb" hidden></p>
       <div class="crop"><canvas id="cropCv" width="320" height="320"></canvas><p id="cropHelp"></p></div>
       <label id="zoomRow" class="rng">크게 작게<input id="avZoom" type="range" min="0.8" max="4" step="0.01" value="1.4"></label>
       <label id="toonRow" class="rng">만화 느낌<input id="avToon" type="range" min="0" max="3" step="1" value="2"></label>
@@ -400,6 +507,7 @@ body[data-view="scan"]{overflow:hidden}
   <div id="stagewrap">
     <svg id="stage" viewBox="0 0 1000 620" preserveAspectRatio="xMidYMid meet"></svg>
     <canvas id="pad" class="hide"></canvas>
+    <div id="ansbar" class="ansbar" hidden><button id="ansClap" type="button" aria-label="손뼉으로 대답하기">👏<small>손뼉</small></button><button id="ansMic" type="button" aria-label="말로 대답하기">🎤<small>말로</small></button></div>
     <div id="padtools" class="hide">
       <button class="sw on" type="button" data-c="#5b3fa8" style="--sw:#5b3fa8" aria-label="보라"></button>
       <button class="sw" type="button" data-c="#e05252" style="--sw:#e05252" aria-label="빨강"></button>
@@ -415,13 +523,421 @@ body[data-view="scan"]{overflow:hidden}
 <section id="done" class="wrap" hidden>
   <div class="dbud" data-buddy></div><div class="big">참 잘했어요!</div>
   <p id="dmsg"></p>
+  <div id="dreward" class="dreward"></div>
   <p id="dtalk" class="dtalk"></p>
   <div class="row"><button id="dnext" class="pill main" type="button">다음 놀이</button><button id="dbook" class="pill" type="button">놀이 목록</button><button id="dhome" class="pill" type="button">책 목록</button></div>
+  <div class="row"><button id="dbrag" class="pill brag" type="button">가족에게 자랑하기</button><button id="dteach" class="pill brag" type="button">내가 문제 낼래!</button></div>
 </section>
 
 <div id="fx" aria-hidden="true"></div>
 <div id="bubble" class="bubble" aria-live="polite"></div>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="g-apple" viewBox="0 0 100 100"><image href="art/apple.webp?v=1795570146" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-star" viewBox="0 0 100 100"><image href="art/star.webp?v=1795570217" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-fish" viewBox="0 0 100 100"><image href="art/fish.webp?v=1795570183" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-carrot" viewBox="0 0 100 100"><image href="art/carrot.webp?v=1795570165" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-ball" viewBox="0 0 100 100"><image href="art/ball.webp?v=1795570147" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-ghost" viewBox="0 0 100 100"><image href="art/ghost.webp?v=1795570187" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-bean" viewBox="0 0 100 100"><image href="art/bean.webp?v=1795570153" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-mosquito" viewBox="0 0 100 100"><image href="art/mosquito.webp?v=1795570199" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-strawberry" viewBox="0 0 100 100"><image href="art/strawberry.webp?v=1795570219" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-heart" viewBox="0 0 100 100"><image href="art/heart.webp?v=1795570190" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-flower" viewBox="0 0 100 100"><image href="art/flower.webp?v=1795570185" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-shell" viewBox="0 0 100 100"><image href="art/shell.webp?v=1795570208" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-cookie" viewBox="0 0 100 100"><image href="art/cookie.webp?v=1795570173" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-balloon" viewBox="0 0 100 100"><image href="art/balloon.webp?v=1795570149" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-dino" viewBox="0 0 100 100"><image href="art/dino.webp?v=1795570176" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-house" viewBox="0 0 100 100"><image href="art/house.webp?v=1795570191" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-car" viewBox="0 0 100 100"><image href="art/car.webp?v=1795570164" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-cupcake" viewBox="0 0 100 100"><image href="art/cupcake.webp?v=1795570174" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-tree" viewBox="0 0 100 100"><image href="art/tree.webp?v=1795570223" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-dog" viewBox="0 0 100 100"><image href="art/dog.webp?v=1795570177" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-sun" viewBox="0 0 100 100"><image href="art/sun.webp?v=1795570220" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-moon" viewBox="0 0 100 100"><image href="art/moon.webp?v=1795570197" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-bowl" viewBox="0 0 100 100"><image href="art/bowl.webp?v=1795570159" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-brush" viewBox="0 0 100 100"><image href="art/brush.webp?v=1795570162" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-book" viewBox="0 0 100 100"><image href="art/book.webp?v=1795570648" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-grape" viewBox="0 0 100 100"><image href="art/grape.webp?v=1795570188" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-rock" viewBox="0 0 100 100"><image href="art/rock.webp?v=1795570205" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-feather" viewBox="0 0 100 100"><image href="art/feather.webp?v=1795570182" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-leaf" viewBox="0 0 100 100"><image href="art/leaf.webp?v=1795570193" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-melon" viewBox="0 0 100 100"><image href="art/melon.webp?v=1795570194" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-box" viewBox="0 0 100 100"><image href="art/box.webp?v=1795570650" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-sprout" viewBox="0 0 100 100"><image href="art/sprout.webp?v=1795570214" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-seed" viewBox="0 0 100 100"><image href="art/seed.webp?v=1795570653" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-sock" viewBox="0 0 100 100"><image href="art/sock.webp?v=1795570211" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-coin" viewBox="0 0 100 100"><g fill="none" stroke="#3b2f2a" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"><circle fill="#ffd84d" cx="50" cy="50" r="42"/><circle fill="#ffd84d" cx="50" cy="50" r="34"/><text x="50" y="58" text-anchor="middle" font-size="22" font-weight="900" fill="#222" stroke="none">100</text></g></symbol><symbol id="g-basket" viewBox="0 0 100 100"><image href="art/basket.webp?v=1795570152" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-bear" viewBox="0 0 100 100"><image href="art/bear.webp?v=1795570155" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-cat" viewBox="0 0 100 100"><image href="art/cat.webp?v=1795570167" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-rabbit" viewBox="0 0 100 100"><image href="art/rabbit.webp?v=1795570202" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-chick" viewBox="0 0 100 100"><image href="art/chick.webp?v=1795570170" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-duck" viewBox="0 0 100 100"><image href="art/duck.webp?v=1795570179" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-egg" viewBox="0 0 100 100"><image href="art/egg.webp?v=1795570651" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-pencil" viewBox="0 0 100 100"><image href="art/pencil.webp?v=1795570200" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-spoon" viewBox="0 0 100 100"><image href="art/spoon.webp?v=1795570213" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-bed" viewBox="0 0 100 100"><image href="art/bed.webp?v=1795570156" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-clock" viewBox="0 0 100 100"><g fill="none" stroke="#3b2f2a" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"><circle fill="#ffffff" cx="50" cy="50" r="38"/><path d="M50 50L50 24M50 50L68 50"/></g></symbol><symbol id="g-toy" viewBox="0 0 100 100"><image href="art/toy.webp?v=1795570222" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-milk" viewBox="0 0 100 100"><image href="art/milk.webp?v=1795570196" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-umbrella" viewBox="0 0 100 100"><image href="art/umbrella.webp?v=1795570226" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-snowman" viewBox="0 0 100 100"><image href="art/snowman.webp?v=1795570209" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-triangle" viewBox="0 0 100 100"><g fill="none" stroke="#3b2f2a" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"><polygon fill="#ffd34d" points="50,12 90,86 10,86"/><g class="kf" stroke="none"><ellipse cx="41.5" cy="74.0" rx="3.6" ry="4.7" fill="#3b2f2a"/><ellipse cx="58.5" cy="74.0" rx="3.6" ry="4.7" fill="#3b2f2a"/><circle cx="42.8" cy="72.3" r="1.4" fill="#fff"/><circle cx="59.8" cy="72.3" r="1.4" fill="#fff"/><ellipse cx="33.8" cy="80.5" rx="5.2" ry="3.2" fill="#ff7f9e" opacity=".55"/><ellipse cx="66.2" cy="80.5" rx="5.2" ry="3.2" fill="#ff7f9e" opacity=".55"/><path d="M44.8 79.8 Q50.0 85.7 55.2 79.8" fill="none" stroke="#3b2f2a" stroke-width="3.4" stroke-linecap="round"/></g></g></symbol><symbol id="g-square" viewBox="0 0 100 100"><g fill="none" stroke="#3b2f2a" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"><rect fill="#7cc4f5" x="14" y="14" width="72" height="72"/><g class="kf" stroke="none"><ellipse cx="40.2" cy="52.0" rx="4.2" ry="5.4" fill="#3b2f2a"/><ellipse cx="59.8" cy="52.0" rx="4.2" ry="5.4" fill="#3b2f2a"/><circle cx="41.8" cy="50.0" r="1.7" fill="#fff"/><circle cx="61.2" cy="50.0" r="1.7" fill="#fff"/><ellipse cx="31.2" cy="59.5" rx="6.0" ry="3.8" fill="#ff7f9e" opacity=".55"/><ellipse cx="68.8" cy="59.5" rx="6.0" ry="3.8" fill="#ff7f9e" opacity=".55"/><path d="M44.0 58.8 Q50.0 65.5 56.0 58.8" fill="none" stroke="#3b2f2a" stroke-width="3.9" stroke-linecap="round"/></g></g></symbol><symbol id="g-circle" viewBox="0 0 100 100"><g fill="none" stroke="#3b2f2a" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"><circle fill="#ff7a6b" cx="50" cy="50" r="38"/><ellipse cx="32" cy="34" rx="7" ry="11" fill="#fff" opacity=".6" stroke="none" transform="rotate(-25 32 34)"/><g class="kf" stroke="none"><ellipse cx="40.2" cy="52.0" rx="4.2" ry="5.4" fill="#3b2f2a"/><ellipse cx="59.8" cy="52.0" rx="4.2" ry="5.4" fill="#3b2f2a"/><circle cx="41.8" cy="50.0" r="1.7" fill="#fff"/><circle cx="61.2" cy="50.0" r="1.7" fill="#fff"/><ellipse cx="31.2" cy="59.5" rx="6.0" ry="3.8" fill="#ff7f9e" opacity=".55"/><ellipse cx="68.8" cy="59.5" rx="6.0" ry="3.8" fill="#ff7f9e" opacity=".55"/><path d="M44.0 58.8 Q50.0 65.5 56.0 58.8" fill="none" stroke="#3b2f2a" stroke-width="3.9" stroke-linecap="round"/></g></g></symbol><symbol id="g-rect" viewBox="0 0 100 100"><g fill="none" stroke="#3b2f2a" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"><rect fill="#7fd49c" x="8" y="28" width="84" height="44"/><g class="kf" stroke="none"><ellipse cx="42.2" cy="52.0" rx="3.4" ry="4.3" fill="#3b2f2a"/><ellipse cx="57.8" cy="52.0" rx="3.4" ry="4.3" fill="#3b2f2a"/><circle cx="43.4" cy="50.4" r="1.3" fill="#fff"/><circle cx="59.0" cy="50.4" r="1.3" fill="#fff"/><ellipse cx="35.0" cy="58.0" rx="4.8" ry="3.0" fill="#ff7f9e" opacity=".55"/><ellipse cx="65.0" cy="58.0" rx="4.8" ry="3.0" fill="#ff7f9e" opacity=".55"/><path d="M45.2 57.4 Q50.0 62.8 54.8 57.4" fill="none" stroke="#3b2f2a" stroke-width="3.1" stroke-linecap="round"/></g></g></symbol><symbol id="g-cherry" viewBox="0 0 100 100"><image href="art/cherry.webp?v=1795570168" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-banana" viewBox="0 0 100 100"><image href="art/banana.webp?v=1795570150" x="0" y="0" width="100" height="100"/></symbol></defs></svg><script>window.__ART_BG="art/bg_stage.webp?v=1795570653";window.__PROG="mathdino";window.__CFG={"title": "수학공룡 놀이터", "sub": "42권 책마다 놀이 5개", "hint": "또는 아래에서 오늘 읽은 책을 골라요. 놀이 5개를 다 하면 책 한 권 완주!"};window.__DATA__={"books":[{"no":1,"title":"통통통! 콩이가 몇 개?","color":"#6A4BBE","levels":[{"g":"tapcount","p":{"icon":"bean","nums":[1,2,3,4,5]},"name":"눌러서 색칠하기"},{"g":"count","p":{"icon":"bean","nums":[3,5,2,4,1]},"name":"몇 개일까?"},{"g":"trace","p":{"nums":["1","2","3","4","5","6"]},"name":"손가락으로 따라 쓰기"},{"g":"dots","p":{"shape":"star"},"name":"점 잇기"},{"g":"count","p":{"dice":true},"name":"몇 개일까? 2"}]},{"no":2,"title":"차례 차례 착, 착, 착!","color":"#6A4BBE","levels":[{"g":"order","p":{"animals":["bear","cat","rabbit","dog","chick"],"kind":"train"},"name":"순서대로 태우기"},{"g":"ordinal","p":{"icon":"apple"},"name":"몇째일까?"},{"g":"order","p":{"animals":["rabbit","dog","duck"],"kind":"podium"},"name":"순서대로 태우기 2"},{"g":"numorder","p":{"maxn":5},"name":"숫자 차례로 누르기"},{"g":"routine","p":{},"name":"무엇을 먼저 할까?"}]},{"no":3,"title":"유령 셋, 소녀 하나","color":"#6A4BBE","levels":[{"g":"compare","p":{"icon":"ghost","icon2":"chick"},"name":"어느 쪽이 많을까?"},{"g":"tapcount","p":{"icon":"ghost","nums":[3,1,4,2,5]},"name":"눌러서 색칠하기"},{"g":"count","p":{"icon":"ghost","nums":[1,3,2,5,4]},"name":"몇 개일까?"},{"g":"bingo","p":{"kind":"num"},"name":"빙고"},{"g":"draw","p":{"prompt":"유령 셋, 소녀 하나! 내가 만든 유령 친구! 그림으로 그려 볼까?"},"name":"그림 그리기"}]},{"no":4,"title":"더 더 더!","color":"#6A4BBE","levels":[{"g":"tapcount","p":{"icon":"grape","nums":[1,2,3,4,5]},"name":"눌러서 색칠하기"},{"g":"frame","p":{"size":5,"nums":[1,2,3,4,5]},"name":"칸 채우기"},{"g":"frame","p":{"size":5,"nums":[1,2,3,4,5]},"name":"칸 채우기 2"},{"g":"add","p":{"icon":"apple","probs":[[2,1],[3,1],[4,1],[1,1]]},"name":"모두 몇 개?"},{"g":"compare","p":{"icon":"apple","icon2":null},"name":"어느 쪽이 많을까?"}]},{"no":5,"title":"애애앵 모기다!","color":"#6A4BBE","levels":[{"g":"hidden","p":{"icon":"mosquito","n":7},"name":"숨은 그림 찾기"},{"g":"bingo","p":{"kind":"num"},"name":"빙고"},{"g":"subtract","p":{"icon":"mosquito","probs":[[5,2],[4,1],[6,3]],"verb":"날아갔어요"},"name":"남은 건 몇 개?"},{"g":"count","p":{"icon":"mosquito","nums":[2,4,1,5,3]},"name":"몇 개일까?"},{"g":"tapcount","p":{"icon":"mosquito","nums":[2,4,3,5,1]},"name":"눌러서 색칠하기"}]},{"no":6,"title":"다섯 개 주세요","color":"#6A4BBE","levels":[{"g":"frame","p":{"size":5,"nums":[5,4,3,2,1]},"name":"칸 채우기"},{"g":"makeN","p":{"n":5,"icon":"cookie"},"name":"몇 개 더 있어야 할까?"},{"g":"tapcount","p":{"icon":"cookie","nums":[5,5,4,3,5]},"name":"눌러서 색칠하기"},{"g":"add","p":{"icon":"cookie","probs":[[1,4],[2,3],[3,2],[4,1]]},"name":"모두 몇 개?"},{"g":"trace","p":{"nums":["5","5","5","4","3","2"]},"name":"손가락으로 따라 쓰기"}]},{"no":7,"title":"여름 바다로 가요!","color":"#6A4BBE","levels":[{"g":"tapcount","p":{"icon":"fish","nums":[2,4,6,3,5]},"name":"눌러서 색칠하기"},{"g":"count","p":{"icon":"shell","nums":[4,6,2,5,3]},"name":"몇 개일까?"},{"g":"sort","p":{"set":"sea"},"name":"같은 것끼리"},{"g":"compare","p":{"icon":"fish","icon2":"shell"},"name":"어느 쪽이 많을까?"},{"g":"dots","p":{"shape":"fish"},"name":"점 잇기"}]},{"no":8,"title":"하나도 없어!","color":"#6A4BBE","levels":[{"g":"subtract","p":{"icon":"cookie","probs":[[3,3],[5,2],[2,2],[4,4]],"verb":"없어졌어요"},"name":"남은 건 몇 개?"},{"g":"frame","p":{"size":5,"nums":[0,2,5,1,3]},"name":"칸 채우기"},{"g":"count","p":{"icon":"apple","nums":[3,1,4,2]},"name":"몇 개일까?"},{"g":"trace","p":{"nums":["0","1","2","3","4","5"]},"name":"손가락으로 따라 쓰기"},{"g":"tapcount","p":{"icon":"cookie","nums":[0,5,2,0,4]},"name":"눌러서 색칠하기"}]},{"no":9,"title":"어서 오세요! 100 식당입니다","color":"#6A4BBE","levels":[{"g":"count","p":{"icon":"cookie","nums":[6,7,8,9,10]},"name":"몇 개일까?"},{"g":"findnum","p":{"upto":30},"name":"숫자 찾기"},{"g":"coins","p":{"items":[["bowl",3],["milk",1],["cupcake",2],["apple",1]]},"name":"동전 가게"},{"g":"frame","p":{"size":10,"nums":[10,7,9,6]},"name":"칸 채우기"},{"g":"trace","p":{"nums":["10","20","30","40","50","100"]},"name":"손가락으로 따라 쓰기"}]},{"no":10,"title":"토비는 당근 조각가","color":"#6A4BBE","levels":[{"g":"add","p":{"icon":"carrot","probs":[[2,1],[3,2],[1,3]]},"name":"모두 몇 개?"},{"g":"add","p":{"icon":"carrot","probs":[[2,1],[3,2],[1,3]]},"name":"모두 몇 개? 2"},{"g":"tapcount","p":{"icon":"carrot","nums":[2,3,4,5,6]},"name":"눌러서 색칠하기"},{"g":"count","p":{"icon":"carrot","nums":[3,4,5,6,2]},"name":"몇 개일까?"},{"g":"frame","p":{"size":5,"nums":[3,4,2,5,1]},"name":"칸 채우기"}]},{"no":11,"title":"꿀꺽 괴물의 신기한 공놀이","color":"#6A4BBE","levels":[{"g":"add","p":{"icon":"ball","probs":[[3,1],[2,2],[4,1],[1,2]]},"name":"모두 몇 개?"},{"g":"subtract","p":{"icon":"ball","probs":[[4,1],[5,2],[3,2],[6,1]],"verb":"꿀꺽 먹혔어요"},"name":"남은 건 몇 개?"},{"g":"numorder","p":{"maxn":10},"name":"숫자 차례로 누르기"},{"g":"maze","p":{"start":"ball","goal":"box"},"name":"미로 탈출"},{"g":"frame","p":{"size":10,"nums":[6,8,5,10]},"name":"칸 채우기"}]},{"no":12,"title":"사이 좋게 똑같이","color":"#6A4BBE","levels":[{"g":"share","p":{"total":6,"people":2,"icon":"cookie"},"name":"똑같이 나누기"},{"g":"share","p":{"total":8,"people":4,"icon":"strawberry"},"name":"똑같이 나누기 2"},{"g":"share","p":{"total":6,"people":3,"icon":"apple"},"name":"똑같이 나누기 3"},{"g":"share","p":{"total":8,"people":2,"icon":"strawberry"},"name":"똑같이 나누기 4"},{"g":"tapcount","p":{"icon":"cookie","nums":[2,4,6,8,10]},"name":"눌러서 색칠하기"}]},{"no":13,"title":"용용이가 달라졌다고?","color":"#6A4BBE","levels":[{"g":"frame","p":{"size":10,"nums":[10,8,6,4]},"name":"칸 채우기"},{"g":"add","p":{"icon":"ball","probs":[[3,4],[5,2],[4,3],[6,1]]},"name":"모두 몇 개?"},{"g":"makeN","p":{"n":6,"icon":"ball"},"name":"몇 개 더 있어야 할까?"},{"g":"bingo","p":{"kind":"num"},"name":"빙고"},{"g":"tapcount","p":{"icon":"grape","nums":[7,3,6,4,10]},"name":"눌러서 색칠하기"}]},{"no":14,"title":"일부러 그런 게 아니야","color":"#6A4BBE","levels":[{"g":"subtract","p":{"icon":"toy","probs":[[5,1],[4,2],[6,2],[3,1]],"verb":"망가졌어요"},"name":"남은 건 몇 개?"},{"g":"add","p":{"icon":"toy","probs":[[2,2],[3,1],[1,3],[2,3]]},"name":"모두 몇 개?"},{"g":"compare","p":{"icon":"toy","icon2":null},"name":"어느 쪽이 많을까?"},{"g":"routine","p":{"steps":[["toy","놀아요"],["rock","실수로 쾅!"],["heart","미안해"],["box","같이 정리"],["sun","다시 놀아요"]]},"name":"무엇을 먼저 할까?"},{"g":"draw","p":{"prompt":"실수했을 때 내가 하는 말과 행동! 그림으로 그려 볼까?"},"name":"그림 그리기"}]},{"no":15,"title":"안녕, 점 선 면","color":"#1E8A82","levels":[{"g":"dots","p":{"shape":"house"},"name":"점 잇기"},{"g":"inout","p":{},"name":"안과 밖"},{"g":"dots","p":{"shape":"house"},"name":"점 잇기 2"},{"g":"draw","p":{"prompt":"동그라미·세모·네모를 그리고, 눈이랑 바퀴를 붙여서 그림으로 바꿔 봐"},"name":"그림 그리기"},{"g":"puzzle","p":{"target":"house"},"name":"모양 퍼즐"}]},{"no":16,"title":"어서 와! 모양 친구들","color":"#1E8A82","levels":[{"g":"shapefind","p":{},"name":"모양 찾기"},{"g":"puzzle","p":{"target":"rocket"},"name":"모양 퍼즐"},{"g":"bingo","p":{"kind":"shape"},"name":"빙고"},{"g":"draw","p":{"prompt":"동그라미·세모·네모를 그리고, 눈이랑 바퀴를 붙여서 그림으로 바꿔 봐"},"name":"그림 그리기"},{"g":"sort","p":{"set":"shape"},"name":"같은 것끼리"}]},{"no":17,"title":"까미야, 어디 가?","color":"#1E8A82","levels":[{"g":"position","p":{},"name":"어디에 놓을까?"},{"g":"maze","p":{"start":"cat","goal":"house"},"name":"미로 탈출"},{"g":"maze","p":{"start":"dog","goal":"bowl"},"name":"미로 탈출 2"},{"g":"hidden","p":{"icon":"cat","n":5},"name":"숨은 그림 찾기"},{"g":"dots","p":{"shape":"boat"},"name":"점 잇기"}]},{"no":18,"title":"우리 같이 춤출래?","color":"#1E8A82","levels":[{"g":"leftright","p":{},"name":"왼쪽 오른쪽"},{"g":"position","p":{},"name":"어디에 놓을까?"},{"g":"maze","p":{"start":"dog","goal":"bowl"},"name":"미로 탈출"},{"g":"pattern","p":{"rows":[["rabbit","bear"],["star","heart","heart"],["chick","chick","duck"],["circle","square"]]},"name":"다음엔 뭐가 올까?"},{"g":"draw","p":{"prompt":"우리 가족 춤 동작 그리기 (왼손·오른손 표시)! 그림으로 그려 볼까?"},"name":"그림 그리기"}]},{"no":19,"title":"신기한 택배 상자","color":"#1E8A82","levels":[{"g":"count","p":{"dice":true},"name":"몇 개일까?"},{"g":"inout","p":{},"name":"안과 밖"},{"g":"sort","p":{"set":"roll"},"name":"같은 것끼리"},{"g":"position","p":{},"name":"어디에 놓을까?"},{"g":"shapefind","p":{},"name":"모양 찾기"}]},{"no":20,"title":"손을 잡아 봐!","color":"#1E8A82","levels":[{"g":"dots","p":{"shape":"house"},"name":"점 잇기"},{"g":"dots","p":{"shape":"rocket"},"name":"점 잇기 2"},{"g":"puzzle","p":{"target":"house"},"name":"모양 퍼즐"},{"g":"puzzle","p":{"target":"mix"},"name":"모양 퍼즐 2"},{"g":"shapefind","p":{},"name":"모양 찾기"}]},{"no":21,"title":"정말 정말 동그래","color":"#1E8A82","levels":[{"g":"shapefind","p":{},"name":"모양 찾기"},{"g":"puzzle","p":{"target":"caterpillar"},"name":"모양 퍼즐"},{"g":"sort","p":{"set":"roll"},"name":"같은 것끼리"},{"g":"draw","p":{"prompt":"동그라미·세모·네모를 그리고, 눈이랑 바퀴를 붙여서 그림으로 바꿔 봐"},"name":"그림 그리기"},{"g":"puzzle","p":{"target":"flower"},"name":"모양 퍼즐 2"}]},{"no":22,"title":"하나의 신기한 여행","color":"#1E8A82","levels":[{"g":"puzzle","p":{"target":"mix"},"name":"모양 퍼즐"},{"g":"puzzle","p":{"target":"fish"},"name":"모양 퍼즐 2"},{"g":"maze","p":{"start":"car","goal":"house"},"name":"미로 탈출"},{"g":"shapefind","p":{},"name":"모양 찾기"},{"g":"bingo","p":{"kind":"shape"},"name":"빙고"}]},{"no":23,"title":"꼬마랑 덩치랑","color":"#1E8A82","levels":[{"g":"size","p":{"icon":"dino"},"name":"크기 순서"},{"g":"size","p":{"icon":"bear"},"name":"크기 순서 2"},{"g":"compare","p":{"icon":"star","icon2":null},"name":"어느 쪽이 많을까?"},{"g":"measure","p":{},"name":"콩으로 재기"},{"g":"frame","p":{"size":5,"nums":[1,2,3,4,5]},"name":"칸 채우기"}]},{"no":24,"title":"쭉쭉, 내가 더 길어","color":"#C75A12","levels":[{"g":"measure","p":{},"name":"콩으로 재기"},{"g":"length","p":{},"name":"긴 줄 짧은 줄"},{"g":"size","p":{"icon":"pencil"},"name":"크기 순서"},{"g":"measure","p":{},"name":"콩으로 재기 2"},{"g":"draw","p":{"prompt":"우리 집에서 가장 긴 것을 찾아 그려요"},"name":"그림 그리기"}]},{"no":25,"title":"왜 아빠 것만 넓어?","color":"#C75A12","levels":[{"g":"area","p":{},"name":"넓은 쪽 찾기"},{"g":"shapefind","p":{},"name":"모양 찾기"},{"g":"size","p":{"icon":"book"},"name":"크기 순서"},{"g":"share","p":{"total":8,"people":2,"icon":"strawberry"},"name":"똑같이 나누기"},{"g":"draw","p":{"prompt":"내 이불과 아빠 이불, 어느 쪽이 넓을까?"},"name":"그림 그리기"}]},{"no":26,"title":"나 안 무거워!","color":"#C75A12","levels":[{"g":"heavy","p":{},"name":"무거워요 가벼워요"},{"g":"sort","p":{"set":"heavy"},"name":"같은 것끼리"},{"g":"compare","p":{"icon":"rock","icon2":"feather"},"name":"어느 쪽이 많을까?"},{"g":"size","p":{"icon":"melon"},"name":"크기 순서"},{"g":"draw","p":{"prompt":"물을 가장 많이 담을 수 있는 그릇은?"},"name":"그림 그리기"}]},{"no":27,"title":"내가 재 줄게!","color":"#C75A12","levels":[{"g":"measure","p":{},"name":"콩으로 재기"},{"g":"measure","p":{},"name":"콩으로 재기 2"},{"g":"length","p":{},"name":"긴 줄 짧은 줄"},{"g":"area","p":{},"name":"넓은 쪽 찾기"},{"g":"size","p":{"icon":"pencil"},"name":"크기 순서"}]},{"no":28,"title":"똑딱 똑딱 영웅이의 하루","color":"#C75A12","levels":[{"g":"clock","p":{},"name":"시계 보기"},{"g":"clock","p":{},"name":"시계 보기 2"},{"g":"routine","p":{},"name":"무엇을 먼저 할까?"},{"g":"trace","p":{"nums":["1","3","6","9","12","7"]},"name":"손가락으로 따라 쓰기"},{"g":"clock","p":{},"name":"시계 보기 3"}]},{"no":29,"title":"규칙 속으로 출발!","color":"#C8326A","levels":[{"g":"pattern","p":{},"name":"다음엔 뭐가 올까?"},{"g":"pattern","p":{},"name":"다음엔 뭐가 올까? 2"},{"g":"pattern","p":{},"name":"다음엔 뭐가 올까? 3"},{"g":"pattern","p":{},"name":"다음엔 뭐가 올까? 4"},{"g":"bingo","p":{"kind":"shape"},"name":"빙고"}]},{"no":30,"title":"그 다음은 뭘까?","color":"#C8326A","levels":[{"g":"pattern","p":{"rows":[["sun","moon"],["apple","apple","grape"],["circle","triangle","square"],["dog","cat","cat"]]},"name":"다음엔 뭐가 올까?"},{"g":"routine","p":{"steps":[["seed","씨앗 심기"],["sprout","싹이 나요"],["flower","꽃이 펴요"],["strawberry","열매가 열려요"]]},"name":"무엇을 먼저 할까?"},{"g":"pattern","p":{},"name":"다음엔 뭐가 올까? 2"},{"g":"numorder","p":{"maxn":10},"name":"숫자 차례로 누르기"},{"g":"pattern","p":{},"name":"다음엔 뭐가 올까? 3"}]},{"no":31,"title":"우당탕탕 강아지 대 소동","color":"#C8326A","levels":[{"g":"maze","p":{"start":"dog","goal":"bowl"},"name":"미로 탈출"},{"g":"maze","p":{"start":"dog","goal":"bowl"},"name":"미로 탈출 2"},{"g":"numorder","p":{"maxn":10},"name":"숫자 차례로 누르기"},{"g":"position","p":{},"name":"어디에 놓을까?"},{"g":"routine","p":{"steps":[["dog","강아지가 뛰어요"],["bowl","그릇이 쾅"],["milk","우유가 쏟아져요"],["brush","닦아요"],["moon","쿨쿨"]]},"name":"무엇을 먼저 할까?"}]},{"no":32,"title":"규칙을 찾아라!","color":"#C8326A","levels":[{"g":"pattern","p":{},"name":"다음엔 뭐가 올까?"},{"g":"pattern","p":{},"name":"다음엔 뭐가 올까? 2"},{"g":"bingo","p":{"kind":"shape"},"name":"빙고"},{"g":"pattern","p":{},"name":"다음엔 뭐가 올까? 3"},{"g":"findnum","p":{"upto":20},"name":"숫자 찾기"}]},{"no":33,"title":"정리를 부탁해","color":"#C8326A","levels":[{"g":"sort","p":{"set":"tidy"},"name":"같은 것끼리"},{"g":"pairs","p":{},"name":"양말 짝 찾기"},{"g":"sort","p":{"set":"fruit"},"name":"같은 것끼리 2"},{"g":"graph","p":{"items":["bear","book","ball","car"]},"name":"그래프 읽기"},{"g":"tapcount","p":{"icon":"sock","nums":[2,4,6,3,5]},"name":"눌러서 색칠하기"}]},{"no":34,"title":"뽀리의 모조리 나무","color":"#C8326A","levels":[{"g":"sort","p":{"set":"shape"},"name":"같은 것끼리"},{"g":"sort","p":{"set":"tree"},"name":"같은 것끼리 2"},{"g":"pairs","p":{},"name":"양말 짝 찾기"},{"g":"graph","p":{"items":["leaf","flower","apple","bear"]},"name":"그래프 읽기"},{"g":"bingo","p":{"kind":"shape"},"name":"빙고"}]},{"no":35,"title":"하나씩 좋아요!","color":"#C8326A","levels":[{"g":"graph","p":{},"name":"그래프 읽기"},{"g":"graph","p":{"items":["dog","cat","rabbit","fish"]},"name":"그래프 읽기 2"},{"g":"tapcount","p":{"icon":"heart","nums":[1,2,3,4,5]},"name":"눌러서 색칠하기"},{"g":"compare","p":{"icon":"heart","icon2":null},"name":"어느 쪽이 많을까?"},{"g":"graph","p":{"items":["sun","umbrella","snowman","leaf"]},"name":"그래프 읽기 3"}]},{"no":36,"title":"내 이름은 이오영","color":"#2D68BF","levels":[{"g":"findnum","p":{"upto":20},"name":"숫자 찾기"},{"g":"trace","p":{"nums":["0","1","2","3","4","5"]},"name":"손가락으로 따라 쓰기"},{"g":"trace","p":{"nums":["6","7","8","9","10","5"]},"name":"손가락으로 따라 쓰기 2"},{"g":"bingo","p":{"kind":"num"},"name":"빙고"},{"g":"draw","p":{"prompt":"내 이름과 나이, 우리 집 숫자를 그려요"},"name":"그림 그리기"}]},{"no":37,"title":"다 있어 자판기","color":"#2D68BF","levels":[{"g":"coins","p":{},"name":"동전 가게"},{"g":"coins","p":{"items":[["apple",1],["cookie",2],["ball",3],["book",5]]},"name":"동전 가게 2"},{"g":"tapcount","p":{"icon":"coin","nums":[1,2,3,4,5]},"name":"눌러서 색칠하기"},{"g":"count","p":{"icon":"coin","nums":[2,4,1,5,3]},"name":"몇 개일까?"},{"g":"draw","p":{"prompt":"내가 만든 자판기! 물건과 가격을 그려요"},"name":"그림 그리기"}]},{"no":38,"title":"엄마, 유치원 언제 가?","color":"#2D68BF","levels":[{"g":"calendar","p":{},"name":"달력 놀이"},{"g":"routine","p":{},"name":"무엇을 먼저 할까?"},{"g":"sort","p":{"set":"season"},"name":"같은 것끼리"},{"g":"clock","p":{},"name":"시계 보기"},{"g":"draw","p":{"prompt":"유치원 가기까지 몇 밤 남았을까? 달력에 X표! 그림으로 그려 볼까?"},"name":"그림 그리기"}]},{"no":39,"title":"딸기를 딸 거야!","color":"#2D68BF","levels":[{"g":"routine","p":{"steps":[["seed","씨앗 심기"],["sprout","물 주기"],["flower","꽃 피기"],["strawberry","딸기 따기"],["bowl","나눠 먹기"]]},"name":"무엇을 먼저 할까?"},{"g":"makeN","p":{"n":10,"icon":"strawberry"},"name":"몇 개 더 있어야 할까?"},{"g":"tapcount","p":{"icon":"strawberry","nums":[3,5,7,2,10]},"name":"눌러서 색칠하기"},{"g":"add","p":{"icon":"strawberry","probs":[[3,2],[4,4],[5,1],[2,6]]},"name":"모두 몇 개?"},{"g":"frame","p":{"size":10,"nums":[10,5,8,3]},"name":"칸 채우기"}]},{"no":40,"title":"티라노를 찾습니다","color":"#2D68BF","levels":[{"g":"maze","p":{"start":"dino","goal":"egg"},"name":"미로 탈출"},{"g":"maze","p":{"start":"car","goal":"dino"},"name":"미로 탈출 2"},{"g":"maze","p":{"start":"dog","goal":"bowl"},"name":"미로 탈출 3"},{"g":"position","p":{},"name":"어디에 놓을까?"},{"g":"dots","p":{"shape":"dino"},"name":"점 잇기"}]},{"no":41,"title":"숫자를 만난 날","color":"#2D68BF","levels":[{"g":"trace","p":{"nums":["1","2","3","4","5","6"]},"name":"손가락으로 따라 쓰기"},{"g":"findnum","p":{"upto":20},"name":"숫자 찾기"},{"g":"bingo","p":{"kind":"num"},"name":"빙고"},{"g":"count","p":{"icon":"star","nums":[6,2,7,3,5]},"name":"몇 개일까?"},{"g":"numorder","p":{"maxn":10},"name":"숫자 차례로 누르기"}]},{"no":42,"title":"나도 한 번 해 볼까?","color":"#2D68BF","levels":[{"g":"puzzle","p":{"target":"mix"},"name":"모양 퍼즐"},{"g":"draw","p":{"prompt":"동그라미·세모·네모를 그리고, 눈이랑 바퀴를 붙여서 그림으로 바꿔 봐"},"name":"그림 그리기"},{"g":"puzzle","p":{"target":"fish"},"name":"모양 퍼즐 2"},{"g":"pattern","p":{},"name":"다음엔 뭐가 올까?"},{"g":"dots","p":{"shape":"tree"},"name":"점 잇기"}]}],"names":{"apple":"사과","star":"별","fish":"물고기","carrot":"당근","ball":"공","ghost":"유령","bean":"콩","mosquito":"모기","strawberry":"딸기","heart":"하트","flower":"꽃","shell":"조개","cookie":"쿠키","balloon":"풍선","dino":"공룡","house":"집","car":"자동차","cupcake":"컵케이크","tree":"나무","dog":"강아지","sun":"해","moon":"달","bowl":"밥","brush":"칫솔","book":"책","grape":"포도","rock":"돌","feather":"깃털","leaf":"나뭇잎","melon":"수박","box":"상자","sprout":"새싹","seed":"씨앗","sock":"양말","coin":"동전","bear":"곰","cat":"고양이","rabbit":"토끼","chick":"병아리","duck":"오리","egg":"알","pencil":"연필","spoon":"숟가락","bed":"침대","clock":"시계","toy":"장난감","milk":"우유","umbrella":"우산","snowman":"눈사람","triangle":"세모","square":"네모","circle":"동그라미","rect":"네모","cherry":"체리","banana":"바나나"},"d2d":{"star":[[50.0,12.0],[60.0,38.2],[88.0,39.6],[66.2,57.3],[73.5,84.4],[50.0,69.0],[26.5,84.4],[33.8,57.3],[12.0,39.6],[40.0,38.2]],"house":[[20,90],[20,45],[50,14],[80,45],[80,90],[60,90],[60,64],[40,64],[40,90]],"fish":[[8,50],[24,32],[46,25],[66,32],[78,46],[95,30],[92,50],[95,70],[78,56],[64,70],[44,75],[24,68]],"dino":[[8,85],[15,58],[40,48],[58,42],[64,15],[82,12],[86,25],[72,30],[72,50],[95,82],[55,75],[30,80]],"heart":[[50,88],[22,64],[10,40],[16,22],[34,16],[50,30],[66,16],[84,22],[90,40],[78,64]],"rocket":[[50,6],[64,26],[64,66],[78,84],[60,80],[50,94],[40,80],[22,84],[36,66],[36,26]],"tree":[[50,6],[74,36],[62,36],[84,66],[56,66],[56,92],[44,92],[44,66],[16,66],[38,36],[26,36]],"boat":[[10,62],[90,62],[76,84],[24,84],[10,62],[48,62],[48,10],[80,54],[52,54]]}};</script>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="g-apple" viewBox="0 0 100 100"><image href="art/apple.webp?v=1795570146" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-star" viewBox="0 0 100 100"><image href="art/star.webp?v=1795570217" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-fish" viewBox="0 0 100 100"><image href="art/fish.webp?v=1795570183" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-carrot" viewBox="0 0 100 100"><image href="art/carrot.webp?v=1795570165" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-ball" viewBox="0 0 100 100"><image href="art/ball.webp?v=1795570147" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-ghost" viewBox="0 0 100 100"><image href="art/ghost.webp?v=1795570187" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-bean" viewBox="0 0 100 100"><image href="art/bean.webp?v=1795570153" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-mosquito" viewBox="0 0 100 100"><image href="art/mosquito.webp?v=1795570199" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-strawberry" viewBox="0 0 100 100"><image href="art/strawberry.webp?v=1795570219" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-heart" viewBox="0 0 100 100"><image href="art/heart.webp?v=1795570190" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-flower" viewBox="0 0 100 100"><image href="art/flower.webp?v=1795570185" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-shell" viewBox="0 0 100 100"><image href="art/shell.webp?v=1795570208" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-cookie" viewBox="0 0 100 100"><image href="art/cookie.webp?v=1795570173" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-balloon" viewBox="0 0 100 100"><image href="art/balloon.webp?v=1795570149" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-dino" viewBox="0 0 100 100"><image href="art/dino.webp?v=1795570176" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-house" viewBox="0 0 100 100"><image href="art/house.webp?v=1795570191" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-car" viewBox="0 0 100 100"><image href="art/car.webp?v=1795570164" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-cupcake" viewBox="0 0 100 100"><image href="art/cupcake.webp?v=1795570174" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-tree" viewBox="0 0 100 100"><image href="art/tree.webp?v=1795570223" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-dog" viewBox="0 0 100 100"><image href="art/dog.webp?v=1795570177" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-sun" viewBox="0 0 100 100"><image href="art/sun.webp?v=1795570220" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-moon" viewBox="0 0 100 100"><image href="art/moon.webp?v=1795570197" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-bowl" viewBox="0 0 100 100"><image href="art/bowl.webp?v=1795570159" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-brush" viewBox="0 0 100 100"><image href="art/brush.webp?v=1795570162" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-book" viewBox="0 0 100 100"><image href="art/book.webp?v=1795570648" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-grape" viewBox="0 0 100 100"><image href="art/grape.webp?v=1795570188" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-rock" viewBox="0 0 100 100"><image href="art/rock.webp?v=1795570205" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-feather" viewBox="0 0 100 100"><image href="art/feather.webp?v=1795570182" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-leaf" viewBox="0 0 100 100"><image href="art/leaf.webp?v=1795570193" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-melon" viewBox="0 0 100 100"><image href="art/melon.webp?v=1795570194" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-box" viewBox="0 0 100 100"><image href="art/box.webp?v=1795570650" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-sprout" viewBox="0 0 100 100"><image href="art/sprout.webp?v=1795570214" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-seed" viewBox="0 0 100 100"><image href="art/seed.webp?v=1795570653" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-sock" viewBox="0 0 100 100"><image href="art/sock.webp?v=1795570211" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-coin" viewBox="0 0 100 100"><g fill="none" stroke="#3b2f2a" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"><circle fill="#ffd84d" cx="50" cy="50" r="42"/><circle fill="#ffd84d" cx="50" cy="50" r="34"/><text x="50" y="58" text-anchor="middle" font-size="22" font-weight="900" fill="#222" stroke="none">100</text></g></symbol><symbol id="g-basket" viewBox="0 0 100 100"><image href="art/basket.webp?v=1795570152" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-bear" viewBox="0 0 100 100"><image href="art/bear.webp?v=1795570155" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-cat" viewBox="0 0 100 100"><image href="art/cat.webp?v=1795570167" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-rabbit" viewBox="0 0 100 100"><image href="art/rabbit.webp?v=1795570202" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-chick" viewBox="0 0 100 100"><image href="art/chick.webp?v=1795570170" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-duck" viewBox="0 0 100 100"><image href="art/duck.webp?v=1795570179" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-egg" viewBox="0 0 100 100"><image href="art/egg.webp?v=1795570651" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-pencil" viewBox="0 0 100 100"><image href="art/pencil.webp?v=1795570200" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-spoon" viewBox="0 0 100 100"><image href="art/spoon.webp?v=1795570213" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-bed" viewBox="0 0 100 100"><image href="art/bed.webp?v=1795570156" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-clock" viewBox="0 0 100 100"><g fill="none" stroke="#3b2f2a" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"><circle fill="#ffffff" cx="50" cy="50" r="38"/><path d="M50 50L50 24M50 50L68 50"/></g></symbol><symbol id="g-toy" viewBox="0 0 100 100"><image href="art/toy.webp?v=1795570222" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-milk" viewBox="0 0 100 100"><image href="art/milk.webp?v=1795570196" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-umbrella" viewBox="0 0 100 100"><image href="art/umbrella.webp?v=1795570226" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-snowman" viewBox="0 0 100 100"><image href="art/snowman.webp?v=1795570209" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-triangle" viewBox="0 0 100 100"><g fill="none" stroke="#3b2f2a" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"><polygon fill="#ffd34d" points="50,12 90,86 10,86"/><g class="kf" stroke="none"><ellipse cx="41.5" cy="74.0" rx="3.6" ry="4.7" fill="#3b2f2a"/><ellipse cx="58.5" cy="74.0" rx="3.6" ry="4.7" fill="#3b2f2a"/><circle cx="42.8" cy="72.3" r="1.4" fill="#fff"/><circle cx="59.8" cy="72.3" r="1.4" fill="#fff"/><ellipse cx="33.8" cy="80.5" rx="5.2" ry="3.2" fill="#ff7f9e" opacity=".55"/><ellipse cx="66.2" cy="80.5" rx="5.2" ry="3.2" fill="#ff7f9e" opacity=".55"/><path d="M44.8 79.8 Q50.0 85.7 55.2 79.8" fill="none" stroke="#3b2f2a" stroke-width="3.4" stroke-linecap="round"/></g></g></symbol><symbol id="g-square" viewBox="0 0 100 100"><g fill="none" stroke="#3b2f2a" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"><rect fill="#7cc4f5" x="14" y="14" width="72" height="72"/><g class="kf" stroke="none"><ellipse cx="40.2" cy="52.0" rx="4.2" ry="5.4" fill="#3b2f2a"/><ellipse cx="59.8" cy="52.0" rx="4.2" ry="5.4" fill="#3b2f2a"/><circle cx="41.8" cy="50.0" r="1.7" fill="#fff"/><circle cx="61.2" cy="50.0" r="1.7" fill="#fff"/><ellipse cx="31.2" cy="59.5" rx="6.0" ry="3.8" fill="#ff7f9e" opacity=".55"/><ellipse cx="68.8" cy="59.5" rx="6.0" ry="3.8" fill="#ff7f9e" opacity=".55"/><path d="M44.0 58.8 Q50.0 65.5 56.0 58.8" fill="none" stroke="#3b2f2a" stroke-width="3.9" stroke-linecap="round"/></g></g></symbol><symbol id="g-circle" viewBox="0 0 100 100"><g fill="none" stroke="#3b2f2a" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"><circle fill="#ff7a6b" cx="50" cy="50" r="38"/><ellipse cx="32" cy="34" rx="7" ry="11" fill="#fff" opacity=".6" stroke="none" transform="rotate(-25 32 34)"/><g class="kf" stroke="none"><ellipse cx="40.2" cy="52.0" rx="4.2" ry="5.4" fill="#3b2f2a"/><ellipse cx="59.8" cy="52.0" rx="4.2" ry="5.4" fill="#3b2f2a"/><circle cx="41.8" cy="50.0" r="1.7" fill="#fff"/><circle cx="61.2" cy="50.0" r="1.7" fill="#fff"/><ellipse cx="31.2" cy="59.5" rx="6.0" ry="3.8" fill="#ff7f9e" opacity=".55"/><ellipse cx="68.8" cy="59.5" rx="6.0" ry="3.8" fill="#ff7f9e" opacity=".55"/><path d="M44.0 58.8 Q50.0 65.5 56.0 58.8" fill="none" stroke="#3b2f2a" stroke-width="3.9" stroke-linecap="round"/></g></g></symbol><symbol id="g-rect" viewBox="0 0 100 100"><g fill="none" stroke="#3b2f2a" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"><rect fill="#7fd49c" x="8" y="28" width="84" height="44"/><g class="kf" stroke="none"><ellipse cx="42.2" cy="52.0" rx="3.4" ry="4.3" fill="#3b2f2a"/><ellipse cx="57.8" cy="52.0" rx="3.4" ry="4.3" fill="#3b2f2a"/><circle cx="43.4" cy="50.4" r="1.3" fill="#fff"/><circle cx="59.0" cy="50.4" r="1.3" fill="#fff"/><ellipse cx="35.0" cy="58.0" rx="4.8" ry="3.0" fill="#ff7f9e" opacity=".55"/><ellipse cx="65.0" cy="58.0" rx="4.8" ry="3.0" fill="#ff7f9e" opacity=".55"/><path d="M45.2 57.4 Q50.0 62.8 54.8 57.4" fill="none" stroke="#3b2f2a" stroke-width="3.1" stroke-linecap="round"/></g></g></symbol><symbol id="g-cherry" viewBox="0 0 100 100"><image href="art/cherry.webp?v=1795570168" x="0" y="0" width="100" height="100"/></symbol><symbol id="g-banana" viewBox="0 0 100 100"><image href="art/banana.webp?v=1795570150" x="0" y="0" width="100" height="100"/></symbol></defs></svg><script>window.__STK=["apple", "ball", "balloon", "banana", "basket", "bean", "bear", "bed", "book", "bowl", "box", "brush", "car", "carrot", "cat", "cherry", "chick", "cookie", "cupcake", "dino", "dog", "duck", "egg", "feather", "fish", "flower", "ghost", "grape", "heart", "house", "leaf", "melon", "mic", "milk", "moon", "mosquito", "pencil", "rabbit", "rock", "seed", "shell", "snowman", "sock", "spoon", "sprout", "star", "strawberry", "sun", "toothbrush", "toy", "toybox", "tree", "trophy", "umbrella"];window.__LINE=["apple", "ball", "balloon", "banana", "basket", "bean", "bear", "bed", "book", "bowl", "box", "brush", "car", "carrot", "cat", "cherry", "chick", "cookie", "cupcake", "dino", "dog", "duck", "egg", "feather", "fish", "flower", "ghost", "grape", "heart", "house", "leaf", "melon", "milk", "moon", "mosquito", "pencil", "rabbit", "rock", "seed", "shell", "snowman", "sock", "spoon", "sprout", "star", "strawberry", "sun", "toy", "tree", "umbrella"];window.__ART_BG="art/bg_stage.webp?v=1795570653";window.__PROG="mathdino";window.__CFG={"title": "수학공룡 놀이터", "sub": "42권 책마다 놀이 5개", "hint": "또는 아래에서 오늘 읽은 책을 골라요. 놀이 5개를 다 하면 책 한 권 완주!"};window.__DATA__={"books":[{"no":1,"title":"통통통! 콩이가 몇 개?","color":"#6A4BBE","levels":[{"g":"tapcount","p":{"icon":"bean","nums":[1,2,3,4,5]},"name":"눌러서 색칠하기"},{"g":"count","p":{"icon":"bean","nums":[3,5,2,4,1]},"name":"몇 개일까?"},{"g":"trace","p":{"nums":["1","2","3","4","5","6"]},"name":"손가락으로 따라 쓰기"},{"g":"dots","p":{"shape":"star"},"name":"점 잇기"},{"g":"count","p":{"dice":true},"name":"몇 개일까? 2"}]},{"no":2,"title":"차례 차례 착, 착, 착!","color":"#6A4BBE","levels":[{"g":"order","p":{"animals":["bear","cat","rabbit","dog","chick"],"kind":"train"},"name":"순서대로 태우기"},{"g":"ordinal","p":{"icon":"apple"},"name":"몇째일까?"},{"g":"order","p":{"animals":["rabbit","dog","duck"],"kind":"podium"},"name":"순서대로 태우기 2"},{"g":"numorder","p":{"maxn":5},"name":"숫자 차례로 누르기"},{"g":"routine","p":{},"name":"무엇을 먼저 할까?"}]},{"no":3,"title":"유령 셋, 소녀 하나","color":"#6A4BBE","levels":[{"g":"compare","p":{"icon":"ghost","icon2":"chick"},"name":"어느 쪽이 많을까?"},{"g":"tapcount","p":{"icon":"ghost","nums":[3,1,4,2,5]},"name":"눌러서 색칠하기"},{"g":"count","p":{"icon":"ghost","nums":[1,3,2,5,4]},"name":"몇 개일까?"},{"g":"bingo","p":{"kind":"num"},"name":"빙고"},{"g":"draw","p":{"prompt":"유령 셋, 소녀 하나! 내가 만든 유령 친구! 그림으로 그려 볼까?"},"name":"그림 그리기"}]},{"no":4,"title":"더 더 더!","color":"#6A4BBE","levels":[{"g":"tapcount","p":{"icon":"grape","nums":[1,2,3,4,5]},"name":"눌러서 색칠하기"},{"g":"frame","p":{"size":5,"nums":[1,2,3,4,5]},"name":"칸 채우기"},{"g":"frame","p":{"size":5,"nums":[1,2,3,4,5]},"name":"칸 채우기 2"},{"g":"add","p":{"icon":"apple","probs":[[2,1],[3,1],[4,1],[1,1]]},"name":"모두 몇 개?"},{"g":"compare","p":{"icon":"apple","icon2":null},"name":"어느 쪽이 많을까?"}]},{"no":5,"title":"애애앵 모기다!","color":"#6A4BBE","levels":[{"g":"hidden","p":{"icon":"mosquito","n":7},"name":"숨은 그림 찾기"},{"g":"bingo","p":{"kind":"num"},"name":"빙고"},{"g":"subtract","p":{"icon":"mosquito","probs":[[5,2],[4,1],[6,3]],"verb":"날아갔어요"},"name":"남은 건 몇 개?"},{"g":"count","p":{"icon":"mosquito","nums":[2,4,1,5,3]},"name":"몇 개일까?"},{"g":"tapcount","p":{"icon":"mosquito","nums":[2,4,3,5,1]},"name":"눌러서 색칠하기"}]},{"no":6,"title":"다섯 개 주세요","color":"#6A4BBE","levels":[{"g":"frame","p":{"size":5,"nums":[5,4,3,2,1]},"name":"칸 채우기"},{"g":"makeN","p":{"n":5,"icon":"cookie"},"name":"몇 개 더 있어야 할까?"},{"g":"tapcount","p":{"icon":"cookie","nums":[5,5,4,3,5]},"name":"눌러서 색칠하기"},{"g":"add","p":{"icon":"cookie","probs":[[1,4],[2,3],[3,2],[4,1]]},"name":"모두 몇 개?"},{"g":"trace","p":{"nums":["5","5","5","4","3","2"]},"name":"손가락으로 따라 쓰기"}]},{"no":7,"title":"여름 바다로 가요!","color":"#6A4BBE","levels":[{"g":"tapcount","p":{"icon":"fish","nums":[2,4,6,3,5]},"name":"눌러서 색칠하기"},{"g":"count","p":{"icon":"shell","nums":[4,6,2,5,3]},"name":"몇 개일까?"},{"g":"sort","p":{"set":"sea"},"name":"같은 것끼리"},{"g":"compare","p":{"icon":"fish","icon2":"shell"},"name":"어느 쪽이 많을까?"},{"g":"dots","p":{"shape":"fish"},"name":"점 잇기"}]},{"no":8,"title":"하나도 없어!","color":"#6A4BBE","levels":[{"g":"subtract","p":{"icon":"cookie","probs":[[3,3],[5,2],[2,2],[4,4]],"verb":"없어졌어요"},"name":"남은 건 몇 개?"},{"g":"frame","p":{"size":5,"nums":[0,2,5,1,3]},"name":"칸 채우기"},{"g":"count","p":{"icon":"apple","nums":[3,1,4,2]},"name":"몇 개일까?"},{"g":"trace","p":{"nums":["0","1","2","3","4","5"]},"name":"손가락으로 따라 쓰기"},{"g":"tapcount","p":{"icon":"cookie","nums":[0,5,2,0,4]},"name":"눌러서 색칠하기"}]},{"no":9,"title":"어서 오세요! 100 식당입니다","color":"#6A4BBE","levels":[{"g":"count","p":{"icon":"cookie","nums":[6,7,8,9,10]},"name":"몇 개일까?"},{"g":"findnum","p":{"upto":30},"name":"숫자 찾기"},{"g":"coins","p":{"items":[["bowl",3],["milk",1],["cupcake",2],["apple",1]]},"name":"동전 가게"},{"g":"frame","p":{"size":10,"nums":[10,7,9,6]},"name":"칸 채우기"},{"g":"trace","p":{"nums":["10","20","30","40","50","100"]},"name":"손가락으로 따라 쓰기"}]},{"no":10,"title":"토비는 당근 조각가","color":"#6A4BBE","levels":[{"g":"add","p":{"icon":"carrot","probs":[[2,1],[3,2],[1,3]]},"name":"모두 몇 개?"},{"g":"add","p":{"icon":"carrot","probs":[[2,1],[3,2],[1,3]]},"name":"모두 몇 개? 2"},{"g":"tapcount","p":{"icon":"carrot","nums":[2,3,4,5,6]},"name":"눌러서 색칠하기"},{"g":"count","p":{"icon":"carrot","nums":[3,4,5,6,2]},"name":"몇 개일까?"},{"g":"frame","p":{"size":5,"nums":[3,4,2,5,1]},"name":"칸 채우기"}]},{"no":11,"title":"꿀꺽 괴물의 신기한 공놀이","color":"#6A4BBE","levels":[{"g":"add","p":{"icon":"ball","probs":[[3,1],[2,2],[4,1],[1,2]]},"name":"모두 몇 개?"},{"g":"subtract","p":{"icon":"ball","probs":[[4,1],[5,2],[3,2],[6,1]],"verb":"꿀꺽 먹혔어요"},"name":"남은 건 몇 개?"},{"g":"numorder","p":{"maxn":10},"name":"숫자 차례로 누르기"},{"g":"maze","p":{"start":"ball","goal":"box"},"name":"미로 탈출"},{"g":"frame","p":{"size":10,"nums":[6,8,5,10]},"name":"칸 채우기"}]},{"no":12,"title":"사이 좋게 똑같이","color":"#6A4BBE","levels":[{"g":"share","p":{"total":6,"people":2,"icon":"cookie"},"name":"똑같이 나누기"},{"g":"share","p":{"total":8,"people":4,"icon":"strawberry"},"name":"똑같이 나누기 2"},{"g":"share","p":{"total":6,"people":3,"icon":"apple"},"name":"똑같이 나누기 3"},{"g":"share","p":{"total":8,"people":2,"icon":"strawberry"},"name":"똑같이 나누기 4"},{"g":"tapcount","p":{"icon":"cookie","nums":[2,4,6,8,10]},"name":"눌러서 색칠하기"}]},{"no":13,"title":"용용이가 달라졌다고?","color":"#6A4BBE","levels":[{"g":"frame","p":{"size":10,"nums":[10,8,6,4]},"name":"칸 채우기"},{"g":"add","p":{"icon":"ball","probs":[[3,4],[5,2],[4,3],[6,1]]},"name":"모두 몇 개?"},{"g":"makeN","p":{"n":6,"icon":"ball"},"name":"몇 개 더 있어야 할까?"},{"g":"bingo","p":{"kind":"num"},"name":"빙고"},{"g":"tapcount","p":{"icon":"grape","nums":[7,3,6,4,10]},"name":"눌러서 색칠하기"}]},{"no":14,"title":"일부러 그런 게 아니야","color":"#6A4BBE","levels":[{"g":"subtract","p":{"icon":"toy","probs":[[5,1],[4,2],[6,2],[3,1]],"verb":"망가졌어요"},"name":"남은 건 몇 개?"},{"g":"add","p":{"icon":"toy","probs":[[2,2],[3,1],[1,3],[2,3]]},"name":"모두 몇 개?"},{"g":"compare","p":{"icon":"toy","icon2":null},"name":"어느 쪽이 많을까?"},{"g":"routine","p":{"steps":[["toy","놀아요"],["rock","실수로 쾅!"],["heart","미안해"],["box","같이 정리"],["sun","다시 놀아요"]]},"name":"무엇을 먼저 할까?"},{"g":"draw","p":{"prompt":"실수했을 때 내가 하는 말과 행동! 그림으로 그려 볼까?"},"name":"그림 그리기"}]},{"no":15,"title":"안녕, 점 선 면","color":"#1E8A82","levels":[{"g":"dots","p":{"shape":"house"},"name":"점 잇기"},{"g":"inout","p":{},"name":"안과 밖"},{"g":"dots","p":{"shape":"house"},"name":"점 잇기 2"},{"g":"draw","p":{"prompt":"동그라미·세모·네모를 그리고, 눈이랑 바퀴를 붙여서 그림으로 바꿔 봐"},"name":"그림 그리기"},{"g":"puzzle","p":{"target":"house"},"name":"모양 퍼즐"}]},{"no":16,"title":"어서 와! 모양 친구들","color":"#1E8A82","levels":[{"g":"shapefind","p":{},"name":"모양 찾기"},{"g":"puzzle","p":{"target":"rocket"},"name":"모양 퍼즐"},{"g":"bingo","p":{"kind":"shape"},"name":"빙고"},{"g":"draw","p":{"prompt":"동그라미·세모·네모를 그리고, 눈이랑 바퀴를 붙여서 그림으로 바꿔 봐"},"name":"그림 그리기"},{"g":"sort","p":{"set":"shape"},"name":"같은 것끼리"}]},{"no":17,"title":"까미야, 어디 가?","color":"#1E8A82","levels":[{"g":"position","p":{},"name":"어디에 놓을까?"},{"g":"maze","p":{"start":"cat","goal":"house"},"name":"미로 탈출"},{"g":"maze","p":{"start":"dog","goal":"bowl"},"name":"미로 탈출 2"},{"g":"hidden","p":{"icon":"cat","n":5},"name":"숨은 그림 찾기"},{"g":"dots","p":{"shape":"boat"},"name":"점 잇기"}]},{"no":18,"title":"우리 같이 춤출래?","color":"#1E8A82","levels":[{"g":"leftright","p":{},"name":"왼쪽 오른쪽"},{"g":"position","p":{},"name":"어디에 놓을까?"},{"g":"maze","p":{"start":"dog","goal":"bowl"},"name":"미로 탈출"},{"g":"pattern","p":{"rows":[["rabbit","bear"],["star","heart","heart"],["chick","chick","duck"],["circle","square"]]},"name":"다음엔 뭐가 올까?"},{"g":"draw","p":{"prompt":"우리 가족 춤 동작 그리기 (왼손·오른손 표시)! 그림으로 그려 볼까?"},"name":"그림 그리기"}]},{"no":19,"title":"신기한 택배 상자","color":"#1E8A82","levels":[{"g":"count","p":{"dice":true},"name":"몇 개일까?"},{"g":"inout","p":{},"name":"안과 밖"},{"g":"sort","p":{"set":"roll"},"name":"같은 것끼리"},{"g":"position","p":{},"name":"어디에 놓을까?"},{"g":"shapefind","p":{},"name":"모양 찾기"}]},{"no":20,"title":"손을 잡아 봐!","color":"#1E8A82","levels":[{"g":"dots","p":{"shape":"house"},"name":"점 잇기"},{"g":"dots","p":{"shape":"rocket"},"name":"점 잇기 2"},{"g":"puzzle","p":{"target":"house"},"name":"모양 퍼즐"},{"g":"puzzle","p":{"target":"mix"},"name":"모양 퍼즐 2"},{"g":"shapefind","p":{},"name":"모양 찾기"}]},{"no":21,"title":"정말 정말 동그래","color":"#1E8A82","levels":[{"g":"shapefind","p":{},"name":"모양 찾기"},{"g":"puzzle","p":{"target":"caterpillar"},"name":"모양 퍼즐"},{"g":"sort","p":{"set":"roll"},"name":"같은 것끼리"},{"g":"draw","p":{"prompt":"동그라미·세모·네모를 그리고, 눈이랑 바퀴를 붙여서 그림으로 바꿔 봐"},"name":"그림 그리기"},{"g":"puzzle","p":{"target":"flower"},"name":"모양 퍼즐 2"}]},{"no":22,"title":"하나의 신기한 여행","color":"#1E8A82","levels":[{"g":"puzzle","p":{"target":"mix"},"name":"모양 퍼즐"},{"g":"puzzle","p":{"target":"fish"},"name":"모양 퍼즐 2"},{"g":"maze","p":{"start":"car","goal":"house"},"name":"미로 탈출"},{"g":"shapefind","p":{},"name":"모양 찾기"},{"g":"bingo","p":{"kind":"shape"},"name":"빙고"}]},{"no":23,"title":"꼬마랑 덩치랑","color":"#1E8A82","levels":[{"g":"size","p":{"icon":"dino"},"name":"크기 순서"},{"g":"size","p":{"icon":"bear"},"name":"크기 순서 2"},{"g":"compare","p":{"icon":"star","icon2":null},"name":"어느 쪽이 많을까?"},{"g":"measure","p":{},"name":"콩으로 재기"},{"g":"frame","p":{"size":5,"nums":[1,2,3,4,5]},"name":"칸 채우기"}]},{"no":24,"title":"쭉쭉, 내가 더 길어","color":"#C75A12","levels":[{"g":"measure","p":{},"name":"콩으로 재기"},{"g":"length","p":{},"name":"긴 줄 짧은 줄"},{"g":"size","p":{"icon":"pencil"},"name":"크기 순서"},{"g":"measure","p":{},"name":"콩으로 재기 2"},{"g":"draw","p":{"prompt":"우리 집에서 가장 긴 것을 찾아 그려요"},"name":"그림 그리기"}]},{"no":25,"title":"왜 아빠 것만 넓어?","color":"#C75A12","levels":[{"g":"area","p":{},"name":"넓은 쪽 찾기"},{"g":"shapefind","p":{},"name":"모양 찾기"},{"g":"size","p":{"icon":"book"},"name":"크기 순서"},{"g":"share","p":{"total":8,"people":2,"icon":"strawberry"},"name":"똑같이 나누기"},{"g":"draw","p":{"prompt":"내 이불과 아빠 이불, 어느 쪽이 넓을까?"},"name":"그림 그리기"}]},{"no":26,"title":"나 안 무거워!","color":"#C75A12","levels":[{"g":"heavy","p":{},"name":"무거워요 가벼워요"},{"g":"sort","p":{"set":"heavy"},"name":"같은 것끼리"},{"g":"compare","p":{"icon":"rock","icon2":"feather"},"name":"어느 쪽이 많을까?"},{"g":"size","p":{"icon":"melon"},"name":"크기 순서"},{"g":"draw","p":{"prompt":"물을 가장 많이 담을 수 있는 그릇은?"},"name":"그림 그리기"}]},{"no":27,"title":"내가 재 줄게!","color":"#C75A12","levels":[{"g":"measure","p":{},"name":"콩으로 재기"},{"g":"measure","p":{},"name":"콩으로 재기 2"},{"g":"length","p":{},"name":"긴 줄 짧은 줄"},{"g":"area","p":{},"name":"넓은 쪽 찾기"},{"g":"size","p":{"icon":"pencil"},"name":"크기 순서"}]},{"no":28,"title":"똑딱 똑딱 영웅이의 하루","color":"#C75A12","levels":[{"g":"clock","p":{},"name":"시계 보기"},{"g":"clock","p":{},"name":"시계 보기 2"},{"g":"routine","p":{},"name":"무엇을 먼저 할까?"},{"g":"trace","p":{"nums":["1","3","6","9","12","7"]},"name":"손가락으로 따라 쓰기"},{"g":"clock","p":{},"name":"시계 보기 3"}]},{"no":29,"title":"규칙 속으로 출발!","color":"#C8326A","levels":[{"g":"pattern","p":{},"name":"다음엔 뭐가 올까?"},{"g":"pattern","p":{},"name":"다음엔 뭐가 올까? 2"},{"g":"pattern","p":{},"name":"다음엔 뭐가 올까? 3"},{"g":"pattern","p":{},"name":"다음엔 뭐가 올까? 4"},{"g":"bingo","p":{"kind":"shape"},"name":"빙고"}]},{"no":30,"title":"그 다음은 뭘까?","color":"#C8326A","levels":[{"g":"pattern","p":{"rows":[["sun","moon"],["apple","apple","grape"],["circle","triangle","square"],["dog","cat","cat"]]},"name":"다음엔 뭐가 올까?"},{"g":"routine","p":{"steps":[["seed","씨앗 심기"],["sprout","싹이 나요"],["flower","꽃이 펴요"],["strawberry","열매가 열려요"]]},"name":"무엇을 먼저 할까?"},{"g":"pattern","p":{},"name":"다음엔 뭐가 올까? 2"},{"g":"numorder","p":{"maxn":10},"name":"숫자 차례로 누르기"},{"g":"pattern","p":{},"name":"다음엔 뭐가 올까? 3"}]},{"no":31,"title":"우당탕탕 강아지 대 소동","color":"#C8326A","levels":[{"g":"maze","p":{"start":"dog","goal":"bowl"},"name":"미로 탈출"},{"g":"maze","p":{"start":"dog","goal":"bowl"},"name":"미로 탈출 2"},{"g":"numorder","p":{"maxn":10},"name":"숫자 차례로 누르기"},{"g":"position","p":{},"name":"어디에 놓을까?"},{"g":"routine","p":{"steps":[["dog","강아지가 뛰어요"],["bowl","그릇이 쾅"],["milk","우유가 쏟아져요"],["brush","닦아요"],["moon","쿨쿨"]]},"name":"무엇을 먼저 할까?"}]},{"no":32,"title":"규칙을 찾아라!","color":"#C8326A","levels":[{"g":"pattern","p":{},"name":"다음엔 뭐가 올까?"},{"g":"pattern","p":{},"name":"다음엔 뭐가 올까? 2"},{"g":"bingo","p":{"kind":"shape"},"name":"빙고"},{"g":"pattern","p":{},"name":"다음엔 뭐가 올까? 3"},{"g":"findnum","p":{"upto":20},"name":"숫자 찾기"}]},{"no":33,"title":"정리를 부탁해","color":"#C8326A","levels":[{"g":"sort","p":{"set":"tidy"},"name":"같은 것끼리"},{"g":"pairs","p":{},"name":"양말 짝 찾기"},{"g":"sort","p":{"set":"fruit"},"name":"같은 것끼리 2"},{"g":"graph","p":{"items":["bear","book","ball","car"]},"name":"그래프 읽기"},{"g":"tapcount","p":{"icon":"sock","nums":[2,4,6,3,5]},"name":"눌러서 색칠하기"}]},{"no":34,"title":"뽀리의 모조리 나무","color":"#C8326A","levels":[{"g":"sort","p":{"set":"shape"},"name":"같은 것끼리"},{"g":"sort","p":{"set":"tree"},"name":"같은 것끼리 2"},{"g":"pairs","p":{},"name":"양말 짝 찾기"},{"g":"graph","p":{"items":["leaf","flower","apple","bear"]},"name":"그래프 읽기"},{"g":"bingo","p":{"kind":"shape"},"name":"빙고"}]},{"no":35,"title":"하나씩 좋아요!","color":"#C8326A","levels":[{"g":"graph","p":{},"name":"그래프 읽기"},{"g":"graph","p":{"items":["dog","cat","rabbit","fish"]},"name":"그래프 읽기 2"},{"g":"tapcount","p":{"icon":"heart","nums":[1,2,3,4,5]},"name":"눌러서 색칠하기"},{"g":"compare","p":{"icon":"heart","icon2":null},"name":"어느 쪽이 많을까?"},{"g":"graph","p":{"items":["sun","umbrella","snowman","leaf"]},"name":"그래프 읽기 3"}]},{"no":36,"title":"내 이름은 이오영","color":"#2D68BF","levels":[{"g":"findnum","p":{"upto":20},"name":"숫자 찾기"},{"g":"trace","p":{"nums":["0","1","2","3","4","5"]},"name":"손가락으로 따라 쓰기"},{"g":"trace","p":{"nums":["6","7","8","9","10","5"]},"name":"손가락으로 따라 쓰기 2"},{"g":"bingo","p":{"kind":"num"},"name":"빙고"},{"g":"draw","p":{"prompt":"내 이름과 나이, 우리 집 숫자를 그려요"},"name":"그림 그리기"}]},{"no":37,"title":"다 있어 자판기","color":"#2D68BF","levels":[{"g":"coins","p":{},"name":"동전 가게"},{"g":"coins","p":{"items":[["apple",1],["cookie",2],["ball",3],["book",5]]},"name":"동전 가게 2"},{"g":"tapcount","p":{"icon":"coin","nums":[1,2,3,4,5]},"name":"눌러서 색칠하기"},{"g":"count","p":{"icon":"coin","nums":[2,4,1,5,3]},"name":"몇 개일까?"},{"g":"draw","p":{"prompt":"내가 만든 자판기! 물건과 가격을 그려요"},"name":"그림 그리기"}]},{"no":38,"title":"엄마, 유치원 언제 가?","color":"#2D68BF","levels":[{"g":"calendar","p":{},"name":"달력 놀이"},{"g":"routine","p":{},"name":"무엇을 먼저 할까?"},{"g":"sort","p":{"set":"season"},"name":"같은 것끼리"},{"g":"clock","p":{},"name":"시계 보기"},{"g":"draw","p":{"prompt":"유치원 가기까지 몇 밤 남았을까? 달력에 X표! 그림으로 그려 볼까?"},"name":"그림 그리기"}]},{"no":39,"title":"딸기를 딸 거야!","color":"#2D68BF","levels":[{"g":"routine","p":{"steps":[["seed","씨앗 심기"],["sprout","물 주기"],["flower","꽃 피기"],["strawberry","딸기 따기"],["bowl","나눠 먹기"]]},"name":"무엇을 먼저 할까?"},{"g":"makeN","p":{"n":10,"icon":"strawberry"},"name":"몇 개 더 있어야 할까?"},{"g":"tapcount","p":{"icon":"strawberry","nums":[3,5,7,2,10]},"name":"눌러서 색칠하기"},{"g":"add","p":{"icon":"strawberry","probs":[[3,2],[4,4],[5,1],[2,6]]},"name":"모두 몇 개?"},{"g":"frame","p":{"size":10,"nums":[10,5,8,3]},"name":"칸 채우기"}]},{"no":40,"title":"티라노를 찾습니다","color":"#2D68BF","levels":[{"g":"maze","p":{"start":"dino","goal":"egg"},"name":"미로 탈출"},{"g":"maze","p":{"start":"car","goal":"dino"},"name":"미로 탈출 2"},{"g":"maze","p":{"start":"dog","goal":"bowl"},"name":"미로 탈출 3"},{"g":"position","p":{},"name":"어디에 놓을까?"},{"g":"dots","p":{"shape":"dino"},"name":"점 잇기"}]},{"no":41,"title":"숫자를 만난 날","color":"#2D68BF","levels":[{"g":"trace","p":{"nums":["1","2","3","4","5","6"]},"name":"손가락으로 따라 쓰기"},{"g":"findnum","p":{"upto":20},"name":"숫자 찾기"},{"g":"bingo","p":{"kind":"num"},"name":"빙고"},{"g":"count","p":{"icon":"star","nums":[6,2,7,3,5]},"name":"몇 개일까?"},{"g":"numorder","p":{"maxn":10},"name":"숫자 차례로 누르기"}]},{"no":42,"title":"나도 한 번 해 볼까?","color":"#2D68BF","levels":[{"g":"puzzle","p":{"target":"mix"},"name":"모양 퍼즐"},{"g":"draw","p":{"prompt":"동그라미·세모·네모를 그리고, 눈이랑 바퀴를 붙여서 그림으로 바꿔 봐"},"name":"그림 그리기"},{"g":"puzzle","p":{"target":"fish"},"name":"모양 퍼즐 2"},{"g":"pattern","p":{},"name":"다음엔 뭐가 올까?"},{"g":"dots","p":{"shape":"tree"},"name":"점 잇기"}]}],"names":{"apple":"사과","star":"별","fish":"물고기","carrot":"당근","ball":"공","ghost":"유령","bean":"콩","mosquito":"모기","strawberry":"딸기","heart":"하트","flower":"꽃","shell":"조개","cookie":"쿠키","balloon":"풍선","dino":"공룡","house":"집","car":"자동차","cupcake":"컵케이크","tree":"나무","dog":"강아지","sun":"해","moon":"달","bowl":"밥","brush":"칫솔","book":"책","grape":"포도","rock":"돌","feather":"깃털","leaf":"나뭇잎","melon":"수박","box":"상자","sprout":"새싹","seed":"씨앗","sock":"양말","coin":"동전","bear":"곰","cat":"고양이","rabbit":"토끼","chick":"병아리","duck":"오리","egg":"알","pencil":"연필","spoon":"숟가락","bed":"침대","clock":"시계","toy":"장난감","milk":"우유","umbrella":"우산","snowman":"눈사람","triangle":"세모","square":"네모","circle":"동그라미","rect":"네모","cherry":"체리","banana":"바나나"},"d2d":{"star":[[50.0,12.0],[60.0,38.2],[88.0,39.6],[66.2,57.3],[73.5,84.4],[50.0,69.0],[26.5,84.4],[33.8,57.3],[12.0,39.6],[40.0,38.2]],"house":[[20,90],[20,45],[50,14],[80,45],[80,90],[60,90],[60,64],[40,64],[40,90]],"fish":[[8,50],[24,32],[46,25],[66,32],[78,46],[95,30],[92,50],[95,70],[78,56],[64,70],[44,75],[24,68]],"dino":[[8,85],[15,58],[40,48],[58,42],[64,15],[82,12],[86,25],[72,30],[72,50],[95,82],[55,75],[30,80]],"heart":[[50,88],[22,64],[10,40],[16,22],[34,16],[50,30],[66,16],[84,22],[90,40],[78,64]],"rocket":[[50,6],[64,26],[64,66],[78,84],[60,80],[50,94],[40,80],[22,84],[36,66],[36,26]],"tree":[[50,6],[74,36],[62,36],[84,66],[56,66],[56,92],[44,92],[44,66],[16,66],[38,36],[26,36]],"boat":[[10,62],[90,62],[76,84],[24,84],[10,62],[48,62],[48,10],[80,54],[52,54]]}};</script>
+<script>
+/* ---------- 내 방: 스티커·배지·알 키우기·놀이 시간·부모 메뉴·생활 놀이 ----------
+   허브와 놀이 화면이 함께 써요. 기록·녹음·색칠 그림은 이 기기(localStorage·IndexedDB)에만 저장해요.
+   페이지가 ROOM.fx 에 say, avatarSVG, curAv, S 를 넣어 주면 그걸 써요. */
+(function(){
+"use strict";
+var R=window.ROOM=window.ROOM||{}; R.fx=R.fx||{};
+var PKEY="mathdino-play-v2";
+function $(id){ return document.getElementById(id); }
+function mk(tag,cls,html){ var e=document.createElement(tag); if(cls) e.className=cls; if(html!=null) e.innerHTML=html; return e; }
+function esc(t){ return String(t==null?"":t).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function p2(n){ return (n<10?"0":"")+n; }
+function day(d){ d=d||new Date(); return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate()); }
+function rd(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } }
+function wr(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); return true; }catch(e){ return false; } }
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+function each(sel,fn,root){ Array.prototype.forEach.call((root||document).querySelectorAll(sel),fn); }
+function jong(w){ w=String(w); var c=w.charCodeAt(w.length-1); if(c>=0xAC00&&c<=0xD7A3) return (c-0xAC00)%28!==0; return /[013678]$/.test(w); }
+function voc(n){ return n+(jong(n)?"아":"야"); }
+function iga(n){ return n+(jong(n)?"이가":"가"); }
+function kid(){ var o=rd(PKEY)||{}; return (o.kids||[]).filter(function(k){ return k.id===o.cur; })[0]||null; }
+R.kid=kid; R.day=day; R.voc=voc;
+function st(){ var k=kid(); var o=(k&&rd("goyu-room-"+k.id))||{}; ["stk","bad","days","stat","sec","cnt","extra","tstk"].forEach(function(x){ o[x]=o[x]||{}; }); o.egg=o.egg||0; o.notes=o.notes||[]; return o; }
+function sv(o){ var k=kid(); if(k) wr("goyu-room-"+k.id,o); }
+R.st=st; R.sv=sv;
+function SET(){ var s=rd("goyu-parent")||{}; if(s.limit===undefined) s.limit=20; return s; }
+function say(s){ if(R.fx.say) R.fx.say(s); }
+function stopTalk(){ try{ if(R.fx.clipStop) R.fx.clipStop(); speechSynthesis.cancel(); }catch(e){} }
+function view(){ return document.body.dataset.view||"hub"; }
+function art(k){ return "art/"+k+".webp"; }
+
+/* ---------- 저장소(IndexedDB): 부모 녹음, 색칠 그림 ---------- */
+var DBP=null;
+function db(){ if(!DBP) DBP=new Promise(function(res,rej){ try{ var q=indexedDB.open("goyu",1); q.onupgradeneeded=function(){ q.result.createObjectStore("kv"); }; q.onsuccess=function(){ res(q.result); }; q.onerror=function(){ rej(q.error); }; }catch(e){ rej(e); } }); return DBP; }
+function idb(mode,fn){ return db().then(function(d){ return new Promise(function(res){ var t=d.transaction("kv",mode), s=t.objectStore("kv"), r=fn(s); t.oncomplete=function(){ res(r&&r.result); }; t.onerror=t.onabort=function(){ res(null); }; }); }).catch(function(){ return null; }); }
+function iget(k){ return idb("readonly",function(s){ return s.get(k); }); }
+function iset(k,v){ return idb("readwrite",function(s){ return s.put(v,k); }); }
+function idel(k){ return idb("readwrite",function(s){ return s.delete(k); }); }
+function ikeys(){ return idb("readonly",function(s){ return s.getAllKeys(); }).then(function(a){ return a||[]; }); }
+R.iget=iget;
+
+/* ---------- 소리 ---------- */
+var AC=null;
+function ac(){ try{ if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==="suspended") AC.resume(); }catch(e){} return AC; }
+function muted(){ return !!(R.fx.S&&R.fx.S.muted); }
+function tone(type,f,t,d,vol,f1){ var a=ac(); if(!a||muted()) return; var o=a.createOscillator(), g=a.createGain(); o.type=type; o.frequency.setValueAtTime(f,t); if(f1) o.frequency.exponentialRampToValueAtTime(f1,t+d);
+  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol||0.2,t+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+d); o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+d+0.05); }
+var SND={
+  ding:function(){ var a=ac(); if(!a) return; var t=a.currentTime; tone("sine",880,t,0.18,0.25); tone("sine",1320,t+0.09,0.25,0.22); },
+  fan:function(){ var a=ac(); if(!a) return; var t=a.currentTime; [523,659,784,1047,784,1047].forEach(function(f,i){ tone("triangle",f,t+i*0.11,i>3?0.45:0.2,0.2); }); },
+  boing:function(){ var a=ac(); if(!a) return; var t=a.currentTime; tone("sine",180,t,0.5,0.4,620); tone("sine",620,t+0.15,0.5,0.3,120); },
+  pop:function(){ var a=ac(); if(!a) return; var t=a.currentTime; tone("sine",500,t,0.12,0.25,1200); },
+  giggle:function(){ var a=ac(); if(!a) return; var t=a.currentTime; for(var i=0;i<5;i++) tone("sine",900-i*60,t+i*0.09,0.08,0.12,1300-i*80); },
+  fart:function(){ var a=ac(); if(!a||muted()) return; var t=a.currentTime, len=Math.floor(a.sampleRate*0.9), b=a.createBuffer(1,len,a.sampleRate), d=b.getChannelData(0);
+    for(var i=0;i<len;i++) d[i]=(Math.random()*2-1);
+    var s=a.createBufferSource(); s.buffer=b; var f=a.createBiquadFilter(); f.type="lowpass"; f.frequency.setValueAtTime(260,t); f.frequency.linearRampToValueAtTime(120,t+0.85); f.Q.value=8;
+    var o=a.createOscillator(); o.type="sawtooth"; o.frequency.setValueAtTime(95,t); o.frequency.linearRampToValueAtTime(60,t+0.8); var l=a.createOscillator(), lg=a.createGain(); l.frequency.value=22; lg.gain.value=18; l.connect(lg); lg.connect(o.frequency);
+    var g=a.createGain(); g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.7,t+0.04); g.gain.setValueAtTime(0.6,t+0.6); g.gain.exponentialRampToValueAtTime(0.0001,t+0.88);
+    var og=a.createGain(); og.gain.value=0.35; s.connect(f); o.connect(og); og.connect(f); f.connect(g); g.connect(a.destination); s.start(t); o.start(t); l.start(t); s.stop(t+0.9); o.stop(t+0.9); l.stop(t+0.9); },
+  /* 짧은 신나는 노래 (춤 파티·타이머) */
+  tune:function(beats){ var a=ac(); if(!a) return; var t=a.currentTime+0.05, mel=[523,659,784,659,587,698,880,698,523,659,784,1047,988,784,659,523];
+    for(var i=0;i<(beats||16);i++){ var f=mel[i%mel.length]; tone("triangle",f,t+i*0.25,0.2,0.13); if(i%2===0) tone("sine",f/4,t+i*0.25,0.22,0.16); } }
+};
+R.snd=SND;
+
+/* ---------- 겹쳐 뜨는 창 ---------- */
+var ZI=80;
+function ov(cls, html, locked){ var bg=mk("div","rov "+cls), box=mk("div","rbox",html); bg.style.zIndex=++ZI; bg.appendChild(box);
+  if(!locked){ var x=mk("button","rx","닫기"); x.type="button"; x.setAttribute("aria-label","닫기"); box.insertBefore(x,box.firstChild); x.addEventListener("click",function(){ close(); }); }
+  document.body.appendChild(bg); requestAnimationFrame(function(){ bg.classList.add("on"); });
+  function close(){ bg.classList.remove("on"); if(o.onclose) o.onclose(); setTimeout(function(){ bg.remove(); },200); }
+  var o={el:bg, box:box, close:close}; return o; }
+R.ov=ov;
+function toast(html, ms){ var t=mk("div","rtoast",html); t.style.zIndex=++ZI+200; document.body.appendChild(t); requestAnimationFrame(function(){ t.classList.add("on"); });
+  setTimeout(function(){ t.classList.remove("on"); setTimeout(function(){ t.remove(); },300); }, ms||2600); }
+R.toast=toast;
+function avHTML(pose){ try{ return R.fx.avatarSVG(R.fx.curAv(), "pose-"+(pose||"idle")); }catch(e){ return '<img src="'+art("dino")+'" alt="">'; } }
+
+/* ---------- 스티커·배지·알 ---------- */
+var STK=window.__STK||[];
+var EGG=[[0,"egg","공룡알"],[3,"egg_crack","꿈틀꿈틀 알"],[8,"dino_hatch","아기 공룡"],[20,"dino_kid","꼬마 공룡"],[45,"dino_big","대장 공룡"]];
+function eggStage(p){ var i=0; EGG.forEach(function(e,j){ if(p>=e[0]) i=j; }); return i; }
+function eggImg(i){ var k=EGG[i][1]; if((k==="dino_kid"||k==="dino_big")&&COL.dino) return COL.dino; return art(k); }
+R.eggInfo=function(){ var o=st(), i=eggStage(o.egg), nx=EGG[i+1]; return {i:i, img:eggImg(i), name:EGG[i][2], p:o.egg, from:EGG[i][0], next:nx?nx[0]:null, nextName:nx?nx[2]:null}; };
+function tot(o){ var n=0; Object.keys(o.days).forEach(function(d){ n+=o.days[d]||0; }); return n; }
+function nstk(o){ return Object.keys(o.stk).length; }
+function streakDays(o){ var n=0, d=new Date(); if(o.days[day(d)]===undefined) d.setDate(d.getDate()-1); while(o.days[day(d)]!==undefined){ n++; d.setDate(d.getDate()-1); } return n; }
+R.streakDays=function(){ return streakDays(st()); };
+var BADGES=[
+  ["first","첫 성공","놀이를 처음 성공했어요","star",function(o){ return tot(o)>=1; }],
+  ["ten","놀이 10개","놀이를 10개 성공했어요","apple",function(o){ return tot(o)>=10; }],
+  ["fifty","놀이 50개","놀이를 50개 성공했어요","trophy",function(o){ return tot(o)>=50; }],
+  ["d3","사흘 연속","3일 연속으로 놀았어요","sun",function(o){ return streakDays(o)>=3; }],
+  ["d7","일주일 연속","7일 연속으로 놀았어요","moon",function(o){ return streakDays(o)>=7; }],
+  ["book","책 완주","책 한 권의 놀이 5개를 다 했어요","book",function(o){ return (o.cnt.book||0)>=1; }],
+  ["s10","스티커 10장","스티커를 10장 모았어요","heart",function(o){ return nstk(o)>=10; }],
+  ["s30","스티커 30장","스티커를 30장 모았어요","flower",function(o){ return nstk(o)>=30; }],
+  ["sall","스티커 박사","스티커를 다 모았어요","trophy",function(o){ return STK.length&&nstk(o)>=STK.length; }],
+  ["st6","척척박사","여섯 문제를 연속으로 맞혔어요","star",function(o){ return (o.cnt.st6||0)>=1; }],
+  ["teach","꼬마 선생님","엄마 아빠에게 문제를 냈어요","pencil",function(o){ return (o.cnt.teach||0)>=1; }],
+  ["artist","꼬마 화가","색칠한 그림을 놀이에 넣었어요","flower",function(o){ return (o.cnt.color||0)>=1; }],
+  ["brush","양치 챔피언","양치 타이머를 5번 했어요","toothbrush",function(o){ return (o.cnt.brush||0)>=5; }],
+  ["tidy","정리 대장","정리 타이머를 3번 했어요","toybox",function(o){ return (o.cnt.tidy||0)>=3; }],
+  ["mis","미션 대장","생활 미션을 10번 했어요","house",function(o){ return (o.cnt.mis||0)>=10; }],
+  ["hatch","알이 깼어요","공룡알이 깨어났어요","dino_hatch",function(o){ return o.egg>=8; }]
+];
+R.BADGES=BADGES;
+function newBadges(o){ var out=[]; BADGES.forEach(function(b){ if(!o.bad[b[0]]&&b[4](o)){ o.bad[b[0]]=day(); out.push(b); } }); return out; }
+function award(o){ var not=STK.filter(function(k){ return !o.stk[k]; }), k=pick(not.length?not:STK); if(!k) return null; o.stk[k]=(o.stk[k]||0)+1; var d=day(); (o.tstk[d]=o.tstk[d]||[]).push(k);
+  Object.keys(o.tstk).forEach(function(x){ if(x<day(new Date(Date.now()-14*864e5))) delete o.tstk[x]; }); return k; }
+function grow(o,n){ var a=eggStage(o.egg); o.egg+=n; var b=eggStage(o.egg); return b>a?b:-1; }
+/* 상 주기: 스티커 + 알 + 배지를 한꺼번에 */
+function reward(o, eggPts){ var r={sticker:award(o), egg:grow(o,eggPts||1)}; r.badges=newBadges(o); sv(o); return r; }
+R.reward=function(eggPts, cntKey){ var o=st(); if(cntKey) o.cnt[cntKey]=(o.cnt[cntKey]||0)+1; return reward(o,eggPts); };
+function celebrate(r, delay){ var t=delay||0;
+  if(r.egg>=0){ setTimeout(function(){ eggUp(r.egg); },t); t+=4200; }
+  r.badges.forEach(function(b){ setTimeout(function(){ badgeShow(b); },t); t+=2900; }); return t; }
+R.celebrate=celebrate;
+function stkCard(k){ return '<div class="rstk"><img src="'+art(k)+'" alt=""><b>스티커 받았다!</b></div>'; }
+function eggUp(i){ var e=EGG[i], k=kid(); SND.fan(); var o=ov("eggup",'<div class="rburst"></div><img class="rbig rwig" src="'+eggImg(i)+'" alt=""><h2>'+(i===1?"알이 꿈틀꿈틀!":i===2?"알이 깨어났어!":i===3?"공룡이 쑥쑥 자랐어!":"대장 공룡이 됐어!")+'</h2><p>'+esc(e[2])+'</p>');
+  say(i===1?"어? 알이 꿈틀꿈틀 움직여!":i===2?"우와! 알에서 아기 공룡이 나왔어!":i===3?"공룡이 쑥쑥 자랐어! 다 "+(k?voc(k.name):"")+" 덕분이야!":"우와! 대장 공룡이 됐어! 정말 대단해!");
+  setTimeout(o.close,3800); }
+function badgeShow(b){ SND.ding(); toast('<span class="rbadge"><img src="'+art(b[3])+'" alt=""></span><span><b>'+esc(b[1])+' 배지!</b><small>'+esc(b[2])+'</small></span>',2700); say(b[1]+" 배지를 받았어!"); }
+
+/* ---------- 놀이 화면에서 부르는 곳 ---------- */
+R.onWin=function(g){ var o=st(); var s=o.stat[g||"?"]||(o.stat[g||"?"]=[0,0]); s[0]++; sv(o); return R.parentClip("praise",0.25); };
+R.onMiss=function(g){ var o=st(); var s=o.stat[g||"?"]||(o.stat[g||"?"]=[0,0]); s[1]++; sv(o); return false; };
+R.onStreak=function(n){ if(n===6){ var o=st(); o.cnt.st6=(o.cnt.st6||0)+1; sv(o); } };
+R.onLevelDone=function(info){ var o=st(), d=day(); o.days[d]=(o.days[d]||0)+1; if(info&&info.all5) o.cnt.book=(o.cnt.book||0)+1; return reward(o, info&&info.all5?3:1); };
+R.showReward=function(r, box){ if(!box) return 0; var e=R.eggInfo(), pct=e.next?Math.round((e.p-e.from)/(e.next-e.from)*100):100;
+  box.innerHTML=(r.sticker?stkCard(r.sticker):"")+'<div class="regg"><img src="'+e.img+'" alt=""><span><b>'+esc(e.name)+'</b><i class="rbar"><i style="width:'+pct+'%"></i></i><small>'+(e.next?"조금만 더 하면 "+esc(e.nextName)+"!":"최고 단계!")+'</small></span></div>';
+  return celebrate(r, 1800); };
+
+/* ---------- 들른 날·쪽지·인사 ---------- */
+R.markVisit=function(){ var o=st(); if(!kid()) return; var d=day(); if(o.days[d]===undefined){ o.days[d]=0; } var nb=newBadges(o); sv(o); R.timeStart(); R.loadPV(); R.applyColors();
+  var delay=0; if(o.notes.length){ var n=o.notes.shift(); sv(o); delay=1800; setTimeout(function(){ noteShow(n); },1600); }
+  nb.forEach(function(b,i){ setTimeout(function(){ badgeShow(b); },delay+2200+i*2900); });
+  setTimeout(function(){ R.parentClip("hello",0.5); },delay?6500:2600); };
+function noteShow(n){ var k=kid(); SND.ding(); var o=ov("note",'<div class="rnote"><b>'+esc(n.from)+'의 쪽지</b><p>'+esc(n.text)+'</p></div><button class="rpill" type="button">고마워요!</button>');
+  o.box.querySelector(".rpill").onclick=o.close; say((k?voc(k.name)+", ":"")+n.from+"가 쪽지를 보냈어! "+n.text); }
+
+/* ---------- 놀이 시간 ---------- */
+var TM={t:null, warned:false};
+function used(o){ return o.sec[day()]||0; }
+function limit(o){ var L=SET().limit; return L? (L+(o.extra[day()]||0))*60 : Infinity; }
+R.timeLeft=function(){ var o=st(); return limit(o)-used(o); };
+function tick(){ if(document.visibilityState!=="visible"||!kid()||R.sleeping||R.lifeOn) return; var o=st(), d=day(); o.sec[d]=used(o)+5;
+  Object.keys(o.sec).forEach(function(x){ if(x<day(new Date(Date.now()-40*864e5))) delete o.sec[x]; }); sv(o); gauge(o);
+  var left=limit(o)-o.sec[d], k=kid();
+  if(left<=120&&left>0&&!TM.warned){ TM.warned=true; toast('<img class="rti" src="'+art("moon")+'" alt=""><span><b>조금만 더 놀고 쉬자!</b><small>놀이 시간이 2분 남았어요</small></span>',3200); say(voc(k.name)+", 이제 조금만 더 놀고 쉬자!"); }
+  if(left<=0){ R.tired=true; if(view()!=="play"||left<=-180) R.sleep(); } }
+R.timeStart=function(){ if(TM.t) return; TM.t=setInterval(tick,5000); gauge(st()); };
+function gauge(o){ var L=SET().limit; each("[data-tgauge]",function(e){ if(!L||!kid()){ e.hidden=true; return; } e.hidden=false; var lim=limit(o), left=Math.max(0,lim-used(o)); e.style.setProperty("--f",(left/lim).toFixed(3)); var b=e.querySelector("b"); if(b) b.textContent=Math.ceil(left/60)+"분"; e.title="오늘 남은 놀이 시간"; }); }
+R.gauge=function(){ gauge(st()); };
+/* 놀이 하나 끝날 때 시간 확인. 다 됐으면 졸린 공룡 */
+R.checkTired=function(){ if(R.timeLeft()<=0){ R.tired=true; setTimeout(R.sleep,3000); return true; } return false; };
+R.sleep=function(){ if(R.sleeping) return; R.sleeping=true; stopTalk(); var k=kid();
+  var o=ov("sleep",'<img src="'+art("dino_sleep")+'" class="rbig rsnore" alt=""><h2>오늘 놀이 시간 끝!</h2><p>'+esc(k?voc(k.name)+", ":"")+'공룡이 졸리대. 내일 또 같이 놀자!</p><div class="rrow"><button data-a="brush" class="rpill main" type="button">양치하러 가기</button><button data-a="more" class="rpill ghost" type="button">부모님: 10분 더</button></div>',true);
+  if(!R.parentClip("night",1)) say((k?voc(k.name)+", ":"")+"오늘 놀이 시간이 끝났어. 공룡이 졸리대. 내일 또 같이 놀자!");
+  o.box.querySelector("[data-a=brush]").onclick=function(){ R.lifeTimer("brush"); };
+  o.box.querySelector("[data-a=more]").onclick=function(){ R.gate(function(){ var s=st(); s.extra[day()]=(s.extra[day()]||0)+10; sv(s); R.tired=false; R.sleeping=false; TM.warned=false; o.close(); gauge(s); toast("<span><b>10분 더 놀 수 있어요</b></span>"); }); }; };
+
+/* ---------- 부모님 확인 ---------- */
+R.gate=function(ok){ var a=6+Math.floor(Math.random()*4), b=5+Math.floor(Math.random()*5), v="";
+  var o=ov("gate",'<h2>부모님 확인</h2><p>아이 혼자 바꾸지 않도록 한 번 물어봐요.<br><b>'+["","","","","","","여섯","일곱","여덟","아홉"][a]+' 더하기 '+["","","","","","다섯","여섯","일곱","여덟","아홉"][b]+'</b>는?</p><div class="rin"></div><div class="rpad">'+
+    [1,2,3,4,5,6,7,8,9,"지우기",0,"확인"].map(function(x){ return '<button type="button" data-k="'+x+'">'+x+'</button>'; }).join("")+'</div>');
+  var inp=o.box.querySelector(".rin");
+  each("[data-k]",function(bt){ bt.onclick=function(){ var k=bt.dataset.k; if(k==="지우기") v=""; else if(k==="확인"){ if(+v===a+b){ o.close(); ok(); return; } v=""; inp.classList.remove("rshake"); void inp.offsetWidth; inp.classList.add("rshake"); } else if(v.length<2) v+=k; inp.textContent=v; }; },o.box); };
+
+/* ---------- 엄마·아빠 목소리 ---------- */
+var SLOTS=[["praise1","정답 칭찬 1","예: 우와, 최고야!"],["praise2","정답 칭찬 2","예: 잘했어! 정말 자랑스러워"],["cheer1","응원","예: 괜찮아, 다시 해 보자!"],["hello1","인사","예: 사랑해! 재밌게 놀아"],["night1","잘 자","예: 오늘도 멋졌어. 이제 잘 자!"]];
+var PV={};
+R.loadPV=function(){ var k=kid(); PV={}; if(!k) return; SLOTS.forEach(function(s){ iget("pv-"+k.id+"-"+s[0]).then(function(v){ if(v&&v.buf) PV[s[0]]=URL.createObjectURL(new Blob([v.buf],{type:v.type})); }); }); };
+var PVA=null;
+R.parentClip=function(kind, chance){ if(muted()) return false; var ks=Object.keys(PV).filter(function(x){ return x.indexOf(kind)===0; }); if(!ks.length||Math.random()>chance) return false;
+  stopTalk(); PVA=PVA||new Audio(); PVA.src=PV[pick(ks)]; try{ var p=PVA.play(); if(p&&p.catch) p.catch(function(){}); }catch(e){} return true; };
+R.cheerClip=function(){ return R.parentClip("cheer",0.35); };
+function recType(){ var c=["audio/mp4","audio/webm;codecs=opus","audio/webm","audio/ogg"]; if(!window.MediaRecorder) return null; for(var i=0;i<c.length;i++) try{ if(MediaRecorder.isTypeSupported(c[i])) return c[i]; }catch(e){} return ""; }
+function recUI(box){ var k=kid(); if(!k){ box.innerHTML='<p class="rnote2">먼저 아이를 등록해 주세요.</p>'; return; }
+  var ok=recType()!==null&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia;
+  box.innerHTML='<p class="rnote2">'+(ok?"녹음한 목소리는 이 기기에만 저장돼요. 정답을 맞히거나 놀이를 시작할 때 가끔 들려줘요. 한 마디는 6초까지예요.":"이 브라우저는 녹음을 지원하지 않아요. 사파리나 크롬 최신 버전에서 열어 주세요.")+'</p>'+
+    SLOTS.map(function(s){ return '<div class="rrec" data-s="'+s[0]+'"><span><b>'+s[1]+'</b><small>'+s[2]+'</small></span><button type="button" class="rmini rec"'+(ok?"":" disabled")+'>녹음</button><button type="button" class="rmini play" disabled>듣기</button><button type="button" class="rmini del" disabled>지우기</button></div>'; }).join("");
+  each(".rrec",function(row){ var key="pv-"+k.id+"-"+row.dataset.s, bRec=row.querySelector(".rec"), bPlay=row.querySelector(".play"), bDel=row.querySelector(".del");
+    function has(v){ bPlay.disabled=bDel.disabled=!v; row.classList.toggle("have",!!v); }
+    iget(key).then(has);
+    bPlay.onclick=function(){ iget(key).then(function(v){ if(!v) return; var a=new Audio(URL.createObjectURL(new Blob([v.buf],{type:v.type}))); a.play().catch(function(){}); }); };
+    bDel.onclick=function(){ idel(key).then(function(){ has(null); R.loadPV(); }); };
+    bRec.onclick=function(){ if(bRec._rec){ bRec._rec.stop(); return; }
+      navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){ var t=recType(), mr=t?new MediaRecorder(stream,{mimeType:t}):new MediaRecorder(stream), parts=[];
+        mr.ondataavailable=function(e){ if(e.data&&e.data.size) parts.push(e.data); };
+        mr.onstop=function(){ stream.getTracks().forEach(function(x){ x.stop(); }); clearTimeout(bRec._t); bRec._rec=null; bRec.textContent="녹음"; row.classList.remove("on");
+          var blob=new Blob(parts,{type:mr.mimeType||t||"audio/mp4"}); if(!blob.size) return; blob.arrayBuffer().then(function(buf){ return iset(key,{buf:buf,type:blob.type}); }).then(function(){ has(true); R.loadPV(); }); };
+        mr.start(); bRec._rec=mr; bRec.textContent="멈추기"; row.classList.add("on"); bRec._t=setTimeout(function(){ if(mr.state==="recording") mr.stop(); },6000); })
+      .catch(function(){ alert("마이크를 쓸 수 없어요. 브라우저 설정에서 마이크를 허용해 주세요."); }); }; },box); }
+
+/* ---------- 아이 기록 (부모용) ---------- */
+var AREA={count:"수 세기",tapcount:"수 세기",dots:"수 세기",frame:"수 세기",findnum:"숫자 읽기",bingo:"숫자 읽기",numorder:"숫자 순서",trace:"숫자 쓰기",add:"더하기",makeN:"더하기",subtract:"빼기",share:"똑같이 나누기",shapefind:"도형",puzzle:"도형",area:"넓이",size:"크기 비교",compare:"많고 적음",heavy:"무게",length:"길이",measure:"길이 재기",clock:"시계",calendar:"날짜",routine:"하루 순서",coins:"돈",pattern:"규칙",sort:"분류",graph:"그래프",order:"순서",ordinal:"몇째",position:"위치",leftright:"왼쪽 오른쪽",inout:"안과 밖",pairs:"짝 찾기",maze:"길 찾기",hidden:"숨은 그림",draw:"그리기",llisten:"외국어 듣기",lcards:"외국어 낱말"};
+var TIPS={"수 세기":"간식이나 장난감을 꺼낼 때 손가락으로 하나씩 짚으며 같이 세어 보세요. 마지막에 센 수가 '모두'라는 걸 말로 짚어 주면 좋아요.",
+  "숫자 읽기":"엘리베이터 버튼, 자동차 번호판, 달력에서 아는 숫자를 찾아 읽어 보세요.","숫자 순서":"계단을 오르내리며 숫자를 세거나, 숫자 카드를 순서대로 늘어놓아 보세요.",
+  "숫자 쓰기":"모래나 쌀 위에 손가락으로 숫자를 써 보세요. 연필보다 쉬워요.","더하기":"귤 2개와 1개처럼 실제 물건을 합쳐 보고 '모두 몇 개?'를 물어 주세요.",
+  "빼기":"과자 5개 중 2개를 먹고 '몇 개 남았지?'를 물어 보세요.","똑같이 나누기":"간식을 가족 수만큼 똑같이 나누는 일을 아이에게 맡겨 보세요.",
+  "도형":"집 안에서 동그라미·네모·세모 모양을 찾는 놀이를 해 보세요.","넓이":"식탁이나 책을 종이로 덮어 보며 '몇 장이면 덮일까?'를 해 보세요.",
+  "크기 비교":"신발, 컵, 인형을 크기 순서로 줄 세워 보세요.","많고 적음":"두 접시에 과자를 놓고 어느 쪽이 많은지 짝지어 비교해 보세요.",
+  "무게":"양손에 물건을 하나씩 들고 어느 쪽이 무거운지 말해 보세요.","길이":"내 발과 아빠 발, 연필 두 자루의 길이를 나란히 대 보세요.",
+  "길이 재기":"블록이나 클립으로 책상 길이를 재 보세요. '클립 몇 개만큼'이 좋은 시작이에요.","시계":"밥 먹는 시간, 자는 시간에 시계의 짧은 바늘을 같이 봐 주세요.",
+  "날짜":"달력에 아이 생일과 오늘을 표시하고 며칠 남았는지 세어 보세요.","하루 순서":"자기 전에 '오늘 먼저 한 일, 다음에 한 일'을 말해 보게 해 주세요.",
+  "돈":"동전으로 가게 놀이를 하거나, 마트에서 동전 하나를 직접 내 보게 해 주세요.","규칙":"빨강-파랑-빨강처럼 블록을 놓고 다음에 올 색을 맞혀 보세요.",
+  "분류":"장난감을 색깔끼리, 크기끼리 나누어 정리해 보세요.","그래프":"가족이 좋아하는 과일을 스티커로 붙여 어느 게 많은지 세어 보세요.",
+  "순서":"줄 서기 놀이로 '맨 앞, 다음, 맨 뒤'를 말해 보세요.","몇째":"자동차나 인형을 줄 세우고 '셋째는 누구?'를 물어 보세요.",
+  "위치":"인형을 의자 위·아래·옆에 놓아 보며 말로 설명해 보세요.","왼쪽 오른쪽":"신발 신을 때, 하이파이브할 때 왼손·오른손을 불러 주세요.",
+  "안과 밖":"장난감을 상자 안과 밖에 놓는 놀이를 해 보세요.","짝 찾기":"빨래를 갤 때 양말 짝 맞추기를 맡겨 보세요.","길 찾기":"집 안에서 보물 찾기 지도를 그려 길을 따라가 보세요.",
+  "숨은 그림":"그림책에서 작은 그림을 찾아보는 놀이를 해 보세요.","그리기":"오늘 본 것을 그림으로 그리고 이야기해 보게 해 주세요.",
+  "외국어 듣기":"오늘 배운 낱말을 노래처럼 같이 따라 말해 보세요.","외국어 낱말":"집 안 물건에 외국어 낱말 쪽지를 붙여 보세요."};
+function areaStats(o){ var A={}; Object.keys(o.stat).forEach(function(g){ var a=AREA[g]; if(!a) return; var s=o.stat[g]; A[a]=A[a]||[0,0]; A[a][0]+=s[0]; A[a][1]+=s[1]; });
+  return Object.keys(A).map(function(a){ var w=A[a][0], m=A[a][1]; return {a:a, w:w, m:m, n:w+m, r:w/Math.max(1,w+m)}; }).filter(function(x){ return x.n>=3; }); }
+R.weak=function(){ var s=areaStats(st()).sort(function(x,y){ return x.r-y.r; }); return s.length&&s[0].r<0.8? s[0].a : null; };
+function reportUI(box){ var o=st(), k=kid(); if(!k){ box.innerHTML='<p class="rnote2">먼저 아이를 등록해 주세요.</p>'; return; }
+  var rows="", d=new Date(); for(var i=6;i>=0;i--){ var x=new Date(d.getTime()-i*864e5), key=day(x), m=Math.round((o.sec[key]||0)/60), n=o.days[key]||0;
+    rows+='<div class="rday"><span>'+(x.getMonth()+1)+"/"+x.getDate()+' '+"일월화수목금토"[x.getDay()]+'</span><i class="rbar"><i style="width:'+Math.min(100,m*3)+'%"></i></i><b>'+m+'분 · 놀이 '+n+'개</b></div>'; }
+  var s=areaStats(o), good=s.slice().sort(function(a,b){ return b.r-a.r||b.n-a.n; }).filter(function(x){ return x.r>=0.8; }).slice(0,3), weak=s.slice().sort(function(a,b){ return a.r-b.r; }).filter(function(x){ return x.r<0.8; }).slice(0,2);
+  var memo= weak.length? esc(k.name)+'는 <b>'+weak.map(function(x){ return x.a; }).join("</b>, <b>")+'</b>에서 자주 멈춰요.' : (s.length? esc(k.name)+"는 요즘 고르게 잘하고 있어요." : "놀이를 몇 번 더 하면 잘하는 것과 더 연습할 것을 알려 드릴게요.");
+  box.innerHTML='<div class="rmemo"><b>한 줄 메모</b><p>'+memo+'</p>'+weak.map(function(x){ return '<p class="rtip"><b>'+esc(x.a)+'</b> '+esc(TIPS[x.a]||"")+'</p>'; }).join("")+'</div>'+
+    (good.length?'<p class="rnote2">잘하는 것: '+good.map(function(x){ return esc(x.a)+" ("+Math.round(x.r*100)+"%)"; }).join(", ")+'</p>':"")+
+    '<h3>최근 7일</h3>'+rows+'<p class="rnote2">스티커 '+nstk(o)+'장 · 배지 '+Object.keys(o.bad).length+'개 · '+esc(R.eggInfo().name)+' · '+streakDays(o)+'일 연속</p>'; }
+
+/* ---------- 부모 메뉴 ---------- */
+R.parentMenu=function(){ var s=SET(), k=kid(), o=st();
+  var lim=[[10,"10분"],[15,"15분"],[20,"20분"],[30,"30분"],[45,"45분"],[0,"끄기"]];
+  var box=ov("parent",'<h2>부모님 메뉴</h2>'+
+    '<details open><summary>하루 놀이 시간</summary><p class="rnote2">시간이 다 되면 하던 놀이까지만 하고 졸린 공룡이 나와요. 2분 전에 미리 알려 줘요.'+(k?' 오늘 '+Math.round(used(o)/60)+'분 놀았어요.':'')+'</p><div class="rseg">'+lim.map(function(x){ return '<button type="button" data-l="'+x[0]+'"'+(s.limit===x[0]?' class="on"':'')+'>'+x[1]+'</button>'; }).join("")+'</div></details>'+
+    '<details><summary>아이 기록과 한 줄 메모</summary><div data-rep></div></details>'+
+    '<details><summary>엄마·아빠 목소리 녹음</summary><div data-rec></div></details>'+
+    '<details><summary>가족 쪽지 보내기</summary><p class="rnote2">할머니, 아빠가 보낸 칭찬을 적어 두면 다음에 놀이를 시작할 때 공룡이 읽어 줘요.</p><div class="rnoteform"><select data-from><option>엄마</option><option>아빠</option><option>할머니</option><option>할아버지</option><option>이모</option><option>삼촌</option></select><input data-text maxlength="60" placeholder="예: 어제 숫자 놀이 정말 잘했어! 사랑해"><button type="button" class="rmini" data-send>보내기</button></div><p class="rnote2" data-q></p></details>'+
+    '<details><summary>아이 등록·캐릭터</summary><p class="rnote2">아이를 더하거나 얼굴 캐릭터를 다시 만들 수 있어요.</p><div class="rrow left"><a class="rpill" href="mathdino.html#kids">아이 등록·바꾸기</a><a class="rpill" href="mathdino.html#avatar">캐릭터 만들기</a></div></details>');
+  var b=box.box; each("[data-l]",function(bt){ bt.onclick=function(){ var x=SET(); x.limit=+bt.dataset.l; wr("goyu-parent",x); each("[data-l]",function(y){ y.classList.toggle("on",y===bt); },b); TM.warned=false; if(R.timeLeft()>0){ R.tired=false; } gauge(st()); }; },b);
+  reportUI(b.querySelector("[data-rep]")); recUI(b.querySelector("[data-rec]"));
+  function q(){ var oo=st(); b.querySelector("[data-q]").textContent= oo.notes.length? "기다리는 쪽지 "+oo.notes.length+"개" : ""; } q();
+  b.querySelector("[data-send]").onclick=function(){ var t=b.querySelector("[data-text]").value.trim(); if(!t||!kid()) return; var oo=st(); oo.notes.push({from:b.querySelector("[data-from]").value,text:t,d:day()}); sv(oo); b.querySelector("[data-text]").value=""; q(); toast("<span><b>쪽지를 넣어 두었어요</b><small>다음에 시작할 때 읽어 줘요</small></span>"); }; };
+document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.closest("[data-parent]"); if(t){ e.preventDefault(); R.gate(R.parentMenu); } });
+
+/* ---------- 콕 찌르면 웃긴 반응 ---------- */
+var POKE={n:0,t:0};
+var TICKLE=["간지러워!","히히, 간지러워!","나 찌르지 마~ 히히!","왜 불렀어?","하하하! 그만그만!","나랑 놀고 싶구나?"];
+document.addEventListener("pointerdown",function(e){ var el=e.target.closest&&e.target.closest("[data-buddy],.rpoke"); if(!el) return; if(R.fx.S&&R.fx.S.lock) return;
+  var now=Date.now(); POKE.n= now-POKE.t<1500? POKE.n+1 : 1; POKE.t=now;
+  el.classList.remove("rtickle"); void el.offsetWidth; el.classList.add("rtickle"); setTimeout(function(){ el.classList.remove("rtickle"); },650);
+  if(POKE.n===5){ POKE.n=0; SND.fart(); var p=mk("div","rpuff","뿡!"); var r=el.getBoundingClientRect(); p.style.left=(r.left+r.width*0.7)+"px"; p.style.top=(r.top+r.height*0.6)+"px"; p.style.zIndex=++ZI+300; document.body.appendChild(p); setTimeout(function(){ p.remove(); },1300);
+    setTimeout(function(){ if(view()!=="play") say(pick(["앗, 방귀 뀌었다! 히히, 미안!","뿡! 너무 웃어서 방귀가 나왔어!"])); else SND.giggle(); },500); return; }
+  if(POKE.n===1||POKE.n===3){ if(view()==="play") SND.giggle(); else say(pick(TICKLE)); } },true);
+
+/* ---------- 춤 파티 ---------- */
+R.party=function(){ if(R.sleeping) return; var o=ov("party",'<div class="rdisco"><i></i><i></i><i></i><i></i></div><div class="rdance">'+avHTML("cheer")+'</div><h2>깜짝 춤 파티!</h2><p>같이 춤춰요! 빙글빙글~</p>');
+  SND.tune(18); say("깜짝 춤 파티! 같이 춤추자!"); o.el.addEventListener("click",function(){ o.close(); }); setTimeout(o.close,5200); };
+
+/* ---------- 자랑 카드 (가족에게 보내기) ---------- */
+function loadImg(src){ return new Promise(function(res){ var i=new Image(); i.onload=function(){ res(i); }; i.onerror=function(){ res(null); }; i.src=src; }); }
+function avatarImg(){ var html=avHTML("cheer").replace(/<g class="s-idle">[\s\S]*?<\/g>/,""); if(html.indexOf("<svg")<0) return loadImg(art("dino"));
+  /* 바깥 그림(art/…)은 그림 파일 안에 넣어야 캔버스에 그려져요 */
+  var urls=[]; html.replace(/href="(art\/[^"]+)"/g,function(m,u){ if(urls.indexOf(u)<0) urls.push(u); });
+  return Promise.all(urls.map(function(u){ return fetch(u).then(function(r){ return r.blob(); }).then(function(b){ return new Promise(function(res){ var f=new FileReader(); f.onload=function(){ res([u,f.result]); }; f.readAsDataURL(b); }); }).catch(function(){ return [u,u]; }); }))
+    .then(function(pairs){ pairs.forEach(function(p){ html=html.split('"'+p[0]+'"').join('"'+p[1]+'"'); });
+      html=html.replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="400" height="480" ').replace(/(<g transform="translate\(-4 -10\)">)?<g class="fx">[\s\S]*$/,"</g></svg>");
+      return loadImg(URL.createObjectURL(new Blob([html],{type:"image/svg+xml"}))); }); }
+function rr(c,x,y,w,h,r){ c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
+R.brag=function(){ var k=kid(); if(!k) return; var o=st(), d=day(), today=o.tstk[d]||[], n=o.days[d]||0, e=R.eggInfo();
+  toast("<span><b>자랑 카드를 만들고 있어요</b></span>",1500);
+  Promise.all([avatarImg(), loadImg(e.img)].concat(today.slice(-6).map(function(s){ return loadImg(art(s)); }))).then(function(im){
+    var W=1080,H=1350,c=document.createElement("canvas"); c.width=W; c.height=H; var x=c.getContext("2d");
+    var g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,"#cfeeff"); g.addColorStop(0.62,"#fff6e9"); g.addColorStop(1,"#ffe3ef"); x.fillStyle=g; x.fillRect(0,0,W,H);
+    x.fillStyle="#fff"; for(var i=0;i<26;i++){ x.globalAlpha=0.5; x.beginPath(); x.arc(Math.random()*W,Math.random()*H*0.5,4+Math.random()*8,0,7); x.fill(); } x.globalAlpha=1;
+    var F='"Jua","Apple SD Gothic Neo","Malgun Gothic",sans-serif';
+    x.textAlign="center"; x.fillStyle="#5b3fa8"; x.font="84px "+F; x.fillText(k.name+"의 오늘 자랑",W/2,140);
+    x.fillStyle="#7a6b62"; x.font="40px "+F; var dt=new Date(); x.fillText((dt.getMonth()+1)+"월 "+dt.getDate()+"일 · "+(n?"놀이 "+n+"개 성공!":"오늘도 열심히 놀았어요!"),W/2,205);
+    if(im[0]) x.drawImage(im[0],W/2-330,250,400,480);
+    if(im[1]){ x.drawImage(im[1],W/2+90,470,260,260); x.fillStyle="#3b2f2a"; x.font="38px "+F; x.fillText(e.name,W/2+220,770); }
+    x.fillStyle="#fff"; rr(x,70,820,W-140,330,44); x.fill(); x.fillStyle="#3b2f2a"; x.font="44px "+F; x.fillText(today.length?"오늘 받은 스티커":"내 보물",W/2,890);
+    var items=today.length? im.slice(2) : [], sx=W/2-(items.length*140)/2;
+    items.forEach(function(s,i){ if(s) x.drawImage(s,sx+i*140+5,930,130,130); });
+    if(!items.length){ x.font="38px "+F; x.fillStyle="#7a6b62"; x.fillText("스티커 "+nstk(o)+"장 · 배지 "+Object.keys(o.bad).length+"개",W/2,1010); }
+    x.fillStyle="#7a6b62"; x.font="34px "+F; x.fillText("칭찬 한마디 부탁해요! 💛",W/2,1110);
+    x.fillStyle="#5b3fa8"; x.font="36px "+F; x.fillText("우리 아이 놀이터",W/2,1260);
+    c.toBlob(function(blob){ if(!blob) return; var f=null; try{ f=new File([blob],k.name+"_자랑.png",{type:"image/png"}); }catch(e){}
+      var o2=ov("brag",'<h2>자랑 카드 완성!</h2><img class="rcard" alt="자랑 카드"><div class="rrow"><button type="button" class="rpill main" data-share>가족에게 보내기</button><a class="rpill" data-dl download="'+esc(k.name)+'_자랑.png">사진으로 저장</a></div><p class="rnote2">카카오톡이나 문자로 보내면 가족이 칭찬해 줄 거예요. 답장은 부모님 메뉴의 "가족 쪽지"에 적어 두면 공룡이 읽어 줘요.</p>');
+      var u=URL.createObjectURL(blob); o2.box.querySelector(".rcard").src=u; o2.box.querySelector("[data-dl]").href=u;
+      var sh=o2.box.querySelector("[data-share]"); if(!(f&&navigator.canShare&&navigator.canShare({files:[f]}))) sh.hidden=true;
+      sh.onclick=function(){ navigator.share({files:[f],title:k.name+"의 오늘 자랑",text:k.name+"가 오늘 놀이터에서 열심히 했어요! 칭찬해 주세요 💛"}).catch(function(){}); };
+      say("자랑 카드가 완성됐어! 가족한테 보내 볼까?"); },"image/png"); }); };
+
+/* ---------- 손뼉·말로 대답하기 ---------- */
+var NW=[["다섯",5],["여섯",6],["일곱",7],["여덟",8],["아홉",9],["하나",1],["둘",2],["셋",3],["넷",4],["열",10],["한",1],["두",2],["세",3],["네",4],["일",1],["이",2],["삼",3],["사",4],["오",5],["육",6],["칠",7],["팔",8],["구",9],["십",10]];
+function parseNums(t){ var out=[]; (String(t).match(/\d+/g)||[]).forEach(function(x){ out.push(+x); });
+  String(t).split(/[\s,.!?]+/).forEach(function(w){ if(!w) return; for(var i=0;i<NW.length;i++){ var k=NW[i][0]; if(w.indexOf(k)===0&&(k.length>1||k==="열"||w===k||/^.(개|명|마리|요|번)$/.test(w))){ var v=NW[i][1]; if(v===10){ var r=w.slice(k.length); for(var j=0;j<NW.length;j++) if(NW[j][1]<10&&r.indexOf(NW[j][0])===0){ v+=NW[j][1]; break; } } out.push(v); break; } } }); return out; }
+R.parseNums=parseNums;
+R.canListen=function(){ return !!(window.SpeechRecognition||window.webkitSpeechRecognition); };
+R.canClap=function(){ return !!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&(window.AudioContext||window.webkitAudioContext)); };
+R.claps=function(cb){ var a=ac(); if(!a) return; stopTalk();
+  var o=ov("clap",'<div class="rclap">👏</div><h2>손뼉을 쳐서 대답해!</h2><div class="rcount">0</div><p class="rnote2">손뼉 소리를 듣는 중이에요</p>');
+  var n=0, last=0, start=performance.now(), done=false, stream=null, raf=0, floor=0.02;
+  function end(){ if(done) return; done=true; cancelAnimationFrame(raf); if(stream) stream.getTracks().forEach(function(t){ t.stop(); }); setTimeout(function(){ o.close(); cb(n); },500); }
+  o.onclose=function(){ if(!done){ done=true; cancelAnimationFrame(raf); if(stream) stream.getTracks().forEach(function(t){ t.stop(); }); } };
+  navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}}).then(function(s){ if(done){ s.getTracks().forEach(function(t){ t.stop(); }); return; } stream=s;
+    var src=a.createMediaStreamSource(s), an=a.createAnalyser(); an.fftSize=1024; src.connect(an); var buf=new Float32Array(an.fftSize);
+    (function loop(){ if(done) return; an.getFloatTimeDomainData(buf); var pk=0; for(var i=0;i<buf.length;i++){ var v=Math.abs(buf[i]); if(v>pk) pk=v; }
+      var now=performance.now(); if(now-start<400) floor=Math.max(floor,pk*1.2);
+      if(pk>Math.max(0.25,floor*3)&&now-last>200&&now-start>400){ n++; last=now; var c=o.box.querySelector(".rcount"); c.textContent=n; c.classList.remove("rpopn"); void c.offsetWidth; c.classList.add("rpopn"); SND.pop(); }
+      if((n&&now-last>1800)||now-start>9000) return end(); raf=requestAnimationFrame(loop); })(); })
+  .catch(function(){ o.close(); alert("마이크를 쓸 수 없어요. 브라우저 설정에서 마이크를 허용해 주세요."); }); };
+R.listen=function(lang, cb){ var SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR) return; stopTalk();
+  var o=ov("clap",'<div class="rclap">🎤</div><h2>큰 소리로 말해 줘!</h2><div class="rcount">…</div><p class="rnote2">예: "셋!"</p>'), r=new SR(), got=false;
+  r.lang=lang||"ko-KR"; r.interimResults=false; r.maxAlternatives=5;
+  r.onresult=function(e){ got=true; var all=[]; for(var i=0;i<e.results[0].length;i++) all.push(e.results[0][i].transcript); o.box.querySelector(".rcount").textContent=all[0]||"";
+    var nums=[]; all.forEach(function(t){ parseNums(t).forEach(function(v){ if(nums.indexOf(v)<0) nums.push(v); }); }); setTimeout(function(){ o.close(); cb(nums, all[0]||""); },700); };
+  r.onerror=r.onend=function(){ if(!got){ got=true; setTimeout(function(){ o.close(); cb([], ""); },300); } };
+  o.onclose=function(){ try{ r.abort(); }catch(e){} };
+  try{ r.start(); }catch(e){ o.close(); } };
+
+/* ---------- 내가 선생님 (아이가 문제 내기) ---------- */
+R.teach=function(){ var k=kid(), it=pick(STK.length?STK:["apple"]), n=0, max=10;
+  var o=ov("teach",'<h2><span data-who></span> 선생님 문제</h2><p data-msg>접시에 '+'<b>몇 개</b> 놓을지 정해서 눌러 줘. 엄마 아빠가 맞힐 거야!</p><div class="rplate" data-plate></div><div class="rrow" data-kid><button type="button" class="rpill" data-minus>빼기</button><button type="button" class="rpill" data-plus>하나 더</button><button type="button" class="rpill main" data-done>문제 다 냈어!</button></div><div class="rnums" data-nums hidden></div><div class="rrow" data-again hidden><button type="button" class="rpill main" data-re>또 문제 낼래!</button></div>');
+  var b=o.box; b.querySelector("[data-who]").textContent=k?k.name:"꼬마"; var plate=b.querySelector("[data-plate]"), msg=b.querySelector("[data-msg]");
+  function draw(){ plate.innerHTML=""; for(var i=0;i<n;i++){ var im=mk("img"); im.src=art(it); im.alt=""; plate.appendChild(im); } }
+  say((k?voc(k.name)+", ":"")+"오늘은 네가 선생님이야! 접시에 몇 개 놓을지 정해서 눌러 봐!");
+  b.querySelector("[data-plus]").onclick=function(){ if(n<max){ n++; SND.pop(); draw(); } };
+  b.querySelector("[data-minus]").onclick=function(){ if(n>0){ n--; draw(); } };
+  plate.onclick=function(){ if(b.querySelector("[data-kid]").hidden) return; if(n<max){ n++; SND.pop(); draw(); } };
+  b.querySelector("[data-done]").onclick=function(){ if(!n){ say("먼저 접시에 하나 이상 놓아 줘!"); return; } b.querySelector("[data-kid]").hidden=true; msg.innerHTML="<b>엄마 아빠 차례!</b> 접시에 모두 몇 개 있을까요?";
+    say("엄마 아빠, 문제 나갑니다! 접시에 모두 몇 개 있을까요?"); var nb=b.querySelector("[data-nums]"); nb.hidden=false; nb.innerHTML="";
+    for(var v=1;v<=max;v++){ (function(v){ var bt=mk("button","rnum",String(v)); bt.type="button"; bt.onclick=function(){ if(v===n){ SND.fan(); bt.classList.add("good"); msg.innerHTML="<b>딩동댕! 정답!</b> "+esc(k?k.name:"")+" 선생님 문제를 맞혔어요";
+          say("딩동댕! 정답! "+(k?k.name+" 선생님 ":"")+"문제를 맞혔어요!"); var r=R.reward(1,"teach"); toast(stkCard(r.sticker).replace("rstk","rstk small"),2200); celebrate(r,2400); nb.hidden=true; b.querySelector("[data-again]").hidden=false; }
+        else { SND.boing(); bt.classList.add("bad"); msg.innerHTML="<b>땡! 틀렸어요~</b> 선생님, 다시 기회를 줄까요?"; say(pick(["땡! 엄마 아빠가 틀렸다! 히히!","땡! 다시 세어 보세요~","땡! 선생님 문제가 너무 어렵나 봐!"])); } }; nb.appendChild(bt); })(v); } };
+  b.querySelector("[data-re]").onclick=function(){ n=0; it=pick(STK.length?STK:["apple"]); draw(); b.querySelector("[data-kid]").hidden=false; b.querySelector("[data-again]").hidden=true; msg.innerHTML="이번엔 <b>몇 개</b> 놓을까?"; say("이번엔 몇 개 놓을까?"); }; };
+
+/* ---------- 생활 타이머 (양치·정리·손 씻기·기다리기) ---------- */
+var LIFE={
+  brush:{t:120,img:"toothbrush",name:"양치",go:"치카치카 양치 시작!",steps:["윗니 바깥쪽 쓱싹쓱싹!","아랫니 바깥쪽 쓱싹쓱싹!","안쪽도 구석구석!","어금니 위도 꼼꼼하게! 거의 다 했어!"],end:"반짝반짝 깨끗해졌다! 양치 끝!",egg:1},
+  tidy:{t:300,img:"toybox",name:"정리",go:"정리 시작! 노래 끝나기 전에 다 치워 보자!",steps:["장난감을 상자에 쏙!","책은 책꽂이에!","인형은 제자리에!","바닥에 남은 거 없나 볼까?","거의 다 했어! 조금만 더!"],end:"우와, 방이 깨끗해졌다! 정리 대장!",egg:1},
+  wash:{t:30,img:"heart",name:"손 씻기",go:"비누로 손 씻기 시작!",steps:["손바닥 비비기!","손등도 비비기!","손가락 사이사이!"],end:"손이 깨끗해졌다!",egg:0},
+  wait:{t:180,img:"sun",name:"기다리기",go:"공룡이랑 같이 기다려 보자!",steps:["조금만 기다려 줘!","잘 기다리고 있어!","거의 다 됐어!"],end:"기다리기 성공! 정말 잘 참았어!",egg:0}
+};
+R.LIFE=LIFE;
+R.lifeTimer=function(kind, sec){ var L=LIFE[kind]; if(!L) return; var T=sec||L.t, t0=Date.now(), stepN=L.steps.length, lastStep=-1, done=false, beat=0;
+  R.lifeOn=true;
+  var o=ov("life",'<h2>'+esc(L.name)+' 타이머</h2><div class="rring" style="--f:1"><img src="'+art(L.img)+'" alt=""><b data-t></b></div><p data-step class="rstep"></p><div class="rlifebud rpoke">'+avHTML("idle")+'</div>');
+  var ring=o.box.querySelector(".rring"), tt=o.box.querySelector("[data-t]"), stp=o.box.querySelector("[data-step]");
+  say(L.go);
+  var iv=setInterval(function(){ var el=(Date.now()-t0)/1000, left=Math.max(0,T-el); ring.style.setProperty("--f",(left/T).toFixed(3)); tt.textContent=Math.floor(left/60)+":"+p2(Math.ceil(left%60)===60?0:Math.ceil(left)%60);
+    var si=Math.min(stepN-1,Math.floor(el/(T/stepN))); if(si!==lastStep){ lastStep=si; stp.textContent=L.steps[si]; if(si>0) say(L.steps[si]); }
+    if(++beat%16===0&&!muted()) SND.tune(4);
+    if(left<=0&&!done){ done=true; clearInterval(iv); finish(); } },250);
+  function finish(){ R.lifeOn=false; SND.fan(); stp.textContent=L.end; say(L.end); ring.classList.add("rdone"); var r=R.reward(L.egg, kind); var s=o.box.querySelector(".rlifebud"); if(s) s.innerHTML=avHTML("cheer");
+    setTimeout(function(){ toast(stkCard(r.sticker).replace("rstk","rstk small"),2200); celebrate(r,2400); },1200); }
+  o.onclose=function(){ clearInterval(iv); R.lifeOn=false; }; };
+R.waitPick=function(){ var o=ov("waitpick",'<h2>얼마나 기다릴까?</h2><div class="rrow">'+[1,3,5,10].map(function(m){ return '<button type="button" class="rpill" data-m="'+m+'">'+m+'분</button>'; }).join("")+'</div>');
+  each("[data-m]",function(b){ b.onclick=function(){ o.close(); R.lifeTimer("wait",+b.dataset.m*60); }; },o.box); };
+
+/* ---------- 오늘의 생활 미션 ---------- */
+var MIS=[["수 세기","간식을 먹기 전에 하나씩 세어 보기"],["수 세기","계단을 오르며 큰 소리로 세어 보기"],["도형","집 안에서 동그라미 모양 3개 찾기"],["도형","네모난 물건 3개 찾아서 엄마 아빠한테 보여 주기"],
+  ["많고 적음","내 컵과 엄마 컵 중 어느 쪽 물이 많은지 보기"],["길이","내 신발과 아빠 신발 길이 나란히 대 보기"],["무게","사과와 귤을 양손에 들고 어느 게 무거운지 말하기"],["시계","저녁 먹는 시간에 시계 바늘 같이 보기"],
+  ["돈","동전으로 가게 놀이하기"],["짝 찾기","빨래 갤 때 양말 짝 맞추기"],["분류","장난감을 색깔끼리 나누어 정리하기"],["하루 순서","아침에 한 일을 순서대로 말해 보기"],["몇째","줄 설 때 내가 몇째인지 말해 보기"],
+  ["위치","인형을 의자 위, 아래, 옆에 놓아 보기"],["왼쪽 오른쪽","오른손 하이파이브, 왼손 하이파이브!"],["더하기","귤 2개와 1개를 합치면 몇 개인지 세어 보기"],["빼기","과자 5개 중 2개를 먹으면 몇 개 남는지 보기"],
+  ["똑같이 나누기","간식을 가족 수만큼 똑같이 나누어 주기"],["외국어 낱말","오늘 배운 외국어 낱말 하나를 가족에게 알려 주기"],["숫자 읽기","자동차 번호판에서 아는 숫자 찾기"],["길이 재기","내 키만큼 블록 쌓아 보기"],
+  ["안과 밖","장난감을 상자 안에, 상자 밖에 놓아 보기"],["크기 비교","신발을 작은 것부터 큰 것까지 줄 세우기"],["그리기","오늘 본 동물을 그림으로 그리기"],["날짜","달력에서 오늘 날짜 찾기"],["규칙","블록을 빨강, 파랑, 빨강, 파랑 순서로 놓기"],["그래프","가족이 좋아하는 과일을 물어보고 어느 과일이 많은지 세기"]];
+R.mission=function(){ var o=st(), d=day(), w=R.weak(), pool=w? MIS.filter(function(m){ return m[0]===w; }) : []; if(!pool.length) pool=MIS;
+  var h=0; for(var i=0;i<d.length;i++) h=(h*31+d.charCodeAt(i))>>>0; var m=pool[h%pool.length]; return {a:m[0], t:m[1], done:(o.mis===d)}; };
+R.missionDone=function(){ var o=st(), d=day(); if(o.mis===d) return null; o.mis=d; o.cnt.mis=(o.cnt.mis||0)+1; var r=reward(o,1); SND.fan(); say(pick(["미션 성공! 정말 멋지다!","우와, 미션 성공! 생활 속 수학 박사네!"])); toast(stkCard(r.sticker).replace("rstk","rstk small"),2200); celebrate(r,2400); return r; };
+
+/* ---------- 색칠한 그림을 놀이에 넣기 ---------- */
+var COL={};
+var LINE=window.__LINE||[];
+R.COL=COL;
+R.applyColors=function(){ var k=kid(); if(!k) return Promise.resolve();
+  return ikeys().then(function(keys){ var pre="col-"+k.id+"-"; return Promise.all(keys.filter(function(x){ return String(x).indexOf(pre)===0; }).map(function(x){ return iget(x).then(function(v){ var name=String(x).slice(pre.length); if(v){ COL[name]=v; useColor(name,v); } }); })); }); };
+function useColor(name, url){ var s=document.getElementById("g-"+name); if(s&&s.tagName.toLowerCase()==="symbol") s.innerHTML='<image href="'+url+'" x="0" y="0" width="100" height="100"/>'; }
+/* 종이 배경 지우기: 가장자리와 이어진 종이색만 투명하게 */
+function clearPaper(c){ var w=c.width,h=c.height,x=c.getContext("2d"),d=x.getImageData(0,0,w,h),p=d.data,rs=[],gs=[],bs=[],i,j,k;
+  for(i=0;i<w;i+=3){ [0,h-1].forEach(function(y){ var o=(y*w+i)*4; rs.push(p[o]); gs.push(p[o+1]); bs.push(p[o+2]); }); } for(j=0;j<h;j+=3){ [0,w-1].forEach(function(xx){ var o=(j*w+xx)*4; rs.push(p[o]); gs.push(p[o+1]); bs.push(p[o+2]); }); }
+  function med(a){ a.sort(function(u,v){ return u-v; }); return a[a.length>>1]; } var R0=med(rs),G0=med(gs),B0=med(bs), tol=40;
+  function near(o){ var s=p[o]+p[o+1]+p[o+2], sat=Math.max(p[o],p[o+1],p[o+2])-Math.min(p[o],p[o+1],p[o+2]); return (Math.abs(p[o]-R0)+Math.abs(p[o+1]-G0)+Math.abs(p[o+2]-B0)<tol*3)||(s>(R0+G0+B0)-tol&&sat<36); }
+  var bg=new Uint8Array(w*h), stck=[]; for(i=0;i<w;i++){ stck.push(i); stck.push((h-1)*w+i); } for(j=0;j<h;j++){ stck.push(j*w); stck.push(j*w+w-1); }
+  while(stck.length){ k=stck.pop(); if(bg[k]||!near(k*4)) continue; bg[k]=1; var xx=k%w, yy=(k/w)|0; if(xx>0) stck.push(k-1); if(xx<w-1) stck.push(k+1); if(yy>0) stck.push(k-w); if(yy<h-1) stck.push(k+w); }
+  /* 안쪽 흰 종이(색칠 안 한 곳)는 하얗게 정리, 선은 진하게 */
+  for(k=0;k<w*h;k++){ var o=k*4; if(bg[k]){ p[o+3]=0; continue; } var s2=p[o]+p[o+1]+p[o+2], sat2=Math.max(p[o],p[o+1],p[o+2])-Math.min(p[o],p[o+1],p[o+2]);
+    if(s2>(R0+G0+B0)-tol*1.5&&sat2<40){ p[o]=p[o+1]=p[o+2]=255; } else { for(var z=0;z<3;z++) p[o+z]=Math.max(0,Math.min(255,(p[o+z]-128)*1.25+128+(255-(R0+G0+B0)/3)*0.6)); } }
+  x.putImageData(d,0,0); return c; }
+R.colorOpen=function(){ var k=kid(); if(!k){ toast("<span><b>먼저 아이를 등록해 주세요</b></span>"); return; }
+  var o=ov("color",'<h2>내가 색칠한 그림</h2><p class="rnote2">1. 색칠 종이를 인쇄해서 색칠해요. 2. 그림을 눌러 색칠한 종이를 찍어요. 3. 놀이에 내 그림이 나와요!</p><div class="rrow left"><a class="rpill" href="color.html" target="_blank" rel="noopener">색칠 종이 인쇄하기</a></div><div class="rgrid" data-grid></div>');
+  var grid=o.box.querySelector("[data-grid]");
+  function render(){ grid.innerHTML=""; LINE.forEach(function(name){ var b=mk("button","rcell"+(COL[name]?" have":""),'<img src="'+(COL[name]||("art/line/"+name+".png"))+'" alt="">'); b.type="button"; b.onclick=function(){ shoot(name); }; grid.appendChild(b); }); }
+  render();
+  function shoot(name){ var inp=mk("input"); inp.type="file"; inp.accept="image/*"; inp.setAttribute("capture","environment");
+    inp.onchange=function(){ var f=inp.files&&inp.files[0]; if(!f) return; var url=URL.createObjectURL(f), im=new Image(); im.onload=function(){ URL.revokeObjectURL(url); crop(name,im); }; im.src=url; }; inp.click(); }
+  function crop(name, im){ var c=ov("crop",'<h2>그림을 네모 안에 맞춰요</h2><canvas width="360" height="360" class="rcrop"></canvas><label class="rrng">크게 작게<input type="range" min="0.5" max="3" step="0.05" value="1"></label><div class="rprev"><img alt=""></div><div class="rrow"><button type="button" class="rpill main" data-ok>놀이에 넣기</button></div>');
+    var cv=c.box.querySelector("canvas"), x=cv.getContext("2d"), z=1, ox=0, oy=0, W=360, base=W/Math.min(im.width,im.height)*0.95, drag=null, prev=c.box.querySelector(".rprev img"), out=null, tm=null;
+    function drawC(){ var s=base*z, w=im.width*s, h=im.height*s; x.fillStyle="#eee"; x.fillRect(0,0,W,W); x.drawImage(im,W/2-w/2+ox,W/2-h/2+oy,w,h); x.strokeStyle="#ffc83d"; x.lineWidth=4; x.strokeRect(20,20,W-40,W-40); }
+    function build(){ var s=base*z, o2=document.createElement("canvas"); o2.width=o2.height=256; var sx=(20-(W/2-im.width*s/2+ox))/s, sy=(20-(W/2-im.height*s/2+oy))/s, sw=(W-40)/s;
+      o2.getContext("2d").drawImage(im,sx,sy,sw,sw,0,0,256,256); clearPaper(o2); out=o2.toDataURL("image/png"); prev.src=out; }
+    function later(){ clearTimeout(tm); tm=setTimeout(build,200); }
+    drawC(); build();
+    cv.addEventListener("pointerdown",function(e){ e.preventDefault(); cv.setPointerCapture(e.pointerId); var r=cv.getBoundingClientRect(); drag={x:e.clientX,y:e.clientY,ox:ox,oy:oy,k:W/r.width}; });
+    cv.addEventListener("pointermove",function(e){ if(!drag) return; ox=drag.ox+(e.clientX-drag.x)*drag.k; oy=drag.oy+(e.clientY-drag.y)*drag.k; drawC(); });
+    function up(){ if(drag){ drag=null; later(); } } cv.addEventListener("pointerup",up); cv.addEventListener("pointercancel",up);
+    c.box.querySelector("input[type=range]").addEventListener("input",function(){ z=+this.value; drawC(); later(); });
+    c.box.querySelector("[data-ok]").onclick=function(){ build(); iset("col-"+k.id+"-"+name,out).then(function(){ COL[name]=out; useColor(name,out); c.close(); render(); var r=R.reward(1,"color"); SND.fan(); say("우와! 내가 색칠한 그림이 놀이에 들어갔어!"); toast(stkCard(r.sticker).replace("rstk","rstk small"),2200); celebrate(r,2400); }); }; } };
+})();
+
+</script>
 <script>
 (function(){
 "use strict";
@@ -456,7 +972,7 @@ function g(parent){ return el("g",{},parent); }
 function icon(name,x,y,s,parent){ return el("use",{href:"#g-"+name,x:x,y:y,width:s,height:s},parent); }
 function txt(s,x,y,size,parent,fill,anchor){ var t=el("text",{x:x,y:y,"font-size":size||40,"text-anchor":anchor||"middle",fill:fill||"#3b2f2a","class":"t"},parent); t.textContent=s; return t; }
 function setT(n,x,y){ n._tx=x; n._ty=y; n.setAttribute("transform","translate("+x+","+y+")"); }
-function clear(){ while(svg.firstChild) svg.removeChild(svg.firstChild); svg.classList.remove("hide"); cv.classList.add("hide"); $("padtools").classList.add("hide"); decor(); }
+function clear(){ S.nch={}; while(svg.firstChild) svg.removeChild(svg.firstChild); svg.classList.remove("hide"); cv.classList.add("hide"); $("padtools").classList.add("hide"); decor(); }
 function decor(){ var d=g(); d.setAttribute("pointer-events","none"); d.setAttribute("class","decor");
   if(window.__ART_BG){ el("image",{href:__ART_BG,x:0,y:0,width:1000,height:620,preserveAspectRatio:"xMidYMid slice"},d); return; }
   function cloud(x,y,k){ var c=g(d); c.setAttribute("transform","translate("+x+","+y+") scale("+k+")"); [[0,20,34],[34,4,40],[72,18,32],[36,28,40]].forEach(function(q){ el("circle",{cx:q[0],cy:q[1],r:q[2],fill:"#eef6ff"},c); }); }
@@ -487,7 +1003,8 @@ function choices(vals, correct, render){
     var b=g(); setT(b, x0+i*(w+gap), 470); if(v===correct) setHint(function(){ hintNode(b); });
     el("rect",{x:0,y:0,width:w,height:130,rx:34,"class":"choice"},b);
     if(render) render(v,b,w); else txt(v,w/2,96,78,b);
-    tap(b,function(){ if(v===correct){ b.classList.add("good"); win(); } else { b.classList.add("bad"); miss(); setTimeout(function(){ b.classList.remove("bad"); },600); } });
+    var go=function(){ if(S.lock) return; if(v===correct){ b.classList.add("good"); win(); } else { b.classList.add("bad"); miss(); setTimeout(function(){ b.classList.remove("bad"); },600); } };
+    tap(b,go); if(typeof v==="number") S.nch[v]=go; /* 손뼉·말로 대답할 때 씀 */
   });
 }
 function numChoices(n, lo, hi){ var k=NCH[TIER], pool=[]; hi=Math.max(hi,n+2); for(var v=Math.max(lo,n-3); v<=Math.min(hi,n+3); v++) if(v!==n) pool.push(v); return shuffle([n].concat(shuffle(pool).slice(0,k-1))); }
@@ -528,10 +1045,11 @@ var PRAISE=["성공! 멋진데~?","성공! 멋진데~? 짝짝짝!","우와, 성�
 function burst(){ var box=$("fx"); var cols=["#ff6b6b","#ffc83d","#5bb8f2","#6ccb8f","#b38cff","#ff9ec7"];
   for(var i=0;i<46;i++){ var p=document.createElement("i"); p.className="cf"; p.style.left=(10+Math.random()*80)+"%"; p.style.background=pick(cols); p.style.animationDelay=(Math.random()*0.35)+"s"; p.style.setProperty("--dx",(Math.random()*200-100)+"px"); p.style.setProperty("--r",(Math.random()*720)+"deg"); box.appendChild(p); setTimeout((function(q){return function(){ q.remove(); };})(p),2200); } }
 function bubble(text, kind){ var b=$("bubble"); b.textContent=text; b.className="bubble show "+kind; clearTimeout(bubble._t); bubble._t=setTimeout(function(){ b.className="bubble"; }, kind==="yay"?1700:1500); }
-function miss(msg){ if(S.diag){ if(S.lock) return; diagAnswer(false); return; } buddyPose("dizzy",1600); S.miss++; var hintNow=S.hintFn&&S.miss>=HINTAT[TIER]; if(hintNow) setTimeout(S.hintFn,900); boing(); wahwah(); bubble("띠용~ 뿌엥뿌엥~","oops"); say("뿌엥뿌엥~ "+(msg||"다시 해 볼까?"),700); S.streak=0;
+function curG(){ var lv=S.book&&S.book.levels[S.li]; return lv? gameFor(lv) : null; }
+function miss(msg){ if(S.diag){ if(S.lock) return; diagAnswer(false); return; } buddyPose("dizzy",1600); S.miss++; if(window.ROOM) ROOM.onMiss(curG()); var hintNow=S.hintFn&&S.miss>=HINTAT[TIER]; if(hintNow) setTimeout(S.hintFn,900); boing(); wahwah(); bubble("띠용~ 뿌엥뿌엥~","oops"); say("뿌엥뿌엥~ "+(msg||"다시 해 볼까?"),700); S.streak=0;
   if(hintNow&&S.miss===HINTAT[TIER]) say(pick(LINES.hint),750,true); else if(!hintNow) cheerUp(); var st=$("stagewrap"); st.classList.remove("shake"); void st.offsetWidth; st.classList.add("shake"); }
 function good(){ ding(); }
-function win(){ if(S.lock) return; if(S.diag){ diagAnswer(true); return; } S.lock=true; applause(); burst(); var p=pick(PRAISE); bubble(p,"yay"); say(p,150); buddyPose("cheer",2000); $("ptext").textContent=p; var extra=streakTalk();
+function win(){ if(S.lock) return; if(S.diag){ diagAnswer(true); return; } S.lock=true; applause(); burst(); var p=pick(PRAISE), pc=window.ROOM&&ROOM.onWin(curG()); bubble(p,"yay"); if(!pc) say(p,150); buddyPose("cheer",2000); $("ptext").textContent=p; var extra=streakTalk();
   setTimeout(function(){ S.lock=false; S.round++; updDots(); if(S.round>=S.rounds) levelDone(); else playRound(); }, 2100+extra); }
 
 /* ---------- 게임 종류 ---------- */
@@ -831,6 +1349,7 @@ function avSave(id,o){ try{ if(o) localStorage.setItem(AVKEY+id,JSON.stringify(o
 /* 기본 얼굴(사진이 없을 때) */
 var DEFFACE='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffe3c8"/><circle cx="34" cy="46" r="6" fill="#3b2f2a"/><circle cx="66" cy="46" r="6" fill="#3b2f2a"/><circle cx="36" cy="44" r="2" fill="#fff"/><circle cx="68" cy="44" r="2" fill="#fff"/><ellipse cx="24" cy="62" rx="8" ry="5" fill="#ffb3b3"/><ellipse cx="76" cy="62" rx="8" ry="5" fill="#ffb3b3"/><path d="M38 64 Q50 76 62 64" fill="none" stroke="#3b2f2a" stroke-width="4" stroke-linecap="round"/></svg>');
 var AVN=0;
+var SUITART={idle:"art/suit_idle.webp",cheer:"art/suit_cheer.webp"};
 /* 캐릭터 SVG 문자열. a={mode:'photo'|'draw', img, suit} */
 function avatarSVG(a, cls){ a=a||{}; var n=++AVN, s=SUITS[a.suit||0]||SUITS[0], img=a.img||DEFFACE, ink="#3b2f2a";
   var fx='<g class="fx"><g class="sparkle"><path d="M30 40 l5 -12 l5 12 l12 5 l-12 5 l-5 12 l-5 -12 l-12 -5z" fill="#ffd34d"/><path d="M168 30 l4 -9 l4 9 l9 4 l-9 4 l-4 9 l-4 -9 l-9 -4z" fill="#ffd34d"/><path d="M175 120 l3 -7 l3 7 l7 3 l-7 3 l-3 7 l-3 -7 l-7 -3z" fill="#ff9ec7"/></g>'+
@@ -840,18 +1359,17 @@ function avatarSVG(a, cls){ a=a||{}; var n=++AVN, s=SUITS[a.suit||0]||SUITS[0], 
     '<g class="crown"><path d="M70 2 l10 -18 l10 12 l10 -18 l10 18 l10 -12 l10 18z" fill="#ffd34d" stroke="'+ink+'" stroke-width="3" stroke-linejoin="round"/></g></g>';
   if(a.mode==="draw"){
     return '<svg class="av '+(cls||"")+'" viewBox="0 0 200 240" aria-hidden="true"><g transform="translate(10 24) scale(.9)"><g class="whole"><ellipse cx="100" cy="232" rx="60" ry="7" fill="rgba(0,0,0,.12)" class="shadow"/><g class="jumper"><image href="'+img+'" x="14" y="36" width="172" height="194" preserveAspectRatio="xMidYMax meet"/></g></g>'+fx+'</g></svg>'; }
-  return '<svg class="av '+(cls||"")+'" viewBox="0 0 200 240" aria-hidden="true"><g transform="translate(10 24) scale(.9)"><defs><clipPath id="avc'+n+'"><circle cx="100" cy="86" r="44"/></clipPath></defs>'+
-   '<ellipse cx="100" cy="232" rx="58" ry="7" fill="rgba(0,0,0,.12)" class="shadow"/>'+
-   '<g class="jumper"><g class="tail"><path d="M140 190 q40 10 50 -20 q-14 30 -48 34z" fill="'+s[0]+'" stroke="'+ink+'" stroke-width="4" stroke-linejoin="round"/></g>'+
-   '<g class="armL"><path d="M66 150 q-26 6 -30 28" fill="none" stroke="'+ink+'" stroke-width="24" stroke-linecap="round"/><path d="M66 150 q-26 6 -30 28" fill="none" stroke="'+s[0]+'" stroke-width="16" stroke-linecap="round"/></g>'+
-   '<g class="armR"><path d="M134 150 q26 6 30 28" fill="none" stroke="'+ink+'" stroke-width="24" stroke-linecap="round"/><path d="M134 150 q26 6 30 28" fill="none" stroke="'+s[0]+'" stroke-width="16" stroke-linecap="round"/></g>'+
-   '<g class="legs"><rect x="66" y="196" width="26" height="30" rx="12" fill="'+s[0]+'" stroke="'+ink+'" stroke-width="4"/><rect x="108" y="196" width="26" height="30" rx="12" fill="'+s[0]+'" stroke="'+ink+'" stroke-width="4"/></g>'+
-   '<path d="M56 160 q0 -38 44 -38 q44 0 44 38 v18 q0 30 -44 30 q-44 0 -44 -30z" fill="'+s[0]+'" stroke="'+ink+'" stroke-width="4"/>'+
-   '<path d="M76 158 q24 -12 48 0 v22 q-24 16 -48 0z" fill="'+s[1]+'"/>'+
-   '<g class="head"><path d="M100 22 l10 -14 l8 16 l14 -8 l2 18 l14 2 l-6 14 q12 18 6 40 q-6 34 -48 38 q-42 -4 -48 -38 q-6 -22 6 -40 l-6 -14 l14 -2 l2 -18 l14 8 l8 -16z" fill="'+s[0]+'" stroke="'+ink+'" stroke-width="4" stroke-linejoin="round"/>'+
-   '<circle cx="100" cy="86" r="46" fill="#fff" stroke="'+ink+'" stroke-width="4"/>'+
-   '<image href="'+img+'" x="56" y="42" width="88" height="88" clip-path="url(#avc'+n+')" preserveAspectRatio="xMidYMid slice"/>'+
-   '<circle cx="100" cy="86" r="44" fill="none" stroke="'+ink+'" stroke-width="3"/></g></g>'+fx+'</g></svg>'; }
+  /* 얼굴 사진 + 클레이 공룡 옷 (가만히 / 만세 두 자세). 옷 색은 색상 돌리기로 바꿔요 */
+  var hue=[0,-70,115,-130,160,-50][a.suit||0]||0, fl=hue?' filter="url(#avh'+n+')"':'';
+  function pose(cl,src,cx,cy,r){ return '<g class="'+cl+'"><image href="'+src+'" x="0" y="0" width="200" height="240"'+fl+'/>'+
+     '<circle cx="'+cx+'" cy="'+cy+'" r="'+(r+1.5)+'" fill="#f3e2cf"/><image href="'+img+'" x="'+(cx-r)+'" y="'+(cy-r)+'" width="'+(2*r)+'" height="'+(2*r)+'" clip-path="url(#avc'+n+cl+')" preserveAspectRatio="xMidYMid slice"/>'+
+     '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="rgba(80,60,40,.25)" stroke-width="2"/></g>'; }
+  return '<svg class="av '+(cls||"")+'" viewBox="0 0 200 240" aria-hidden="true"><g transform="translate(10 18) scale(.9)"><defs>'+
+   '<clipPath id="avc'+n+'s-idle"><circle cx="95" cy="81" r="37"/></clipPath><clipPath id="avc'+n+'s-cheer"><circle cx="98.5" cy="71" r="31"/></clipPath>'+
+   (hue?'<filter id="avh'+n+'" color-interpolation-filters="sRGB"><feColorMatrix type="hueRotate" values="'+hue+'"/></filter>':'')+'</defs>'+
+   '<ellipse cx="100" cy="236" rx="62" ry="7" fill="rgba(0,0,0,.12)" class="shadow"/>'+
+   '<g class="jumper">'+pose("s-idle",SUITART.idle,95,81,37)+pose("s-cheer",SUITART.cheer,98.5,71,31)+'</g>'+
+   '<g transform="translate(-4 -10)">'+fx+'</g></g></svg>'; }
 /* 사진 → 만화풍: 부드럽게 + 색 단계 줄이기 + 윤곽선 */
 function cartoonize(c, k){ var w=c.width, h=c.height, x=c.getContext("2d"), d=x.getImageData(0,0,w,h), p=d.data, i, j;
   var a=new Float32Array(p.length); for(i=0;i<p.length;i++) a[i]=p[i];
@@ -886,7 +1404,7 @@ function talk(on){ Array.prototype.forEach.call(document.querySelectorAll("[data
 /* 놀이 안에서도 내 캐릭터를 쓸 수 있게 심볼(g-me) 등록 */
 function regMe(a){ var k=curKid(); var old=document.getElementById("g-me"); if(old) old.remove(); delete CHARK.me;
   if(!k) return; var defs=document.querySelector("svg defs"); if(!defs) return;
-  var sym=document.createElementNS(NS,"symbol"); sym.setAttribute("id","g-me"); sym.setAttribute("viewBox","0 0 200 240"); sym.innerHTML=avatarSVG(a,"pose-idle").replace(/^<svg[^>]*>/,"").replace(/<\/svg>$/,"").replace(/<g class="fx">[\s\S]*$/,"</g>");
+  var sym=document.createElementNS(NS,"symbol"); sym.setAttribute("id","g-me"); sym.setAttribute("viewBox","0 0 200 240"); sym.innerHTML=avatarSVG(a,"pose-idle").replace(/^<svg[^>]*>/,"").replace(/<\/svg>$/,"").replace(/(<g transform="translate\(-4 -10\)">)?<g class="fx">[\s\S]*$/,"</g>");
   defs.appendChild(sym); CHARK.me=1; NAMES.me=k.name; }
 function hasMe(){ return !!CHARK.me; }
 
@@ -897,7 +1415,7 @@ function avEditOpen(k){ AE.kid=k; var a=avLoad(k.id)||{}; AE.mode=a.mode||"photo
   avModeUI(); avDrawCrop(); avPreview(); show("avedit"); }
 function avModeUI(){ Array.prototype.forEach.call(document.querySelectorAll("#avMode button"),function(b){ b.classList.toggle("on",b.dataset.mode===AE.mode); });
   $("toonRow").hidden=AE.mode!=="photo"; $("paperRow").hidden=AE.mode!=="draw"; $("avSuitsRow").hidden=AE.mode!=="photo"; $("zoomRow").hidden=AE.mode!=="photo";
-  $("cropHelp").textContent= AE.mode==="photo"? "손가락으로 끌어서 얼굴을 동그라미 안에 맞춰요" : "종이에 그린 그림을 찍어서 올려요. 종이 색은 저절로 지워져요"; $("avFileLbl").textContent= AE.mode==="photo"? "아이 사진 고르기" : "그림 사진 고르기"; }
+  $("cropHelp").textContent= AE.mode==="photo"? "손가락으로 끌어서 얼굴을 동그라미 안에 맞춰요" : "종이에 그린 그림을 찍어서 올려요. 종이 색은 저절로 지워져요"; $("avFileLbl").textContent= AE.mode==="photo"? "사진 고르기" : "그림 사진 고르기"; $("avCam").setAttribute("capture",AE.mode==="photo"?"user":"environment"); }
 function avDrawCrop(){ var c=$("cropCv"), x=c.getContext("2d"), W=c.width; x.clearRect(0,0,W,W); x.fillStyle="#f1ece7"; x.fillRect(0,0,W,W);
   if(!AE.img){ x.fillStyle="#7a6b62"; x.font="20px sans-serif"; x.textAlign="center"; x.fillText("사진을 골라 주세요",W/2,W/2); return; }
   var im=AE.img, s=AE.mode==="photo"? AE.zoom*W/Math.min(im.width,im.height) : Math.min(W/im.width,W/im.height), w=im.width*s, h=im.height*s;
@@ -916,9 +1434,10 @@ function avPreview(rebuild){ if(rebuild){ clearTimeout(AE.t); AE.t=setTimeout(fu
   VOICES.forEach(function(v,i){ var o=document.createElement("option"); o.value=i; o.textContent=v[0]; $("avVoice").appendChild(o); });
   Array.prototype.forEach.call(document.querySelectorAll("#avMode button"),function(b){ b.addEventListener("click",function(){ AE.mode=b.dataset.mode; AE.ox=AE.oy=0; avModeUI(); avDrawCrop(); avPreview(true); }); });
   Array.prototype.forEach.call(document.querySelectorAll("#avPoses button"),function(b){ b.addEventListener("click",function(){ AE.pose=b.dataset.pose; avPreview(); }); });
-  $("avFile").addEventListener("change",function(){ var f=this.files&&this.files[0]; this.value=""; if(!f) return; var url=URL.createObjectURL(f), im=new Image();
+  function onPick(){ var f=this.files&&this.files[0]; this.value=""; if(!f) return; var url=URL.createObjectURL(f), im=new Image();
     im.onload=function(){ URL.revokeObjectURL(url); var sc=Math.min(1,1400/Math.max(im.width,im.height)), c=document.createElement("canvas"); c.width=Math.round(im.width*sc); c.height=Math.round(im.height*sc); c.getContext("2d").drawImage(im,0,0,c.width,c.height); AE.img=c; AE.ox=AE.oy=0; avDrawCrop(); avPreview(true); };
-    im.onerror=function(){ alert("이 사진은 열 수 없어요. 다른 사진을 골라 주세요."); }; im.src=url; });
+    im.onerror=function(){ alert("이 사진은 열 수 없어요. 다른 사진을 골라 주세요."); }; im.src=url; }
+  $("avFile").addEventListener("change",onPick); $("avCam").addEventListener("change",onPick);
   var cv=$("cropCv"), drag=null; cv.addEventListener("pointerdown",function(e){ if(!AE.img||AE.mode!=="photo") return; e.preventDefault(); cv.setPointerCapture(e.pointerId); var r=cv.getBoundingClientRect(); drag={x:e.clientX,y:e.clientY,ox:AE.ox,oy:AE.oy,k:cv.width/r.width}; });
   cv.addEventListener("pointermove",function(e){ if(!drag) return; AE.ox=drag.ox+(e.clientX-drag.x)*drag.k; AE.oy=drag.oy+(e.clientY-drag.y)*drag.k; avDrawCrop(); });
   function up(){ if(drag){ drag=null; avPreview(true); } } cv.addEventListener("pointerup",up); cv.addEventListener("pointercancel",up);
@@ -928,9 +1447,9 @@ function avPreview(rebuild){ if(rebuild){ clearTimeout(AE.t); AE.t=setTimeout(fu
   $("avVoice").addEventListener("change",function(){ AE.voice=+this.value; });
   $("avHear").addEventListener("click",function(){ hearKind(VOICES[AE.voice][1], "안녕! 나는 "+AE.kid.name+"! 같이 놀자!"); });
   $("avSave").addEventListener("click",function(){ var k=AE.kid; var a={mode:AE.mode,img:AE.out,suit:AE.suit}; k.vk=VOICES[AE.voice][1];
-    if(!avSave(k.id,a)){ alert("저장 공간이 모자라요. 사진을 조금 더 작게 잘라 주세요."); return; } var o=all(); o.kids.forEach(function(x){ if(x.id===k.id) x.vk=k.vk; }); o.cur=k.id; saveAll(o); renderBuddies(); renderHome(); show("home"); buddyPose("cheer",2000); say("짠! 나는 "+k.name+"! 같이 놀자!"); });
+    if(!avSave(k.id,a)){ alert("저장 공간이 모자라요. 사진을 조금 더 작게 잘라 주세요."); return; } var o=all(); o.kids.forEach(function(x){ if(x.id===k.id) x.vk=k.vk; }); o.cur=k.id; saveAll(o); AE.onboard=false; $("avOnboard").hidden=true; renderBuddies(); renderHome(); show("home"); buddyPose("cheer",2000); say("짠! 나는 "+k.name+"! 오늘부터 이 놀이터의 주인공이야! 같이 놀자!"); });
   $("avDel").addEventListener("click",function(){ if(!confirm("캐릭터를 지울까요?")) return; avSave(AE.kid.id,null); renderBuddies(); renderKids(); show("kids"); });
-  $("avBack").addEventListener("click",function(){ renderKids(); show("kids"); });
+  $("avBack").addEventListener("click",function(){ if(AE.onboard){ AE.onboard=false; $("avOnboard").hidden=true; renderHome(); show("home"); return; } renderKids(); show("kids"); });
 })();
 /* ---------- 수학 키 재기 (진단 놀이) ----------
    키즈 원리셈 진단평가지(5·6세~7·8세)가 보는 능력의 순서를 참고해 유아용으로 새로 만든 문제.
@@ -1019,10 +1538,10 @@ function greetLine(k){ var gap=Date.now()-lastSeen(k), h=new Date().getHours();
   if(gap<3*3600e3) return pick(LINES.again);
   if(h<11) return pick(LINES.morning); if(h>=18) return pick(LINES.evening); return pick(LINES.hello); }
 /* 틀렸을 때: 두 번째부터는 꼭, 처음엔 가끔 응원 한마디 */
-function cheerUp(){ if(S.miss>=2||Math.random()<0.4){ var c=pick(LINES.cheer); setTimeout(function(){ bubble(c,"oops"); },1900); say(c,750,true); } }
+function cheerUp(){ if(S.miss>=2||Math.random()<0.4){ if(window.ROOM&&S.miss>=2&&ROOM.cheerClip()) return; var c=pick(LINES.cheer); setTimeout(function(){ bubble(c,"oops"); },1900); say(c,750,true); } }
 /* 맞혔을 때: 연속 정답 세기. 덧붙인 말이 있으면 다음 판을 조금 늦게 */
 function streakTalk(){ if(S.miss===0) S.streak=(S.streak||0)+1; else S.streak=0;
-  var s= S.streak===3? pick(LINES.streak3) : S.streak===6? pick(LINES.streak6) : null; if(!s) return 0;
+  if(window.ROOM) ROOM.onStreak(S.streak); var s= S.streak===3? pick(LINES.streak3) : S.streak===6? pick(LINES.streak6) : null; if(!s) return 0;
   say(s,200,true); setTimeout(function(){ bubble(s,"yay"); $("ptext").textContent=s; },1500); return 1600; }
 /* 놀이 끝: 자랑하자 */
 function bragTalk(){ var b=pick(LINES.brag), k=curKid(); $("dtalk").textContent=(k?voc(k.name)+", ":"")+b; say(b,200,true); }
@@ -1075,7 +1594,10 @@ function renderKids(){ renderVoicePick(); var o=all(), box=$("kidlist"); box.inn
   $("kadd").addEventListener("submit",function(e){ e.preventDefault(); var name=$("kn").value.trim()||"우리 아이"; var ym=y.value+"-"+mo.value; if(months(ym)<0) return;
     var o=all(), id="k"+Date.now().toString(36); o.kids.push({id:id,name:name.slice(0,12),ym:ym,adj:0,vk:$("kvk").value});
     if(o.legacy&&o.kids.length===1){ o.prog[id]=o.legacy; delete o.legacy; } else o.prog[id]={};
-    o.cur=id; saveAll(o); $("kn").value=""; applyKid(); renderHome(); show("home"); say(name+", 반가워! 책을 골라 볼까?"); });
+    o.cur=id; saveAll(o); $("kn").value=""; applyKid(); renderHome();
+    /* 등록하자마자 얼굴 사진으로 주인공 캐릭터 만들기 */
+    var nk=o.kids[o.kids.length-1]; avEditOpen(nk); AE.onboard=true; $("avOnboard").hidden=false; $("avOnboard").textContent="얼굴 사진을 찍으면 "+name+"의 얼굴로 공룡 옷을 입은 주인공 캐릭터가 생겨요. 지금 안 해도 돼요. 나중에 '← 돌아가기'를 누르면 바로 놀 수 있어요.";
+    say(voc(name)+", 반가워! 얼굴 사진을 찍으면 네가 이 놀이터의 주인공이 돼!"); if(window.ROOM) ROOM.markVisit(); });
 })();
 
 /* ---------- 화면 흐름 ---------- */
@@ -1099,10 +1621,19 @@ function updDots(){ var d=$("dots"); d.innerHTML=""; for(var i=0;i<S.rounds;i++)
 var SWAP0={ bingo:function(lv){ return lv.p&&lv.p.kind==="shape"?"shapefind":"findnum"; }, calendar:"findnum", clock:"routine", graph:"compare" };
 function gameFor(lv){ var s=TIER===0&&SWAP0[lv.g]; if(!s) return lv.g; return typeof s==="function"? s(lv) : s; }
 function startLevel(i){ S.li=i; S.round=0; S.lock=false; show("play"); var lv=S.book.levels[i]; $("ltitle").textContent=lv.name; $("play").style.setProperty("--c",S.book.color); S.rounds = ONE_ROUND[lv.g]?1:ROUNDS[TIER]; updDots(); playRound(); }
-function playRound(){ if(S.diag||!S.book||!S.book.levels[S.li]) return; clear(); S.miss=0; S.hintFn=null; S.againFn=null; var lv=S.book.levels[S.li], gn=gameFor(lv); (G[gn]||G.count)(gn===lv.g?(lv.p||{}):{}); idleArm(); }
+function playRound(){ if(S.diag||!S.book||!S.book.levels[S.li]) return; clear(); S.miss=0; S.hintFn=null; S.againFn=null; var lv=S.book.levels[S.li], gn=gameFor(lv); (G[gn]||G.count)(gn===lv.g?(lv.p||{}):{}); idleArm(); ansBar(); }
+/* 숫자 고르기 문제는 손뼉이나 말로도 대답할 수 있어요 */
+function ansBar(){ var on=window.ROOM&&Object.keys(S.nch||{}).length>0; $("ansbar").hidden=!(on&&(ROOM.canClap()||ROOM.canListen())); if(on){ $("ansClap").hidden=!ROOM.canClap(); $("ansMic").hidden=!ROOM.canListen()||!!window.__NOMIC; } }
+function ansPick(nums, heard){ if(S.lock) return; var hit=nums.filter(function(n){ return S.nch[n]; })[0];
+  if(hit!==undefined){ S.nch[hit](); return; }
+  if(heard===undefined&&nums.length&&nums[0]>0){ bubble("손뼉 "+nums[0]+"번!","oops"); say("손뼉을 "+nums[0]+"번 쳤어! 다시 세어 볼까?"); return; }
+  say("잘 못 들었어. 한 번 더 말해 줄래?"); }
+$("ansClap").addEventListener("click",function(){ ROOM.claps(function(n){ ansPick([n]); }); });
+$("ansMic").addEventListener("click",function(){ ROOM.listen("ko-KR",function(nums,t){ ansPick(nums,t); }); });
 function levelDone(){ var P=loadP(); var st=P[S.book.no]||[false,false,false,false,false]; st[S.li]=true; P[S.book.no]=st; saveP(P);
   show("done"); $("done").style.setProperty("--c",S.book.color); var all_=st.filter(Boolean).length; $("dmsg").textContent= all_===5? "책 한 권 완주! 포도알 하나 칠하자!" : "놀이 성공! "+all_+" / 5";
   applause(); burst(); buddyPose(all_===5?"crown":"cheer",4000); say(all_===5?"우와! 책 한 권을 다 했어! 정말 멋진데~?":"놀이 성공! 정말 멋진데~?",200); bragTalk();
+  if(window.ROOM&&curKid()){ var rw=ROOM.onLevelDone({all5:all_===5}), t=ROOM.showReward(rw,$("dreward")); if(!ROOM.checkTired()&&Math.random()<0.25) setTimeout(function(){ if(document.body.dataset.view==="done") ROOM.party(); },Math.max(4200,t+600)); } else $("dreward").innerHTML="";
   $("dnext").hidden = S.li>=S.book.levels.length-1; }
 
 /* ---------- 책 찍기 (표지 인식) ---------- */
@@ -1143,7 +1674,9 @@ function fromPhoto(file){ var im=new Image(), url=URL.createObjectURL(file); im.
     var iw=im.naturalWidth, ih=im.naturalHeight, w=Math.min(iw,ih*250/300)*0.9, h=w*300/250; var c=document.createElement("canvas"); c.width=250; c.height=300; c.getContext("2d").drawImage(im,(iw-w)/2,(ih-h)/2,w,h,0,0,250,300);
     var r=matchBook(embedTTA(c)); if(r.s>=0.64&&r.m>=0.015) found(r.b); else { boing(); $("scanmsg").textContent="어떤 책인지 모르겠어요. 앞표지가 꽉 차게 다시 찍어 주세요."; say("음… 어떤 책인지 모르겠어. 다시 찍어 줄래?"); } }); }; im.src=url; }
 
-$("startBtn").addEventListener("click",function(){ ac(); pickVoice(); $("gate").hidden=true; var o=all(); renderBuddies();
+$("startBtn").addEventListener("click",function(){ ac(); pickVoice(); $("gate").hidden=true; var o=all(); renderBuddies(); if(window.ROOM&&curKid()) ROOM.markVisit();
+  var hs=location.hash; if(hs==="#kids"||(hs==="#avatar"&&!curKid())){ history.replaceState(null,"",location.pathname); renderKids(); show("kids"); say("아이를 고르거나 새로 등록해 주세요"); return; }
+  if(hs==="#avatar"){ history.replaceState(null,"",location.pathname); avEditOpen(curKid()); say("얼굴 사진을 찍어서 주인공 캐릭터를 만들어 보자!"); return; }
   if(!o.kids.length){ renderKids(); show("kids"); say(CFG.title+"에 온 걸 환영해! 먼저 이름을 알려 줘"); }
   else { var k=curKid(), gl=k?greetLine(k):null; S.greet=k?{id:k.id,t:gl}:null; if(k) markSeen(k); renderHome(); show("home");
     say(gl? voc(k.name)+", "+gl : (k?k.name+", ":"")+CFG.title+"에 온 걸 환영해! "+(CFG.ask||"책을 골라 볼까?")); } });
@@ -1164,6 +1697,9 @@ $("again").addEventListener("click",function(){ if(S.againFn) S.againFn(); else 
 $("dnext").addEventListener("click",function(){ startLevel(S.li+1); });
 $("dbook").addEventListener("click",function(){ openBook(S.book); });
 $("dhome").addEventListener("click",function(){ renderHome(); show("home"); });
+$("dbrag").addEventListener("click",function(){ if(window.ROOM) ROOM.brag(); });
+$("dteach").addEventListener("click",function(){ if(window.ROOM) ROOM.teach(); });
+if(window.ROOM){ ROOM.fx={say:function(t){ say(t); },avatarSVG:avatarSVG,curAv:curAv,S:S,clipStop:clipStop}; ROOM.applyColors(); ROOM.gauge(); }
 $("mute").addEventListener("click",function(){ S.muted=!S.muted; this.setAttribute("aria-pressed",S.muted); this.textContent=S.muted?"소리 켜기":"소리 끄기"; if(S.muted) try{speechSynthesis.cancel();}catch(e){} });
 document.addEventListener("gesturestart",function(e){ e.preventDefault(); });
 if(window.__NOSCAN) $("scanBtn").hidden=true; if(window.__NODIAG) $("diagBtn").hidden=true; if(window.__NOHUB) Array.prototype.forEach.call(document.querySelectorAll(".tohub"),function(a){ a.hidden=true; });
