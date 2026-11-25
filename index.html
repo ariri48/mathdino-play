@@ -3,6 +3,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-180.png">
 <meta name="description" content="그림책 수학 놀이와 영어·일본어·중국어 말놀이. 아이 사진으로 만든 캐릭터와 함께 아이패드에서 놀아요.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="우리 아이 놀이터">
@@ -54,7 +55,17 @@ h1{position:relative;z-index:1;font-family:var(--disp);font-weight:400;font-size
 .card p{margin:0;font-size:17px;color:var(--soft);word-break:keep-all}
 .prog{display:flex;align-items:center;gap:8px;font-family:var(--disp);font-size:18px}
 .bar{flex:1;height:14px;border-radius:999px;background:#f1ece7;overflow:hidden}.bar i{display:block;height:100%;background:var(--c);border-radius:999px}
+.say,.card p{word-break:keep-all;overflow-wrap:anywhere}
 .foot{font-size:13px;color:var(--soft);text-align:center;margin-top:26px;word-break:keep-all}
+@media (max-width:520px){
+  .sky{padding:20px 18px 66px;border-radius:28px}
+  .bud{width:96px;height:115px}
+  .say{margin-bottom:18px;padding:10px 14px}
+  .cards{margin-top:-36px;gap:14px}
+  .card{padding:14px 16px;border-radius:26px}
+  .art{height:108px}.art .big{width:88px;height:88px}.art .sm{width:52px;height:52px}
+  .card h2{font-size:26px}
+}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 /* 캐릭터 */
 [data-buddy]{display:inline-block;line-height:0}
@@ -105,6 +116,7 @@ h1{position:relative;z-index:1;font-family:var(--disp);font-weight:400;font-size
 .kid{position:relative}
 .kav{position:absolute;right:12px;top:10px;width:70px;height:84px}
 .kpick{padding-right:84px}
+.kvk{margin:2px 0 8px}
 .krow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .kav-btn{font-size:16px;background:var(--sun);border-radius:999px;padding:8px 14px}
 .kdiag{font-size:13px;color:var(--soft)}
@@ -124,7 +136,7 @@ h1{position:relative;z-index:1;font-family:var(--disp);font-weight:400;font-size
 .rng input[type=range]{width:min(320px,100%);accent-color:var(--accent);height:32px}
 .rng select{font-family:var(--disp);font-size:20px;border:3px solid #d9cff5;border-radius:14px;padding:6px 10px;background:#fff;color:var(--ink)}
 .suits{display:flex;gap:10px;flex-wrap:wrap}.suit{width:44px;height:44px;border-radius:50%;box-shadow:inset 0 0 0 4px #fff,0 0 0 2px #cfc6be}.suit.on{box-shadow:inset 0 0 0 4px #fff,0 0 0 5px var(--ink)}
-.vpick{margin-bottom:16px}.vpick select{font-family:var(--disp);font-size:20px;border:3px solid #d9cff5;border-radius:14px;padding:8px 12px;background:#fff;color:var(--ink);max-width:100%}
+.vpick{margin-top:16px}.vpick summary{font-family:var(--disp);font-size:20px;cursor:pointer}.vpick select{font-family:var(--disp);font-size:20px;border:3px solid #d9cff5;border-radius:14px;padding:8px 12px;background:#fff;color:var(--ink);max-width:100%}
 .vrow{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}.vrow .ghostbtn{margin-left:0;background:var(--bg)}
 .row.left{justify-content:flex-start;align-items:center}
 .dres{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;justify-content:center;padding-top:10px}
@@ -164,7 +176,9 @@ h1{position:relative;z-index:1;font-family:var(--disp);font-weight:400;font-size
 /* 사진과 그림은 이 기기 localStorage 에만 저장. 어디로도 보내지 않음. */
 var AVKEY="mathdino-av-";
 var SUITS=[["#7fd49c","#c8f0d4"],["#ffb067","#ffe2c4"],["#8fb8ff","#d6e6ff"],["#ff9ec7","#ffd9ea"],["#b79cff","#e5dbff"],["#ffd84d","#fff1b8"]];
-var VOICES=[["귀여운 목소리",1.2,0.98],["밝은 목소리",1.1,0.96],["보통 목소리",1.0,0.95],["차분한 목소리",0.92,0.9]];
+/* 아이 목소리: 녹음 파일이 없을 때 기기 음성 높이도 맞춰 줌 */
+var VOICES=[["여자아이 목소리","girl",1.12,0.96],["남자아이 목소리","boy",1.0,0.95]];
+function vIdx(k){ return k&&k.vk==="boy"?1:0; }
 function avLoad(id){ try{ return JSON.parse(localStorage.getItem(AVKEY+id))||null; }catch(e){ return null; } }
 function avSave(id,o){ try{ if(o) localStorage.setItem(AVKEY+id,JSON.stringify(o)); else localStorage.removeItem(AVKEY+id); return true; }catch(e){ return false; } }
 /* 기본 얼굴(사진이 없을 때) */

@@ -1,0 +1,19 @@
+{
+  "ko": {
+    "girl": {"speaker": "ndain", "speed": 1, "pitch": 0},
+    "boy": {"speaker": "nhajun", "speed": 1, "pitch": 0}
+  },
+  "lang": {
+    "en": {"speaker": "clara", "speed": 2},
+    "ja": {"speaker": "ntomoko", "speed": 2},
+    "zh": {"speaker": "meimei", "speed": 2}
+  },
+  "samples": {
+    "ko": ["ndain", "ngaram", "nmeow", "nhajun", "nwoof"],
+    "en": ["clara", "danna", "djoey"],
+    "ja": ["ntomoko", "nnaomi", "dmio", "driko"],
+    "zh": ["meimei"]
+  },
+  "opt": {"ko": {"speed": 1}, "en": {"speed": 2}, "ja": {"speed": 2}, "zh": {"speed": 2}},
+  "mac": {"ko": "Yuna", "en": "Samantha", "ja": "Kyoko", "zh": "Tingting"}
+}

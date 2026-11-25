@@ -36,7 +36,17 @@ h1{position:relative;z-index:1;font-family:var(--disp);font-weight:400;font-size
 .card p{margin:0;font-size:17px;color:var(--soft);word-break:keep-all}
 .prog{display:flex;align-items:center;gap:8px;font-family:var(--disp);font-size:18px}
 .bar{flex:1;height:14px;border-radius:999px;background:#f1ece7;overflow:hidden}.bar i{display:block;height:100%;background:var(--c);border-radius:999px}
+.say,.card p{word-break:keep-all;overflow-wrap:anywhere}
 .foot{font-size:13px;color:var(--soft);text-align:center;margin-top:26px;word-break:keep-all}
+@media (max-width:520px){
+  .sky{padding:20px 18px 66px;border-radius:28px}
+  .bud{width:96px;height:115px}
+  .say{margin-bottom:18px;padding:10px 14px}
+  .cards{margin-top:-36px;gap:14px}
+  .card{padding:14px 16px;border-radius:26px}
+  .art{height:108px}.art .big{width:88px;height:88px}.art .sm{width:52px;height:52px}
+  .card h2{font-size:26px}
+}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 <div class="wrap">

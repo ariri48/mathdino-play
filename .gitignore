@@ -11,3 +11,5 @@ tools/shots3/
 tools/iconsheet.*
 tools/v*.png
 tools/og.html
+audio/_samples/
+tools/m_*.png

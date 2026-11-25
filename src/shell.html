@@ -223,6 +223,7 @@ body[data-view="scan"]{overflow:hidden}
 .kid{position:relative}
 .kav{position:absolute;right:12px;top:10px;width:70px;height:84px}
 .kpick{padding-right:84px}
+.kvk{margin:2px 0 8px}
 .krow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .kav-btn{font-size:16px;background:var(--sun);border-radius:999px;padding:8px 14px}
 .kdiag{font-size:13px;color:var(--soft)}
@@ -242,7 +243,7 @@ body[data-view="scan"]{overflow:hidden}
 .rng input[type=range]{width:min(320px,100%);accent-color:var(--accent);height:32px}
 .rng select{font-family:var(--disp);font-size:20px;border:3px solid #d9cff5;border-radius:14px;padding:6px 10px;background:#fff;color:var(--ink)}
 .suits{display:flex;gap:10px;flex-wrap:wrap}.suit{width:44px;height:44px;border-radius:50%;box-shadow:inset 0 0 0 4px #fff,0 0 0 2px #cfc6be}.suit.on{box-shadow:inset 0 0 0 4px #fff,0 0 0 5px var(--ink)}
-.vpick{margin-bottom:16px}.vpick select{font-family:var(--disp);font-size:20px;border:3px solid #d9cff5;border-radius:14px;padding:8px 12px;background:#fff;color:var(--ink);max-width:100%}
+.vpick{margin-top:16px}.vpick summary{font-family:var(--disp);font-size:20px;cursor:pointer}.vpick select{font-family:var(--disp);font-size:20px;border:3px solid #d9cff5;border-radius:14px;padding:8px 12px;background:#fff;color:var(--ink);max-width:100%}
 .vrow{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}.vrow .ghostbtn{margin-left:0;background:var(--bg)}
 .row.left{justify-content:flex-start;align-items:center}
 .dres{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;justify-content:center;padding-top:10px}
@@ -276,6 +277,16 @@ body[data-view="scan"]{overflow:hidden}
 .pill{font-size:26px;border-radius:999px;padding:14px 28px;background:var(--card);box-shadow:0 5px 0 #cfe7dc}
 .pill.main{background:var(--sun);box-shadow:0 5px 0 #d9a21a}
 @media (prefers-reduced-motion:reduce){.glow{animation:none;filter:drop-shadow(0 0 8px #ffb800)}.cf{display:none}.shake{animation:none}.bubble{transition:none}}
+/* 한글 줄바꿈 · 손가락 크기 · 휴대폰 화면 */
+.gsay,.hint,.foot,.note,.scanbtn small,.kprev,.bc{word-break:keep-all;overflow-wrap:anywhere}
+.tohub,.kidchip,.ghostbtn,.back,.seg button,.pill{min-height:44px}
+.tohub,.ghostbtn,.back{display:inline-flex;align-items:center;justify-content:center}
+@media (max-width:520px){
+  .greetrow{margin:8px 0}
+  .gsay{padding:10px 14px}
+  .bigbtns{gap:10px}
+  .scanbtn{padding:14px 16px}
+}
 </style>
 
 <div id="gate">
@@ -295,26 +306,27 @@ body[data-view="scan"]{overflow:hidden}
   </div>
   <p class="hint">{{HINT}}</p>
   <div id="shelf"></div>
-  <p class="foot">개인이 아이와 놀려고 만든 놀이예요. 책을 펴낸 출판사와는 관계가 없어요.</p>
+  <p class="foot">{{FOOT}}</p>
 </section>
 
 <section id="kids" class="wrap" hidden>
-  <div class="head"><button id="kidsBack" class="back" type="button">← 책 목록</button><h2 id="kidsTitle" class="ktitle">누가 놀까?</h2></div>
+  <div class="head"><button id="kidsBack" class="back" type="button">← {{UNIT}} 목록</button><h2 id="kidsTitle" class="ktitle">누가 놀까?</h2></div>
   <div id="kidlist"></div>
-  <div class="kadd vpick"><h3>목소리 고르기</h3><p class="note">이 기기에 있는 한국어 음성 중에서 골라요. 마음에 드는 목소리가 없으면 아이패드 설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성 → 한국어에서 "유나(향상됨)"를 내려받으면 더 자연스러워요.</p>
-    <div class="vrow"><select id="vSel"></select><button id="vHear" type="button" class="ghostbtn">들어 보기</button></div></div>
   <form id="kadd" class="kadd">
     <h3>아이 추가</h3>
     <label>이름이나 별명<input id="kn" maxlength="12" placeholder="예: 첫째, 콩이" autocomplete="off"></label>
     <div class="ym"><label>태어난 해<select id="ky"></select></label><label>태어난 달<select id="km"></select></label></div>
+    <label>목소리<select id="kvk"><option value="girl">여자아이 목소리</option><option value="boy">남자아이 목소리</option></select></label>
     <p id="kprev" class="kprev"></p>
     <button type="submit" class="pill main">추가하기</button>
     <p class="note">이름과 생일은 이 기기 안에만 저장돼요. 어디로도 보내지 않아요.</p>
   </form>
+  <details class="kadd vpick"><summary>기기 목소리 (예비용)</summary><p class="note">인터넷이 끊겼거나 아이 목소리 녹음이 없는 말은 이 기기의 한국어 음성으로 읽어요. 아이패드 설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성 → 한국어에서 "유나(향상됨)"를 내려받으면 더 자연스러워요.</p>
+    <div class="vrow"><select id="vSel"></select><button id="vHear" type="button" class="ghostbtn">들어 보기</button></div></details>
 </section>
 
 <section id="scan" hidden>
-  <div class="pbar"><button id="scanBack" class="back" type="button">← 책 목록</button><span class="stitle">책 보여 주기</span><button id="scanFlip" class="ghostbtn" type="button">카메라 바꾸기</button></div>
+  <div class="pbar"><button id="scanBack" class="back" type="button">← {{UNIT}} 목록</button><span class="stitle">책 보여 주기</span><button id="scanFlip" class="ghostbtn" type="button">카메라 바꾸기</button></div>
   <div class="camwrap"><video id="cam" playsinline muted autoplay></video><div id="guide" class="guide"><i></i><i></i><i></i><i></i></div></div>
   <div class="prompt"><span class="pbud" data-buddy></span><span id="scanmsg"></span></div>
   <div class="row"><label class="pill"><input id="scanFile" type="file" accept="image/*" capture="environment" hidden>사진 찍기</label></div>
@@ -351,14 +363,14 @@ body[data-view="scan"]{overflow:hidden}
       <p id="ddesc" class="ddesc"></p>
       <ul id="dlist" class="dlist"></ul>
       <p id="dnow" class="note"></p>
-      <div class="row left"><button id="dapply" type="button" class="pill main">이 단계로 놀기</button><button id="dhome2" type="button" class="pill">책 목록으로</button></div>
+      <div class="row left"><button id="dapply" type="button" class="pill main">이 단계로 놀기</button><button id="dhome2" type="button" class="pill">{{UNIT}} 목록으로</button></div>
       <p class="note">키즈 원리셈 진단평가지가 보는 능력 순서를 참고해 새로 만든 문제예요. 아이 컨디션에 따라 달라질 수 있으니 참고만 해 주세요.</p>
     </div>
   </div>
 </section>
 
 <section id="book" class="wrap" hidden>
-  <div class="head"><button id="toHome" class="back" type="button">← 책 목록</button><span id="bno"></span><h2 id="btitle"></h2></div>
+  <div class="head"><button id="toHome" class="back" type="button">← {{UNIT}} 목록</button><span id="bno"></span><h2 id="btitle"></h2></div>
   <div id="levels"></div>
 </section>
 
@@ -383,7 +395,7 @@ body[data-view="scan"]{overflow:hidden}
 <section id="done" class="wrap" hidden>
   <div class="dbud" data-buddy></div><div class="big">참 잘했어요!</div>
   <p id="dmsg"></p>
-  <div class="row"><button id="dnext" class="pill main" type="button">다음 놀이</button><button id="dbook" class="pill" type="button">놀이 목록</button><button id="dhome" class="pill" type="button">책 목록</button></div>
+  <div class="row"><button id="dnext" class="pill main" type="button">다음 놀이</button><button id="dbook" class="pill" type="button">놀이 목록</button><button id="dhome" class="pill" type="button">{{UNIT}} 목록</button></div>
 </section>
 
 <div id="fx" aria-hidden="true"></div>

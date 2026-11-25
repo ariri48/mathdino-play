@@ -2,7 +2,9 @@
 /* 사진과 그림은 이 기기 localStorage 에만 저장. 어디로도 보내지 않음. */
 var AVKEY="mathdino-av-";
 var SUITS=[["#7fd49c","#c8f0d4"],["#ffb067","#ffe2c4"],["#8fb8ff","#d6e6ff"],["#ff9ec7","#ffd9ea"],["#b79cff","#e5dbff"],["#ffd84d","#fff1b8"]];
-var VOICES=[["귀여운 목소리",1.2,0.98],["밝은 목소리",1.1,0.96],["보통 목소리",1.0,0.95],["차분한 목소리",0.92,0.9]];
+/* 아이 목소리: 녹음 파일이 없을 때 기기 음성 높이도 맞춰 줌 */
+var VOICES=[["여자아이 목소리","girl",1.12,0.96],["남자아이 목소리","boy",1.0,0.95]];
+function vIdx(k){ return k&&k.vk==="boy"?1:0; }
 function avLoad(id){ try{ return JSON.parse(localStorage.getItem(AVKEY+id))||null; }catch(e){ return null; } }
 function avSave(id,o){ try{ if(o) localStorage.setItem(AVKEY+id,JSON.stringify(o)); else localStorage.removeItem(AVKEY+id); return true; }catch(e){ return false; } }
 /* 기본 얼굴(사진이 없을 때) */
@@ -54,7 +56,7 @@ function removePaper(c, tol){ var w=c.width,h=c.height,x=c.getContext("2d"),d=x.
 /* 화면 곳곳의 캐릭터 */
 var BUD={ a:null, kid:null };
 function curAv(){ var k=curKid(); var a=k? avLoad(k.id) : null; return a||{mode:"photo",img:null,suit:k?(k.suit||0):0,voice:1}; }
-function renderBuddies(){ var a=curAv(); BUD.a=a; var v=VOICES[a.voice==null?1:a.voice]||VOICES[1]; S.vp=v[1]; S.vr=v[2];
+function renderBuddies(){ var a=curAv(); BUD.a=a; var v=VOICES[vIdx(typeof curKid==="function"?curKid():null)]; S.vp=v[2]; S.vr=v[3];
   Array.prototype.forEach.call(document.querySelectorAll("[data-buddy]"),function(el){ el.innerHTML=avatarSVG(a,"pose-idle"); });
   regMe(a); }
 function buddyPose(p, ms){ Array.prototype.forEach.call(document.querySelectorAll("[data-buddy] .av"),function(s){ s.setAttribute("class","av pose-"+p); });
@@ -69,7 +71,7 @@ function hasMe(){ return !!CHARK.me; }
 
 /* 캐릭터 만들기 화면 */
 var AE={ kid:null, img:null, mode:"photo", ox:0, oy:0, zoom:1.4, toon:2, paper:35, suit:0, voice:1, out:null, t:null };
-function avEditOpen(k){ AE.kid=k; var a=avLoad(k.id)||{}; AE.mode=a.mode||"photo"; AE.suit=a.suit||0; AE.voice=a.voice==null?1:a.voice; AE.out=a.img||null; AE.img=null; AE.pose="idle"; AE.ox=0; AE.oy=0; AE.zoom=1.7;
+function avEditOpen(k){ AE.kid=k; var a=avLoad(k.id)||{}; AE.mode=a.mode||"photo"; AE.suit=a.suit||0; AE.voice=vIdx(k); AE.out=a.img||null; AE.img=null; AE.pose="idle"; AE.ox=0; AE.oy=0; AE.zoom=1.7;
   $("avWho").textContent=k.name; $("avToon").value=AE.toon; $("avPaper").value=AE.paper; $("avZoom").value=AE.zoom; $("avVoice").value=AE.voice; $("avDel").hidden=!avLoad(k.id);
   avModeUI(); avDrawCrop(); avPreview(); show("avedit"); }
 function avModeUI(){ Array.prototype.forEach.call(document.querySelectorAll("#avMode button"),function(b){ b.classList.toggle("on",b.dataset.mode===AE.mode); });
@@ -103,9 +105,9 @@ function avPreview(rebuild){ if(rebuild){ clearTimeout(AE.t); AE.t=setTimeout(fu
   $("avToon").addEventListener("input",function(){ AE.toon=+this.value; avPreview(true); });
   $("avPaper").addEventListener("input",function(){ AE.paper=+this.value; avPreview(true); });
   $("avVoice").addEventListener("change",function(){ AE.voice=+this.value; });
-  $("avHear").addEventListener("click",function(){ var v=VOICES[AE.voice]; var vp=S.vp, vr=S.vr; S.vp=v[1]; S.vr=v[2]; say("안녕! 나는 "+AE.kid.name+"! 같이 수학 놀이 하자!"); S.vp=vp; S.vr=vr; });
-  $("avSave").addEventListener("click",function(){ var k=AE.kid; var a={mode:AE.mode,img:AE.out,suit:AE.suit,voice:AE.voice};
-    if(!avSave(k.id,a)){ alert("저장 공간이 모자라요. 사진을 조금 더 작게 잘라 주세요."); return; } var o=all(); o.cur=k.id; saveAll(o); renderBuddies(); renderHome(); show("home"); buddyPose("cheer",2000); say("짠! 나는 "+k.name+"! 같이 놀자!"); });
+  $("avHear").addEventListener("click",function(){ hearKind(VOICES[AE.voice][1], "안녕! 나는 "+AE.kid.name+"! 같이 놀자!"); });
+  $("avSave").addEventListener("click",function(){ var k=AE.kid; var a={mode:AE.mode,img:AE.out,suit:AE.suit}; k.vk=VOICES[AE.voice][1];
+    if(!avSave(k.id,a)){ alert("저장 공간이 모자라요. 사진을 조금 더 작게 잘라 주세요."); return; } var o=all(); o.kids.forEach(function(x){ if(x.id===k.id) x.vk=k.vk; }); o.cur=k.id; saveAll(o); renderBuddies(); renderHome(); show("home"); buddyPose("cheer",2000); say("짠! 나는 "+k.name+"! 같이 놀자!"); });
   $("avDel").addEventListener("click",function(){ if(!confirm("캐릭터를 지울까요?")) return; avSave(AE.kid.id,null); renderBuddies(); renderKids(); show("kids"); });
   $("avBack").addEventListener("click",function(){ renderKids(); show("kids"); });
 })();

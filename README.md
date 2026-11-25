@@ -19,6 +19,14 @@
 ## 말놀이
 주제 7개(동물·먹거리·색깔·숫자·집·자연·모양) × 놀이 5개(말 배우기·듣고 고르기·풍선·짝 맞추기·모아 듣기). 소리는 기기에 있는 음성.
 
+## 아이 목소리
+게임이 하는 말은 미리 만들어 둔 아이 목소리 파일(`audio/`)로 들려줘요. 아이마다 여자아이·남자아이 목소리를 고를 수 있고, 파일이 없는 말만 기기 음성으로 읽어요.
+
+1. `PW=… node tools/phrases.cjs` (여러 번, `REPS=1 MERGE=1`) → `data/phrases.json`에 게임이 하는 말을 모아요.
+2. `~/.config/goyu/clova.env`에 네이버 클라우드 CLOVA Voice 키를 적어요. 저장소에는 올리지 않아요.
+3. `python3 tools/voice_gen.py samples`로 후보 목소리를 들어 보고, `tools/voice_cfg.json`에서 고른 뒤 `python3 tools/voice_gen.py all`.
+4. 놀이 문장을 바꾸면 1·3번을 다시 해요. 이미 만든 파일은 건너뛰어요.
+
 ## 고치는 법
 `src/` 를 고친 뒤 `python3 build.py` → `index.html` 이 새로 만들어짐.
 

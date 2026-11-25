@@ -95,7 +95,7 @@ function bestVoice(prefix, want){ var vs=goodVoices(prefix); if(want){ var w=vs.
 function pickVoice(){ var want=null; try{ want=localStorage.getItem("goyu-voice-ko"); }catch(e){} S.voice=bestVoice("ko",want); }
 try{ speechSynthesis.onvoiceschanged=function(){ pickVoice(); if(window.LVOICE) for(var k in LVOICE) delete LVOICE[k]; }; }catch(e){}
 try{ speechSynthesis.onvoiceschanged=pickVoice; pickVoice(); }catch(e){}
-function say(s, delay){ if(S.muted) return; var go=function(){ try{ speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(s); u.lang="ko-KR"; if(S.voice) u.voice=S.voice; u.rate=S.vr||0.95; u.pitch=S.vp||1.05; u.onstart=function(){ talk(true); }; u.onend=u.onerror=function(){ talk(false); }; clearTimeout(say._t); say._t=setTimeout(function(){ talk(false); }, 900+String(s).length*170); speechSynthesis.speak(u); }catch(e){} }; if(delay) setTimeout(go,delay); else go(); }
+function say(s, delay){ if(window.__sayHook) __sayHook(s); if(S.muted) return; var go=function(){ var c=clipFor(s); if(c){ clipPlay(c); return; } clipStop(); try{ speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(s); u.lang="ko-KR"; if(S.voice) u.voice=S.voice; u.rate=S.vr||0.95; u.pitch=S.vp||1.05; u.onstart=function(){ talk(true); }; u.onend=u.onerror=function(){ talk(false); }; clearTimeout(say._t); say._t=setTimeout(function(){ talk(false); }, 900+String(s).length*170); speechSynthesis.speak(u); }catch(e){} }; if(delay) setTimeout(go,delay); else go(); }
 
 /* ---------- 칭찬과 아쉬움 ---------- */
 var PRAISE=["성공! 멋진데~?","성공! 멋진데~? 짝짝짝!","우와, 성공! 진짜 멋진데~?","성공! 최고야~!"];

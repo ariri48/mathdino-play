@@ -12,12 +12,12 @@ for t in ("tools/words_data.py", "tools/mathforce_data.py"):
 sys.path.insert(0, os.path.join(R, "tools")); from cute import cute
 shell, defs = rd("src/shell.html"), cute(rd("src/defs_base.svg"))
 base = json.loads(rd("data/books.json"))
-core = rd("src/game.js") + rd("src/avatar.js") + rd("src/diag.js")
+core = rd("src/game.js") + rd("src/voice.js") + rd("src/avatar.js") + rd("src/diag.js")
 flow = rd("src/flow.js")
-HEAD = '<!doctype html>\n<html lang="ko">\n<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n<link rel="manifest" href="manifest.webmanifest">\n<link rel="apple-touch-icon" href="icon-180.png">\n'
+HEAD = '<!doctype html>\n<html lang="ko">\n<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n<link rel="manifest" href="manifest.webmanifest">\n<link rel="apple-touch-icon" href="icon-180.png">\n<link rel="icon" type="image/png" href="icon-180.png">\n'
 def page(cfg, books, prog, flags="", extra_js=""):
     data = dict(base); data["books"] = books
-    s = shell.replace("{{TITLE}}", cfg["title"]).replace("{{SUB}}", cfg["sub"]).replace("{{HINT}}", cfg["hint"])
+    s = shell.replace("{{TITLE}}", cfg["title"]).replace("{{SUB}}", cfg["sub"]).replace("{{HINT}}", cfg["hint"]).replace("{{UNIT}}", cfg.get("unit", "책")).replace("{{FOOT}}", cfg.get("foot", "개인이 아이와 놀려고 만든 놀이예요. 책을 펴낸 출판사와는 관계가 없어요."))
     js = core + extra_js + flow
     return s + defs + "<script>" + flags + "window.__PROG=" + json.dumps(prog) + ";window.__CFG=" + json.dumps(cfg, ensure_ascii=False) + ";window.__DATA__=" + json.dumps(data, ensure_ascii=False, separators=(",", ":")) + ";</script>\n<script>\n" + js + "\n</script>\n"
 SITE = "https://play.goyu.studio/"
@@ -37,7 +37,7 @@ def out(name, html, head=True):
     open(p, "w", encoding="utf-8").write((HEAD + ogtags(name) if head else "") + html)
 MD = {"title": "수학공룡 놀이터", "sub": "42권 책마다 놀이 5개", "hint": "또는 아래에서 오늘 읽은 책을 골라요. 놀이 5개를 다 하면 책 한 권 완주!"}
 MF = {"title": "수학특공대 놀이터", "sub": "42권 책마다 놀이 5개", "hint": "오늘 읽은 책을 골라요. 놀이 5개를 다 하면 책 한 권 완주!"}
-WD = {"title": "말놀이", "sub": "영어·일본어·중국어 · 주제 7개마다 놀이 5개", "hint": "위에서 말을 고르고, 배우고 싶은 주제를 골라요.", "ask": "어떤 말로 놀아 볼까?", "play": "말놀이"}
+WD = {"title": "말놀이", "sub": "영어·일본어·중국어 · 주제 7개마다 놀이 5개", "hint": "위에서 말을 고르고, 배우고 싶은 주제를 골라요.", "ask": "어떤 말로 놀아 볼까?", "play": "말놀이", "unit": "주제", "foot": "개인이 아이와 놀려고 만든 놀이예요. 낱말 그림과 소리는 이 놀이터에서 직접 만들었어요."}
 out("mathdino.html", page(MD, base["books"], "mathdino"))
 out("mathforce.html", page(MF, json.loads(rd("data/mathforce.json")), "mathforce", "window.__NOSCAN=true;"))
 out("words.html", page(WD, json.loads(rd("data/words.json")), "words", "window.__NOSCAN=true;window.__NODIAG=true;", rd("src/lang.js")))

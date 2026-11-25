@@ -3,6 +3,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-180.png">
 <meta name="description" content="그림책 42권, 책마다 놀이 5개. 책을 카메라에 보여 주면 그 책 놀이가 열려요.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="우리 아이 놀이터">
@@ -241,6 +242,7 @@ body[data-view="scan"]{overflow:hidden}
 .kid{position:relative}
 .kav{position:absolute;right:12px;top:10px;width:70px;height:84px}
 .kpick{padding-right:84px}
+.kvk{margin:2px 0 8px}
 .krow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .kav-btn{font-size:16px;background:var(--sun);border-radius:999px;padding:8px 14px}
 .kdiag{font-size:13px;color:var(--soft)}
@@ -260,7 +262,7 @@ body[data-view="scan"]{overflow:hidden}
 .rng input[type=range]{width:min(320px,100%);accent-color:var(--accent);height:32px}
 .rng select{font-family:var(--disp);font-size:20px;border:3px solid #d9cff5;border-radius:14px;padding:6px 10px;background:#fff;color:var(--ink)}
 .suits{display:flex;gap:10px;flex-wrap:wrap}.suit{width:44px;height:44px;border-radius:50%;box-shadow:inset 0 0 0 4px #fff,0 0 0 2px #cfc6be}.suit.on{box-shadow:inset 0 0 0 4px #fff,0 0 0 5px var(--ink)}
-.vpick{margin-bottom:16px}.vpick select{font-family:var(--disp);font-size:20px;border:3px solid #d9cff5;border-radius:14px;padding:8px 12px;background:#fff;color:var(--ink);max-width:100%}
+.vpick{margin-top:16px}.vpick summary{font-family:var(--disp);font-size:20px;cursor:pointer}.vpick select{font-family:var(--disp);font-size:20px;border:3px solid #d9cff5;border-radius:14px;padding:8px 12px;background:#fff;color:var(--ink);max-width:100%}
 .vrow{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}.vrow .ghostbtn{margin-left:0;background:var(--bg)}
 .row.left{justify-content:flex-start;align-items:center}
 .dres{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;justify-content:center;padding-top:10px}
@@ -294,6 +296,16 @@ body[data-view="scan"]{overflow:hidden}
 .pill{font-size:26px;border-radius:999px;padding:14px 28px;background:var(--card);box-shadow:0 5px 0 #cfe7dc}
 .pill.main{background:var(--sun);box-shadow:0 5px 0 #d9a21a}
 @media (prefers-reduced-motion:reduce){.glow{animation:none;filter:drop-shadow(0 0 8px #ffb800)}.cf{display:none}.shake{animation:none}.bubble{transition:none}}
+/* 한글 줄바꿈 · 손가락 크기 · 휴대폰 화면 */
+.gsay,.hint,.foot,.note,.scanbtn small,.kprev,.bc{word-break:keep-all;overflow-wrap:anywhere}
+.tohub,.kidchip,.ghostbtn,.back,.seg button,.pill{min-height:44px}
+.tohub,.ghostbtn,.back{display:inline-flex;align-items:center;justify-content:center}
+@media (max-width:520px){
+  .greetrow{margin:8px 0}
+  .gsay{padding:10px 14px}
+  .bigbtns{gap:10px}
+  .scanbtn{padding:14px 16px}
+}
 </style>
 
 <div id="gate">
@@ -319,16 +331,17 @@ body[data-view="scan"]{overflow:hidden}
 <section id="kids" class="wrap" hidden>
   <div class="head"><button id="kidsBack" class="back" type="button">← 책 목록</button><h2 id="kidsTitle" class="ktitle">누가 놀까?</h2></div>
   <div id="kidlist"></div>
-  <div class="kadd vpick"><h3>목소리 고르기</h3><p class="note">이 기기에 있는 한국어 음성 중에서 골라요. 마음에 드는 목소리가 없으면 아이패드 설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성 → 한국어에서 "유나(향상됨)"를 내려받으면 더 자연스러워요.</p>
-    <div class="vrow"><select id="vSel"></select><button id="vHear" type="button" class="ghostbtn">들어 보기</button></div></div>
   <form id="kadd" class="kadd">
     <h3>아이 추가</h3>
     <label>이름이나 별명<input id="kn" maxlength="12" placeholder="예: 첫째, 콩이" autocomplete="off"></label>
     <div class="ym"><label>태어난 해<select id="ky"></select></label><label>태어난 달<select id="km"></select></label></div>
+    <label>목소리<select id="kvk"><option value="girl">여자아이 목소리</option><option value="boy">남자아이 목소리</option></select></label>
     <p id="kprev" class="kprev"></p>
     <button type="submit" class="pill main">추가하기</button>
     <p class="note">이름과 생일은 이 기기 안에만 저장돼요. 어디로도 보내지 않아요.</p>
   </form>
+  <details class="kadd vpick"><summary>기기 목소리 (예비용)</summary><p class="note">인터넷이 끊겼거나 아이 목소리 녹음이 없는 말은 이 기기의 한국어 음성으로 읽어요. 아이패드 설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성 → 한국어에서 "유나(향상됨)"를 내려받으면 더 자연스러워요.</p>
+    <div class="vrow"><select id="vSel"></select><button id="vHear" type="button" class="ghostbtn">들어 보기</button></div></details>
 </section>
 
 <section id="scan" hidden>
@@ -505,7 +518,7 @@ function bestVoice(prefix, want){ var vs=goodVoices(prefix); if(want){ var w=vs.
 function pickVoice(){ var want=null; try{ want=localStorage.getItem("goyu-voice-ko"); }catch(e){} S.voice=bestVoice("ko",want); }
 try{ speechSynthesis.onvoiceschanged=function(){ pickVoice(); if(window.LVOICE) for(var k in LVOICE) delete LVOICE[k]; }; }catch(e){}
 try{ speechSynthesis.onvoiceschanged=pickVoice; pickVoice(); }catch(e){}
-function say(s, delay){ if(S.muted) return; var go=function(){ try{ speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(s); u.lang="ko-KR"; if(S.voice) u.voice=S.voice; u.rate=S.vr||0.95; u.pitch=S.vp||1.05; u.onstart=function(){ talk(true); }; u.onend=u.onerror=function(){ talk(false); }; clearTimeout(say._t); say._t=setTimeout(function(){ talk(false); }, 900+String(s).length*170); speechSynthesis.speak(u); }catch(e){} }; if(delay) setTimeout(go,delay); else go(); }
+function say(s, delay){ if(window.__sayHook) __sayHook(s); if(S.muted) return; var go=function(){ var c=clipFor(s); if(c){ clipPlay(c); return; } clipStop(); try{ speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(s); u.lang="ko-KR"; if(S.voice) u.voice=S.voice; u.rate=S.vr||0.95; u.pitch=S.vp||1.05; u.onstart=function(){ talk(true); }; u.onend=u.onerror=function(){ talk(false); }; clearTimeout(say._t); say._t=setTimeout(function(){ talk(false); }, 900+String(s).length*170); speechSynthesis.speak(u); }catch(e){} }; if(delay) setTimeout(go,delay); else go(); }
 
 /* ---------- 칭찬과 아쉬움 ---------- */
 var PRAISE=["성공! 멋진데~?","성공! 멋진데~? 짝짝짝!","우와, 성공! 진짜 멋진데~?","성공! 최고야~!"];
@@ -780,11 +793,35 @@ $("padClear").addEventListener("click",function(){ pad.hit={}; padBG(); });
 Array.prototype.forEach.call(document.querySelectorAll(".sw"),function(b){ b.addEventListener("click",function(){ pad.color=b.dataset.c; Array.prototype.forEach.call(document.querySelectorAll(".sw"),function(x){ x.classList.toggle("on",x===b); }); }); });
 window.addEventListener("resize",function(){ if(!cv.classList.contains("hide")){ sizePad(); if(pad.mode==="trace") buildMask(); padBG(); } });
 
+/* ---------- 녹음 목소리 ----------
+   audio/index.json 에 있는 말은 미리 만든 아이 목소리(여자아이·남자아이) 파일로 틀고,
+   없는 말만 기기 음성으로 읽어요. 파일 하나짜리 판(file://)은 기기 음성만 써요. */
+var VC={map:null, au:null, q:[], busy:false};
+(function(){ if(location.protocol==="file:"||window.__NOHUB) return;
+  try{ fetch("audio/index.json",{cache:"no-cache"}).then(function(r){ return r.ok?r.json():null; }).then(function(j){ VC.map=j; }).catch(function(){}); }catch(e){} })();
+function vKind(){ if(VC.force) return VC.force; var k=(typeof curKid==="function")?curKid():null; return (k&&k.vk)||"girl"; }
+function vNorm(s){ s=String(s).replace(/\s+/g," ").trim(); var k=(typeof curKid==="function")?curKid():null;
+  if(k&&k.name){ s=s.split(k.name+", ").join("").split("나는 "+k.name+"! ").join(""); } return s; }
+function clipFor(s, lang){ var m=VC.map; if(!m) return null;
+  if(lang){ var h=m.l&&m.l[lang]&&m.l[lang][String(s).trim()]; return h? "audio/"+lang+"/"+h+".mp3" : null; }
+  var kind=vKind(), key=vNorm(s), h2=m.ko&&m.ko[key];
+  if(!h2&&key.indexOf("뿌엥뿌엥~")===0) h2=m.ko&&m.ko["뿌엥뿌엥~ 다시 해 볼까?"]; /* 틀렸을 때 말이 없으면 기본 말로 */ if(!h2||!(m.kinds||[]).length||m.kinds.indexOf(kind)<0) return null; return "audio/ko-"+kind+"/"+h2+".mp3"; }
+function clipStop(){ VC.q=[]; VC.busy=false; if(VC.au){ try{ VC.au.pause(); }catch(e){} } }
+function clipNext(){ var src=VC.q.shift(); if(!src){ VC.busy=false; talk(false); return; } VC.busy=true;
+  var a=VC.au||(VC.au=new Audio()); a.onended=a.onerror=function(){ clipNext(); }; a.src=src; talk(true);
+  try{ var p=a.play(); if(p&&p.catch) p.catch(function(){ VC.busy=false; talk(false); }); }catch(e){ clipNext(); } }
+function clipPlay(src, keep){ try{ speechSynthesis.cancel(); }catch(e){} if(!keep) clipStop(); VC.q.push(src); if(!VC.busy) clipNext(); }
+/* 목소리 미리 듣기: 고른 목소리로 한 마디 */
+function hearKind(kind, text){ VC.force=kind; var v=VOICES[kind==="boy"?1:0], vp=S.vp, vr=S.vr; S.vp=v[2]; S.vr=v[3]; say(text); S.vp=vp; S.vr=vr; VC.force=null; }
+/* 아이패드는 처음 손가락으로 누를 때 소리를 깨워 둬야 해요 */
+document.addEventListener("pointerdown",function un(){ if(location.protocol!=="file:") try{ VC.au=VC.au||new Audio(); VC.au.src="audio/silence.mp3"; var p=VC.au.play(); if(p&&p.catch) p.catch(function(){}); }catch(e){} document.removeEventListener("pointerdown",un,true); },true);
 /* ---------- 내 캐릭터: 아이 사진(만화풍 얼굴 + 공룡 옷) 또는 직접 그린 그림 ---------- */
 /* 사진과 그림은 이 기기 localStorage 에만 저장. 어디로도 보내지 않음. */
 var AVKEY="mathdino-av-";
 var SUITS=[["#7fd49c","#c8f0d4"],["#ffb067","#ffe2c4"],["#8fb8ff","#d6e6ff"],["#ff9ec7","#ffd9ea"],["#b79cff","#e5dbff"],["#ffd84d","#fff1b8"]];
-var VOICES=[["귀여운 목소리",1.2,0.98],["밝은 목소리",1.1,0.96],["보통 목소리",1.0,0.95],["차분한 목소리",0.92,0.9]];
+/* 아이 목소리: 녹음 파일이 없을 때 기기 음성 높이도 맞춰 줌 */
+var VOICES=[["여자아이 목소리","girl",1.12,0.96],["남자아이 목소리","boy",1.0,0.95]];
+function vIdx(k){ return k&&k.vk==="boy"?1:0; }
 function avLoad(id){ try{ return JSON.parse(localStorage.getItem(AVKEY+id))||null; }catch(e){ return null; } }
 function avSave(id,o){ try{ if(o) localStorage.setItem(AVKEY+id,JSON.stringify(o)); else localStorage.removeItem(AVKEY+id); return true; }catch(e){ return false; } }
 /* 기본 얼굴(사진이 없을 때) */
@@ -836,7 +873,7 @@ function removePaper(c, tol){ var w=c.width,h=c.height,x=c.getContext("2d"),d=x.
 /* 화면 곳곳의 캐릭터 */
 var BUD={ a:null, kid:null };
 function curAv(){ var k=curKid(); var a=k? avLoad(k.id) : null; return a||{mode:"photo",img:null,suit:k?(k.suit||0):0,voice:1}; }
-function renderBuddies(){ var a=curAv(); BUD.a=a; var v=VOICES[a.voice==null?1:a.voice]||VOICES[1]; S.vp=v[1]; S.vr=v[2];
+function renderBuddies(){ var a=curAv(); BUD.a=a; var v=VOICES[vIdx(typeof curKid==="function"?curKid():null)]; S.vp=v[2]; S.vr=v[3];
   Array.prototype.forEach.call(document.querySelectorAll("[data-buddy]"),function(el){ el.innerHTML=avatarSVG(a,"pose-idle"); });
   regMe(a); }
 function buddyPose(p, ms){ Array.prototype.forEach.call(document.querySelectorAll("[data-buddy] .av"),function(s){ s.setAttribute("class","av pose-"+p); });
@@ -851,7 +888,7 @@ function hasMe(){ return !!CHARK.me; }
 
 /* 캐릭터 만들기 화면 */
 var AE={ kid:null, img:null, mode:"photo", ox:0, oy:0, zoom:1.4, toon:2, paper:35, suit:0, voice:1, out:null, t:null };
-function avEditOpen(k){ AE.kid=k; var a=avLoad(k.id)||{}; AE.mode=a.mode||"photo"; AE.suit=a.suit||0; AE.voice=a.voice==null?1:a.voice; AE.out=a.img||null; AE.img=null; AE.pose="idle"; AE.ox=0; AE.oy=0; AE.zoom=1.7;
+function avEditOpen(k){ AE.kid=k; var a=avLoad(k.id)||{}; AE.mode=a.mode||"photo"; AE.suit=a.suit||0; AE.voice=vIdx(k); AE.out=a.img||null; AE.img=null; AE.pose="idle"; AE.ox=0; AE.oy=0; AE.zoom=1.7;
   $("avWho").textContent=k.name; $("avToon").value=AE.toon; $("avPaper").value=AE.paper; $("avZoom").value=AE.zoom; $("avVoice").value=AE.voice; $("avDel").hidden=!avLoad(k.id);
   avModeUI(); avDrawCrop(); avPreview(); show("avedit"); }
 function avModeUI(){ Array.prototype.forEach.call(document.querySelectorAll("#avMode button"),function(b){ b.classList.toggle("on",b.dataset.mode===AE.mode); });
@@ -885,9 +922,9 @@ function avPreview(rebuild){ if(rebuild){ clearTimeout(AE.t); AE.t=setTimeout(fu
   $("avToon").addEventListener("input",function(){ AE.toon=+this.value; avPreview(true); });
   $("avPaper").addEventListener("input",function(){ AE.paper=+this.value; avPreview(true); });
   $("avVoice").addEventListener("change",function(){ AE.voice=+this.value; });
-  $("avHear").addEventListener("click",function(){ var v=VOICES[AE.voice]; var vp=S.vp, vr=S.vr; S.vp=v[1]; S.vr=v[2]; say("안녕! 나는 "+AE.kid.name+"! 같이 수학 놀이 하자!"); S.vp=vp; S.vr=vr; });
-  $("avSave").addEventListener("click",function(){ var k=AE.kid; var a={mode:AE.mode,img:AE.out,suit:AE.suit,voice:AE.voice};
-    if(!avSave(k.id,a)){ alert("저장 공간이 모자라요. 사진을 조금 더 작게 잘라 주세요."); return; } var o=all(); o.cur=k.id; saveAll(o); renderBuddies(); renderHome(); show("home"); buddyPose("cheer",2000); say("짠! 나는 "+k.name+"! 같이 놀자!"); });
+  $("avHear").addEventListener("click",function(){ hearKind(VOICES[AE.voice][1], "안녕! 나는 "+AE.kid.name+"! 같이 놀자!"); });
+  $("avSave").addEventListener("click",function(){ var k=AE.kid; var a={mode:AE.mode,img:AE.out,suit:AE.suit}; k.vk=VOICES[AE.voice][1];
+    if(!avSave(k.id,a)){ alert("저장 공간이 모자라요. 사진을 조금 더 작게 잘라 주세요."); return; } var o=all(); o.kids.forEach(function(x){ if(x.id===k.id) x.vk=k.vk; }); o.cur=k.id; saveAll(o); renderBuddies(); renderHome(); show("home"); buddyPose("cheer",2000); say("짠! 나는 "+k.name+"! 같이 놀자!"); });
   $("avDel").addEventListener("click",function(){ if(!confirm("캐릭터를 지울까요?")) return; avSave(AE.kid.id,null); renderBuddies(); renderKids(); show("kids"); });
   $("avBack").addEventListener("click",function(){ renderKids(); show("kids"); });
 })();
@@ -982,8 +1019,11 @@ function renderKids(){ renderVoicePick(); var o=all(), box=$("kidlist"); box.inn
   o.kids.forEach(function(k){ var t=kidTier(k), m=months(k.ym); var d=document.createElement("div"); d.className="kid"+(k.id===o.cur?" on":"");
     d.innerHTML='<div class="kav" data-kav></div><button class="kpick" type="button"><b>'+esc(k.name)+'</b><span>'+m+'개월 · '+TIERNAME[t]+'</span><small>'+TIERDESC[t]+'</small></button>'+
       '<div class="adj" role="group" aria-label="난이도 조절"><button type="button" data-a="-1">더 쉽게</button><button type="button" data-a="0">월령대로</button><button type="button" data-a="1">더 어렵게</button></div>'+
+      '<div class="seg small kvk" role="group" aria-label="목소리"><button type="button" data-vk="girl">여자아이 목소리</button><button type="button" data-vk="boy">남자아이 목소리</button></div>'+
       '<div class="krow"><button class="kav-btn" type="button">'+(avLoad(k.id)?"캐릭터 바꾸기":"캐릭터 만들기")+'</button>'+(k.diag?'<span class="kdiag">수학 키 재기 '+k.diag.d+' · '+TIERNAME[k.diag.rec]+'</span>':'')+'<button class="kdel" type="button">지우기</button></div>';
     d.querySelector("[data-kav]").innerHTML=avatarSVG(avLoad(k.id)||{suit:k.suit||0},"pose-idle"); d.querySelector(".kav-btn").addEventListener("click",function(){ avEditOpen(k); });
+    Array.prototype.forEach.call(d.querySelectorAll(".kvk button"),function(b){ if(b.dataset.vk===(k.vk||"girl")) b.classList.add("on");
+      b.addEventListener("click",function(){ k.vk=b.dataset.vk; saveAll(o); if(k.id===o.cur) renderBuddies(); renderKids(); hearKind(k.vk, k.name+", 같이 놀자!"); }); });
     Array.prototype.forEach.call(d.querySelectorAll(".adj button"),function(b){ if(+b.dataset.a===(k.adj||0)) b.classList.add("on");
       b.addEventListener("click",function(){ k.adj=+b.dataset.a; saveAll(o); renderKids(); }); });
     d.querySelector(".kpick").addEventListener("click",function(){ o.cur=k.id; saveAll(o); applyKid(); renderHome(); show("home"); say(k.name+", 같이 놀자!"); });
@@ -995,7 +1035,7 @@ function renderKids(){ renderVoicePick(); var o=all(), box=$("kidlist"); box.inn
   function prev(){ var ym=y.value+"-"+mo.value, m=months(ym); $("kprev").textContent= m<0? "날짜를 다시 골라 주세요" : m+"개월 → "+TIERNAME[baseTier(m)]+" 단계로 시작해요"; }
   y.addEventListener("change",prev); mo.addEventListener("change",prev); prev();
   $("kadd").addEventListener("submit",function(e){ e.preventDefault(); var name=$("kn").value.trim()||"우리 아이"; var ym=y.value+"-"+mo.value; if(months(ym)<0) return;
-    var o=all(), id="k"+Date.now().toString(36); o.kids.push({id:id,name:name.slice(0,12),ym:ym,adj:0});
+    var o=all(), id="k"+Date.now().toString(36); o.kids.push({id:id,name:name.slice(0,12),ym:ym,adj:0,vk:$("kvk").value});
     if(o.legacy&&o.kids.length===1){ o.prog[id]=o.legacy; delete o.legacy; } else o.prog[id]={};
     o.cur=id; saveAll(o); $("kn").value=""; applyKid(); renderHome(); show("home"); say(name+", 반가워! 책을 골라 볼까?"); });
 })();
@@ -1013,7 +1053,7 @@ function renderHome(){ var P=loadP(), box=$("shelf"); box.innerHTML="";
 var GICON={pairs:"sock",clock:"clock",calendar:"book",maze:"dino",puzzle:"triangle",shapefind:"circle",pattern:"star",coins:"coin",heavy:"rock",length:"pencil",measure:"bean",area:"square",graph:"apple",dots:"star",sort:"basket",routine:"sun",position:"bear",leftright:"heart",size:"dino",inout:"ball",draw:"flower",trace:"pencil",numorder:"balloon",findnum:"star",bingo:"star",ordinal:"car",order:"bear",share:"cookie",hidden:"mosquito",frame:"circle",compare:"ghost",add:"apple",subtract:"balloon",makeN:"cookie",count:"bean",tapcount:"apple"};
 function bookIcon(b){ if(b.words){ var w=b.words.filter(function(x){ return x.icon; })[0]; return w? w.icon : (b.words[0].color? "flower" : "balloon"); }
   for(var i=0;i<b.levels.length;i++){ var p=b.levels[i].p||{}; if(p.icon) return p.icon; if(p.animals) return p.animals[0]; if(p.start) return p.start; } return GICON[b.levels[0].g]||"star"; }
-function openBook(b){ S.book=b; var P=loadP(), st=P[b.no]||[]; $("bno").textContent="책 "+String(b.no).padStart(2,"0"); $("btitle").textContent=b.title; $("book").style.setProperty("--c",b.color);
+function openBook(b){ S.book=b; var P=loadP(), st=P[b.no]||[]; $("bno").textContent=(CFG.unit||"책")+" "+String(b.no).padStart(2,"0"); $("btitle").textContent=b.title; $("book").style.setProperty("--c",b.color);
   var L=$("levels"); L.innerHTML=""; b.levels.forEach(function(lv,i){ var a=document.createElement("button"); a.className="lv"+(st[i]?" clear":""); a.innerHTML='<span class="ln">'+(i+1)+'</span><span class="lt">'+lv.name+'</span><span class="ls">'+(st[i]?"★ 성공":"놀러 가기")+'</span>'; a.addEventListener("click",function(){ startLevel(i); }); L.appendChild(a); });
   show("book"); say(b.title+"! 어떤 놀이를 할까?"); }
 function updDots(){ var d=$("dots"); d.innerHTML=""; for(var i=0;i<S.rounds;i++){ var x=document.createElement("i"); if(i<S.round) x.className="on"; d.appendChild(x); } var tb=$("tbud"); if(tb) tb.style.setProperty("--p", S.rounds? Math.min(1,S.round/S.rounds) : 0); }
@@ -1069,8 +1109,8 @@ $("startBtn").addEventListener("click",function(){ ac(); pickVoice(); $("gate").
   if(!o.kids.length){ renderKids(); show("kids"); say(CFG.title+"에 온 걸 환영해! 먼저 이름을 알려 줘"); }
   else { renderHome(); show("home"); var k=curKid(); say((k?k.name+", ":"")+CFG.title+"에 온 걸 환영해! "+(CFG.ask||"책을 골라 볼까?")); } });
 $("kidchip").addEventListener("click",function(){ renderKids(); show("kids"); });
-$("vSel").addEventListener("change",function(){ try{ localStorage.setItem("goyu-voice-ko",this.value); }catch(e){} pickVoice(); say("안녕! 이 목소리 어때?"); });
-$("vHear").addEventListener("click",function(){ say("안녕! 나랑 같이 놀자!"); });
+$("vSel").addEventListener("change",function(){ try{ localStorage.setItem("goyu-voice-ko",this.value); }catch(e){} pickVoice(); VC.force="none"; say("안녕! 이 목소리 어때?"); VC.force=null; });
+$("vHear").addEventListener("click",function(){ VC.force="none"; say("안녕! 나랑 같이 놀자!"); VC.force=null; });
 $("kidsBack").addEventListener("click",function(){ renderHome(); show("home"); });
 $("scanBtn").addEventListener("click",openScan);
 $("diagBtn").addEventListener("click",diagStart);
@@ -1089,7 +1129,7 @@ $("mute").addEventListener("click",function(){ S.muted=!S.muted; this.setAttribu
 document.addEventListener("gesturestart",function(e){ e.preventDefault(); });
 if(window.__NOSCAN) $("scanBtn").hidden=true; if(window.__NODIAG) $("diagBtn").hidden=true; if(window.__NOHUB) Array.prototype.forEach.call(document.querySelectorAll(".tohub"),function(a){ a.hidden=true; });
 renderHome(); show("home");
-window.__G=G; window.__T={diagStart:diagStart,DG:function(){ return DG; },avEditOpen:avEditOpen,AE:AE,renderBuddies:renderBuddies,openBook:openBook,startLevel:startLevel,S:S,playRound:playRound,setTier:function(t){ TIER=t; },matchBook:function(c){ return matchBook(embedTTA(c)); },scanPrepare:scanPrepare,fromPhoto:fromPhoto};
+window.__G=G; window.__T={DSTEPS:DSTEPS,G:G,CFG:CFG,TIERNAME:TIERNAME,clear:clear,DG:function(){ return DG; },avEditOpen:avEditOpen,AE:AE,renderBuddies:renderBuddies,openBook:openBook,startLevel:startLevel,S:S,playRound:playRound,setTier:function(t){ TIER=t; },matchBook:function(c){ return matchBook(embedTTA(c)); },scanPrepare:scanPrepare,fromPhoto:fromPhoto};
 })();
 
 </script>

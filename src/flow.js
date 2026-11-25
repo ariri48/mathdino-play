@@ -26,8 +26,11 @@ function renderKids(){ renderVoicePick(); var o=all(), box=$("kidlist"); box.inn
   o.kids.forEach(function(k){ var t=kidTier(k), m=months(k.ym); var d=document.createElement("div"); d.className="kid"+(k.id===o.cur?" on":"");
     d.innerHTML='<div class="kav" data-kav></div><button class="kpick" type="button"><b>'+esc(k.name)+'</b><span>'+m+'개월 · '+TIERNAME[t]+'</span><small>'+TIERDESC[t]+'</small></button>'+
       '<div class="adj" role="group" aria-label="난이도 조절"><button type="button" data-a="-1">더 쉽게</button><button type="button" data-a="0">월령대로</button><button type="button" data-a="1">더 어렵게</button></div>'+
+      '<div class="seg small kvk" role="group" aria-label="목소리"><button type="button" data-vk="girl">여자아이 목소리</button><button type="button" data-vk="boy">남자아이 목소리</button></div>'+
       '<div class="krow"><button class="kav-btn" type="button">'+(avLoad(k.id)?"캐릭터 바꾸기":"캐릭터 만들기")+'</button>'+(k.diag?'<span class="kdiag">수학 키 재기 '+k.diag.d+' · '+TIERNAME[k.diag.rec]+'</span>':'')+'<button class="kdel" type="button">지우기</button></div>';
     d.querySelector("[data-kav]").innerHTML=avatarSVG(avLoad(k.id)||{suit:k.suit||0},"pose-idle"); d.querySelector(".kav-btn").addEventListener("click",function(){ avEditOpen(k); });
+    Array.prototype.forEach.call(d.querySelectorAll(".kvk button"),function(b){ if(b.dataset.vk===(k.vk||"girl")) b.classList.add("on");
+      b.addEventListener("click",function(){ k.vk=b.dataset.vk; saveAll(o); if(k.id===o.cur) renderBuddies(); renderKids(); hearKind(k.vk, k.name+", 같이 놀자!"); }); });
     Array.prototype.forEach.call(d.querySelectorAll(".adj button"),function(b){ if(+b.dataset.a===(k.adj||0)) b.classList.add("on");
       b.addEventListener("click",function(){ k.adj=+b.dataset.a; saveAll(o); renderKids(); }); });
     d.querySelector(".kpick").addEventListener("click",function(){ o.cur=k.id; saveAll(o); applyKid(); renderHome(); show("home"); say(k.name+", 같이 놀자!"); });
@@ -39,7 +42,7 @@ function renderKids(){ renderVoicePick(); var o=all(), box=$("kidlist"); box.inn
   function prev(){ var ym=y.value+"-"+mo.value, m=months(ym); $("kprev").textContent= m<0? "날짜를 다시 골라 주세요" : m+"개월 → "+TIERNAME[baseTier(m)]+" 단계로 시작해요"; }
   y.addEventListener("change",prev); mo.addEventListener("change",prev); prev();
   $("kadd").addEventListener("submit",function(e){ e.preventDefault(); var name=$("kn").value.trim()||"우리 아이"; var ym=y.value+"-"+mo.value; if(months(ym)<0) return;
-    var o=all(), id="k"+Date.now().toString(36); o.kids.push({id:id,name:name.slice(0,12),ym:ym,adj:0});
+    var o=all(), id="k"+Date.now().toString(36); o.kids.push({id:id,name:name.slice(0,12),ym:ym,adj:0,vk:$("kvk").value});
     if(o.legacy&&o.kids.length===1){ o.prog[id]=o.legacy; delete o.legacy; } else o.prog[id]={};
     o.cur=id; saveAll(o); $("kn").value=""; applyKid(); renderHome(); show("home"); say(name+", 반가워! 책을 골라 볼까?"); });
 })();
@@ -57,7 +60,7 @@ function renderHome(){ var P=loadP(), box=$("shelf"); box.innerHTML="";
 var GICON={pairs:"sock",clock:"clock",calendar:"book",maze:"dino",puzzle:"triangle",shapefind:"circle",pattern:"star",coins:"coin",heavy:"rock",length:"pencil",measure:"bean",area:"square",graph:"apple",dots:"star",sort:"basket",routine:"sun",position:"bear",leftright:"heart",size:"dino",inout:"ball",draw:"flower",trace:"pencil",numorder:"balloon",findnum:"star",bingo:"star",ordinal:"car",order:"bear",share:"cookie",hidden:"mosquito",frame:"circle",compare:"ghost",add:"apple",subtract:"balloon",makeN:"cookie",count:"bean",tapcount:"apple"};
 function bookIcon(b){ if(b.words){ var w=b.words.filter(function(x){ return x.icon; })[0]; return w? w.icon : (b.words[0].color? "flower" : "balloon"); }
   for(var i=0;i<b.levels.length;i++){ var p=b.levels[i].p||{}; if(p.icon) return p.icon; if(p.animals) return p.animals[0]; if(p.start) return p.start; } return GICON[b.levels[0].g]||"star"; }
-function openBook(b){ S.book=b; var P=loadP(), st=P[b.no]||[]; $("bno").textContent="책 "+String(b.no).padStart(2,"0"); $("btitle").textContent=b.title; $("book").style.setProperty("--c",b.color);
+function openBook(b){ S.book=b; var P=loadP(), st=P[b.no]||[]; $("bno").textContent=(CFG.unit||"책")+" "+String(b.no).padStart(2,"0"); $("btitle").textContent=b.title; $("book").style.setProperty("--c",b.color);
   var L=$("levels"); L.innerHTML=""; b.levels.forEach(function(lv,i){ var a=document.createElement("button"); a.className="lv"+(st[i]?" clear":""); a.innerHTML='<span class="ln">'+(i+1)+'</span><span class="lt">'+lv.name+'</span><span class="ls">'+(st[i]?"★ 성공":"놀러 가기")+'</span>'; a.addEventListener("click",function(){ startLevel(i); }); L.appendChild(a); });
   show("book"); say(b.title+"! 어떤 놀이를 할까?"); }
 function updDots(){ var d=$("dots"); d.innerHTML=""; for(var i=0;i<S.rounds;i++){ var x=document.createElement("i"); if(i<S.round) x.className="on"; d.appendChild(x); } var tb=$("tbud"); if(tb) tb.style.setProperty("--p", S.rounds? Math.min(1,S.round/S.rounds) : 0); }
@@ -113,8 +116,8 @@ $("startBtn").addEventListener("click",function(){ ac(); pickVoice(); $("gate").
   if(!o.kids.length){ renderKids(); show("kids"); say(CFG.title+"에 온 걸 환영해! 먼저 이름을 알려 줘"); }
   else { renderHome(); show("home"); var k=curKid(); say((k?k.name+", ":"")+CFG.title+"에 온 걸 환영해! "+(CFG.ask||"책을 골라 볼까?")); } });
 $("kidchip").addEventListener("click",function(){ renderKids(); show("kids"); });
-$("vSel").addEventListener("change",function(){ try{ localStorage.setItem("goyu-voice-ko",this.value); }catch(e){} pickVoice(); say("안녕! 이 목소리 어때?"); });
-$("vHear").addEventListener("click",function(){ say("안녕! 나랑 같이 놀자!"); });
+$("vSel").addEventListener("change",function(){ try{ localStorage.setItem("goyu-voice-ko",this.value); }catch(e){} pickVoice(); VC.force="none"; say("안녕! 이 목소리 어때?"); VC.force=null; });
+$("vHear").addEventListener("click",function(){ VC.force="none"; say("안녕! 나랑 같이 놀자!"); VC.force=null; });
 $("kidsBack").addEventListener("click",function(){ renderHome(); show("home"); });
 $("scanBtn").addEventListener("click",openScan);
 $("diagBtn").addEventListener("click",diagStart);
@@ -133,5 +136,5 @@ $("mute").addEventListener("click",function(){ S.muted=!S.muted; this.setAttribu
 document.addEventListener("gesturestart",function(e){ e.preventDefault(); });
 if(window.__NOSCAN) $("scanBtn").hidden=true; if(window.__NODIAG) $("diagBtn").hidden=true; if(window.__NOHUB) Array.prototype.forEach.call(document.querySelectorAll(".tohub"),function(a){ a.hidden=true; });
 renderHome(); show("home");
-window.__G=G; window.__T={diagStart:diagStart,DG:function(){ return DG; },avEditOpen:avEditOpen,AE:AE,renderBuddies:renderBuddies,openBook:openBook,startLevel:startLevel,S:S,playRound:playRound,setTier:function(t){ TIER=t; },matchBook:function(c){ return matchBook(embedTTA(c)); },scanPrepare:scanPrepare,fromPhoto:fromPhoto};
+window.__G=G; window.__T={DSTEPS:DSTEPS,G:G,CFG:CFG,TIERNAME:TIERNAME,clear:clear,DG:function(){ return DG; },avEditOpen:avEditOpen,AE:AE,renderBuddies:renderBuddies,openBook:openBook,startLevel:startLevel,S:S,playRound:playRound,setTier:function(t){ TIER=t; },matchBook:function(c){ return matchBook(embedTTA(c)); },scanPrepare:scanPrepare,fromPhoto:fromPhoto};
 })();
