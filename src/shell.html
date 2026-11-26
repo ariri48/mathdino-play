@@ -294,12 +294,18 @@ body[data-view="scan"]{overflow:hidden}
 .ansbar{position:absolute;right:10px;bottom:10px;display:flex;gap:8px;z-index:3}
 .ansbar button{display:flex;flex-direction:column;align-items:center;justify-content:center;width:68px;height:68px;border-radius:22px;background:rgba(255,255,255,.92);box-shadow:0 4px 0 rgba(0,0,0,.1);font-size:30px;line-height:1}
 .ansbar small{font-size:13px;margin-top:2px}
+.tall .ansbar{top:10px;bottom:auto}
 .pill.brag{font-size:20px;padding:10px 20px;background:#ffeef5;box-shadow:0 5px 0 #f6c3d8}
 .pbtn{margin:0 auto;font-size:15px;color:var(--soft)}
 .filerow{gap:10px;flex-wrap:wrap}
 .note.onb{background:#fff8e6;border-radius:16px;padding:10px 14px;font-size:18px;color:var(--ink)}
 #done{gap:14px}
 #stagewrap{background:linear-gradient(#d7ecfa,#e3f2fb 45%,#e4f3df 55%,#d6ecd0)}
+
+/* 휴대폰: 놀이판을 최대한 넓게 */
+@media (max-width:520px){ #play #ltitle{display:none} #play{gap:6px;padding-block:6px} #play .prompt{font-size:22px;padding:6px 12px} #play .pbud{width:44px;height:52px} #again{padding:6px 14px} }
+@media (max-height:520px) and (orientation:landscape){ #play{gap:4px;padding-block:4px} #play .pbar{flex-wrap:nowrap} #play .prompt{font-size:19px;padding:3px 12px;border-radius:14px} #play .pbud{width:30px;height:36px;margin:0} #play .back,#again{min-height:36px;padding:4px 12px;font-size:16px} #ltitle{font-size:17px} #play #dots i{width:16px;height:16px} }
+.wide .ansbar{right:auto;left:10px}
 </style>
 
 <div id="gate">

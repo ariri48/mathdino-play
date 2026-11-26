@@ -4,7 +4,7 @@ var DATA = window.__DATA__;
 var NAMES = DATA.names, D2D = DATA.d2d;
 var NS = "http://www.w3.org/2000/svg";
 var $ = function(id){ return document.getElementById(id); };
-var svg = $("stage"), cv = $("pad");
+var svg = $("stage"), cv = $("pad"), lay = null, chl = null, tpl = null; /* lay: 놀이 그림, chl: 고르는 단추 */
 var S = { book:null, li:0, round:0, rounds:3, lock:false, voice:null, muted:false, miss:0, hintFn:null };
 /* 월령 단계: 0 아기(24~35개월) 1 꼬마(36~47) 2 씩씩(48~59) 3 대장(60~) */
 var TIER=2, CAPS=[3,5,10,20], NCH=[2,3,3,4], HINTAT=[1,2,3,99], ROUNDS=[2,3,3,3];
@@ -26,19 +26,66 @@ var CHARK={}; var ONE_ROUND={draw:1}; var CFG=window.__CFG||{title:"수학공룡
 var ANIMAL={mosquito:1,fish:1,dog:1,cat:1,rabbit:1,bear:1,chick:1,duck:1,dino:1,ghost:1};
 function unit(k){ return CHARK[k]?"명": ANIMAL[k]?"마리":"개"; }
 var ORD = ["첫째","둘째","셋째","넷째","다섯째","여섯째"];
-function el(tag, at, parent){ var e=document.createElementNS(NS,tag); for(var k in at) if(at[k]!==undefined) e.setAttribute(k,at[k]); (parent||svg).appendChild(e); return e; }
+function el(tag, at, parent){ var e=document.createElementNS(NS,tag); for(var k in at) if(at[k]!==undefined) e.setAttribute(k,at[k]); (parent||lay||svg).appendChild(e); return e; }
 function g(parent){ return el("g",{},parent); }
 function icon(name,x,y,s,parent){ return el("use",{href:"#g-"+name,x:x,y:y,width:s,height:s},parent); }
 function txt(s,x,y,size,parent,fill,anchor){ var t=el("text",{x:x,y:y,"font-size":size||40,"text-anchor":anchor||"middle",fill:fill||"#3b2f2a","class":"t"},parent); t.textContent=s; return t; }
 function setT(n,x,y){ n._tx=x; n._ty=y; n.setAttribute("transform","translate("+x+","+y+")"); }
-function clear(){ S.nch={}; while(svg.firstChild) svg.removeChild(svg.firstChild); svg.classList.remove("hide"); cv.classList.add("hide"); $("padtools").classList.add("hide"); decor(); }
+function clear(){ S.nch={}; lay=chl=tpl=null; while(svg.firstChild) svg.removeChild(svg.firstChild); svg.classList.remove("hide"); cv.classList.add("hide"); $("padtools").classList.add("hide"); decor();
+  lay=el("g",{"class":"lay"},svg); tpl=el("g",{"class":"tpl"},svg); chl=el("g",{"class":"chl"},svg); layMO.observe(lay,{childList:true}); fitSoon(); }
+/* ---------- 화면 모양에 맞춰 놀이판 다시 놓기 ----------
+   놀이는 1000×620 가로판으로 그려요. 세로 화면(휴대폰)에서는 판을 세로로 늘리고 고르는 단추를 아래에 크게,
+   아주 납작한 가로 화면에서는 단추를 오른쪽 세로줄에 놓아요. 놀이 그림은 남은 자리에 맞춰 키워요. */
+var FIT={raf:0}, ROWG={heavy:1,clock:1,compare:1,size:1,pairs:2,llisten:1,lreview:1,lpairs:2}; /* 1: 한 줄로 선 단추만, 2: 단추 모두 */
+function port(){ var r=svg.getBoundingClientRect(); return r.width>0&&r.width/r.height<1.3; }
+function fitSoon(){ cancelAnimationFrame(FIT.raf); FIT.raf=requestAnimationFrame(fitStage); }
+function isChoice(n){ if(!n||n.tagName!=="g"||(n._ty||0)<380) return false; for(var c=n.firstChild;c;c=c.nextSibling) if(c.tagName==="rect"&&c.classList.contains("choice")) return true; return false; }
+var layMO=new MutationObserver(function(ms){ for(var i=0;i<ms.length;i++) for(var j=0;j<ms[i].addedNodes.length;j++) if(isChoice(ms[i].addedNodes[j])){ fitSoon(); return; } });
+function setBg(W,H){ var b=svg.querySelector(".decor image"); if(b){ b.setAttribute("width",W); b.setAttribute("height",H); } }
+function fitStage(){ if(!lay||svg.classList.contains("hide")) return; var r=svg.getBoundingClientRect(); if(r.width<10||r.height<10) return;
+  var ar=r.width/r.height, mode= ar<1.3? "tall" : ar>1.95? "wide" : "base"; $("stagewrap").classList.toggle("tall",mode==="tall"); $("stagewrap").classList.toggle("wide",mode==="wide");
+  Array.prototype.slice.call(lay.childNodes).forEach(function(n){ if(isChoice(n)){ var c=el("g",{"class":"chc"},chl); c.appendChild(n); } });
+  var cells=Array.prototype.slice.call(chl.childNodes);
+  if(mode!=="tall") [].slice.call(tpl.childNodes).forEach(function(c){ lay.appendChild(c.firstChild); c.remove(); });
+  if(mode==="base"){ svg.setAttribute("viewBox","0 0 1000 620"); setBg(1000,620); lay.removeAttribute("transform"); cells.forEach(function(c){ c.removeAttribute("transform"); }); return; }
+  var W= mode==="tall"? 1000 : Math.round(620*ar), H= mode==="tall"? Math.round(1000/ar) : 620; svg.setAttribute("viewBox","0 0 "+W+" "+H); setBg(W,H);
+  var bx=cells.map(function(c){ var ch=c.firstChild, b=ch.getBBox(); return {c:c,ch:ch,b:b}; }), n=bx.length, area;
+  function place(x,X,Y,k){ var t=x.ch._tx||0, u=x.ch._ty||0; x.c.setAttribute("transform","translate("+(X-k*(t+x.b.x)).toFixed(1)+","+(Y-k*(u+x.b.y)).toFixed(1)+") scale("+k.toFixed(3)+")"); }
+  if(n){ var bw=Math.max.apply(null,bx.map(function(x){ return x.b.width; })), bh=Math.max.apply(null,bx.map(function(x){ return x.b.height; })), gap;
+    if(mode==="tall"){ var cols= n<=3? n : 2, rows=Math.ceil(n/cols); gap=28; var k=Math.min((W-60-gap*(cols-1))/cols/bw, 2.4), ch=bh*k, bandH=rows*ch+(rows-1)*gap+50;
+      bx.forEach(function(x,i){ var col=i%cols, row=Math.floor(i/cols), rn=Math.min(cols,n-row*cols), rw=rn*bw*k+(rn-1)*gap; place(x,(W-rw)/2+col*(bw*k+gap),H-bandH+20+row*(ch+gap),k); });
+      area={x:16,y:16,w:W-32,h:H-bandH-24}; }
+    else { var colW=Math.min(W*0.28,380); gap=20; var k2=Math.min((colW-30)/bw,(H-40-gap*(n-1))/(n*bh),2.2), tot=n*bh*k2+(n-1)*gap;
+      bx.forEach(function(x,i){ place(x,W-colW+(colW-bw*k2)/2-12,(H-tot)/2+i*(bh*k2+gap),k2); }); area={x:16,y:12,w:W-colW-28,h:H-24}; } }
+  else area={x:16,y:16,w:W-32,h:H-32};
+  /* 세로 화면: 한 줄로 늘어선 큰 그림 단추(시계·무게·많고 적음·크기·짝 찾기)는 격자로 크게 */
+  var rg=mode==="tall"&&ROWG[S.diag?"":curG()];
+  if(rg&&!tpl.childNodes.length){ var tp=[].filter.call(lay.childNodes,function(nd){ return nd.tagName==="g"&&nd.style.cursor==="pointer"&&!isChoice(nd); });
+    var tb=tp.map(function(nd){ var b=nd.getBBox(); return {n:nd,b:b,y:(nd._ty||0)+b.y+b.height/2}; }), set=tb;
+    if(rg===1){ set=[]; tb.forEach(function(x){ var same=tb.filter(function(z){ return Math.abs(z.y-x.y)<80; }); if(same.length>set.length) set=same; }); }
+    if(set.length>=2&&set.length<=12) set.forEach(function(x){ var c=el("g",{"class":"tpc"},tpl); c.appendChild(x.n); }); }
+  var tcs=Array.prototype.slice.call(tpl.childNodes);
+  if(tcs.length){ var tbx=tcs.map(function(c){ var ch=c.firstChild; return {c:c,ch:ch,b:ch.getBBox()}; }), tw=Math.max.apply(null,tbx.map(function(x){ return x.b.width; })), th=Math.max.apply(null,tbx.map(function(x){ return x.b.height; }));
+    var rb=null; try{ var q=lay.getBBox(); if(q.width>1&&q.height>1&&lay.childNodes.length) rb=q; }catch(e){}
+    var top=area.y, ah=area.h; if(rb){ var rs=Math.min(area.w/rb.width,1.4,(area.h*0.22)/rb.height); lay.setAttribute("transform","translate("+(area.x+(area.w-rb.width*rs)/2-rb.x*rs).toFixed(1)+","+(area.y-rb.y*rs).toFixed(1)+") scale("+rs.toFixed(3)+")"); top+=rb.height*rs+16; ah-=rb.height*rs+16; }
+    else lay.removeAttribute("transform");
+    var nT=tbx.length, best=null; for(var cc=1;cc<=4;cc++){ var rr=Math.ceil(nT/cc), kk=Math.min((area.w-(cc-1)*24)/cc/tw,(ah-(rr-1)*24)/rr/th,2.6); if(!best||kk>best.k) best={c:cc,r:rr,k:kk}; }
+    var gw=best.c*tw*best.k+(best.c-1)*24, gh=best.r*th*best.k+(best.r-1)*24, gx=area.x+(area.w-gw)/2, gy=top+(ah-gh)/2;
+    tbx.forEach(function(x,i){ var col=i%best.c, row=Math.floor(i/best.c); place(x,gx+col*(tw*best.k+24)+(tw-x.b.width)*best.k/2,gy+row*(th*best.k+24)+(th-x.b.height)*best.k/2,best.k); });
+    return; }
+  var cb; try{ cb=lay.getBBox(); }catch(e){ cb={x:0,y:0,width:1000,height:620}; }
+  var x0=Math.max(0,cb.x), y0=Math.max(0,cb.y), x1=Math.min(1000,cb.x+cb.width), y1=Math.min(mode==="tall"?1000:620,cb.y+cb.height); if(x1-x0<50||y1-y0<50){ x0=0; y0=0; x1=1000; y1=620; }
+  if(x1-x0<480){ var mx=(x0+x1)/2; x0=Math.max(0,mx-240); x1=Math.min(1000,x0+480); x0=x1-480; } /* 끌어 옮기는 놀이도 있어서 너무 당겨 키우지는 않아요 */
+  var s=Math.min(area.w/(x1-x0), area.h/(y1-y0), mode==="tall"?2:1.6), tx=area.x+(area.w-(x1-x0)*s)/2-x0*s, ty=area.y+(area.h-(y1-y0)*s)/2-y0*s;
+  lay.setAttribute("transform","translate("+tx.toFixed(1)+","+ty.toFixed(1)+") scale("+s.toFixed(3)+")"); }
+window.addEventListener("resize",fitSoon); window.addEventListener("orientationchange",function(){ setTimeout(fitSoon,300); });
 function decor(){ var d=g(); d.setAttribute("pointer-events","none"); d.setAttribute("class","decor");
   if(window.__ART_BG){ el("image",{href:__ART_BG,x:0,y:0,width:1000,height:620,preserveAspectRatio:"xMidYMid slice"},d); return; }
   function cloud(x,y,k){ var c=g(d); c.setAttribute("transform","translate("+x+","+y+") scale("+k+")"); [[0,20,34],[34,4,40],[72,18,32],[36,28,40]].forEach(function(q){ el("circle",{cx:q[0],cy:q[1],r:q[2],fill:"#eef6ff"},c); }); }
   cloud(40,30,.9); cloud(860,50,.7);
   el("path",{d:"M0 560 Q180 500 360 545 T720 535 T1000 515 V620 H0Z",fill:"#ecf9f1"},d); el("path",{d:"M0 595 Q220 560 460 588 T1000 572 V620 H0Z",fill:"#dcf3e4"},d);
   [[120,575],[640,590],[900,580]].forEach(function(q){ var f=g(d); f.setAttribute("transform","translate("+q[0]+","+q[1]+")"); [0,72,144,216,288].forEach(function(a){ var r=a*Math.PI/180; el("circle",{cx:Math.cos(r)*7,cy:Math.sin(r)*7,r:6,fill:"#ffd0e2"},f); }); el("circle",{cx:0,cy:0,r:5,fill:"#ffd34d"},f); }); }
-function pt(e){ var p=svg.createSVGPoint(); p.x=e.clientX; p.y=e.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); }
+function pt(e){ var p=svg.createSVGPoint(); p.x=e.clientX; p.y=e.clientY; return p.matrixTransform((lay||svg).getScreenCTM().inverse()); }
 function tap(node, fn){ node.style.cursor="pointer"; node.addEventListener("pointerdown", function(e){ e.preventDefault(); if(S.lock) return; fn(e); }); return node; }
 function animT(n,x,y,ms){ var x0=n._tx||0,y0=n._ty||0,t0=performance.now(); ms=ms||220;
   (function step(t){ var k=Math.min(1,(t-t0)/ms); k=1-Math.pow(1-k,3); setT(n,x0+(x-x0)*k,y0+(y-y0)*k); if(k<1) requestAnimationFrame(step); })(t0); }
@@ -173,7 +220,7 @@ G.order=function(p){ var an=(p.animals||["bear","cat","rabbit"]).slice(0, Math.m
 G.numorder=function(p){ var n=Math.min(p.maxn||10,10,cap()), next=1, nodes=[]; setHint(function(){ hintNode(nodes[next-1]); }); prompt("1부터 "+n+"까지 차례로 눌러 줘");
   var pos=scatter(n,60,30,880,420,120); var last=null;
   pos.forEach(function(q,i){ var v=i+1; var b=g(); setT(b,q.x+q.s/2,q.y+q.s/2); el("circle",{cx:0,cy:0,r:56,"class":"bub"},b); txt(v,0,20,58,b); nodes.push(b);
-    tap(b,function(){ if(v===next){ b.classList.add("on"); if(last) { var l=el("line",{x1:last[0],y1:last[1],x2:b._tx,y2:b._ty,"class":"link"}); svg.insertBefore(l,svg.firstChild); } last=[b._tx,b._ty]; next++; good(); if(next>n) setTimeout(win,300); } else if(v>=next) miss(next+"을 먼저 찾아봐"); }); }); };
+    tap(b,function(){ if(v===next){ b.classList.add("on"); if(last) { var l=el("line",{x1:last[0],y1:last[1],x2:b._tx,y2:b._ty,"class":"link"}); lay.insertBefore(l,lay.firstChild); } last=[b._tx,b._ty]; next++; good(); if(next>n) setTimeout(win,300); } else if(v>=next) miss(next+"을 먼저 찾아봐"); }); }); };
 
 G.dots=function(p){ var keys=Object.keys(D2D); var sh=TIER===0? pick(["house","boat"]) : (S.round===0&&p.shape?p.shape:pick(keys)); var nodes=[]; setHint(function(){ hintNode(nodes[next-1]); }); var pts=D2D[sh], next=1, sc=5.6, ox=500-50*sc, oy=5;
   var poly=el("polyline",{points:"","class":"dotline"}); var done=[];
@@ -212,7 +259,7 @@ G.hidden=function(p){ var k=p.icon||"mosquito", n=Math.min(p.n||6,T([3,4,6,8])),
     tap(b,function(){ if(b._f) return; b._f=true; found++; b.classList.add("found"); cnt.textContent=found+" / "+n; good(); if(found===n) setTimeout(win,300); }); })(x,y,s); } }
   n=made; cnt.textContent="0 / "+n; prompt("숨어 있는 "+eul(nm(k))+" 모두 찾아 눌러 줘"); };
 
-G.findnum=function(p){ var up=Math.min(p.upto||20,T([5,10,20,30])), cols=up<=10?5:10, cs=up<=10?150:88, x0=500-cols*cs/2, t=rnd(1,Math.min(up,20));
+G.findnum=function(p){ var up=Math.min(p.upto||20,T([5,10,20,30])), cols=(up<=10||port())?5:10, cs=(up<=10||port())?150:88, x0=500-cols*cs/2, t=rnd(1,Math.min(up,20));
   for(var i=1;i<=up;i++){ (function(i){ var b=g(); setT(b,x0+((i-1)%cols)*cs,30+Math.floor((i-1)/cols)*cs); el("rect",{x:0,y:0,width:cs,height:cs,"class":"cell"},b); txt(i,cs/2,cs/2+(cs>100?26:16),cs>100?64:40,b); if(i===t) setHint(function(){ hintNode(b); });
     tap(b,function(){ if(i===t){ b.classList.add("mark"); win(); } else miss(eul(String(t))+" 찾아봐"); }); })(i); }
   prompt(eul(String(t))+" 찾아 눌러 줘"); };
@@ -247,7 +294,7 @@ G.maze=function(p){ if(hasMe()) p=Object.assign({},p,{start:"me"}); var cols=T([
   for(var c=0;c<cols;c++) for(var r=0;r<rows;r++){ (function(c,r){ var x=x0+c*cs, y=y0+r*cs; var b=el("rect",{x:x,y:y,width:cs,height:cs,"class":"mcell"}); var w=W[c+","+r];
       if(w[0]) el("line",{x1:x,y1:y,x2:x+cs,y2:y,"class":"wall"}); if(w[3]) el("line",{x1:x,y1:y,x2:x,y2:y+cs,"class":"wall"}); if(c===cols-1&&w[1]) el("line",{x1:x+cs,y1:y,x2:x+cs,y2:y+cs,"class":"wall"}); if(r===rows-1&&w[2]) el("line",{x1:x,y1:y+cs,x2:x+cs,y2:y+cs,"class":"wall"});
       tap(b,function(){ var dc=c-pos[0], dr=r-pos[1]; if(Math.abs(dc)+Math.abs(dr)!==1) return; var d= dr===-1?0: dc===1?1: dr===1?2:3; if(W[pos[0]+","+pos[1]][d]){ miss("벽이 있어! 다른 길로 가 볼까?"); return; }
-        pos=[c,r]; var tr=el("circle",{cx:x+cs/2,cy:y+cs/2,r:14,"class":"trail"}); svg.insertBefore(tr,me); animT(me,x+15,y+15); good(); if(c===goal[0]&&r===goal[1]) setTimeout(win,300); }); })(c,r); }
+        pos=[c,r]; var tr=el("circle",{cx:x+cs/2,cy:y+cs/2,r:14,"class":"trail"}); lay.insertBefore(tr,me); animT(me,x+15,y+15); good(); if(c===goal[0]&&r===goal[1]) setTimeout(win,300); }); })(c,r); }
   icon(p.goal||"egg",x0+(cols-1)*cs+15,y0+(rows-1)*cs+15,110); var me=g(); icon(p.start||"dino",0,0,110,me); setT(me,x0+15,y0+15);
   prompt(iga(nm(p.start||"dino"))+" "+nm(p.goal||"egg")+"까지 가게 옆 칸을 눌러 줘"); };
 
