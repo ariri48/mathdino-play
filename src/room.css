@@ -91,3 +91,10 @@
 .tgauge i{width:56px;height:12px;border-radius:999px;background:linear-gradient(90deg,#ffc83d calc(var(--f)*100%),#eee 0);display:block}
 .tgauge::before{content:"";width:22px;height:22px;background:url(art/sun.webp) center/contain no-repeat}
 @media (prefers-reduced-motion:reduce){.rov *{animation:none!important}}
+.secret{margin-left:auto;width:40px;height:40px;min-height:40px;padding:0;border:0;border-radius:50%;background:transparent;opacity:.22;position:relative;cursor:default;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;touch-action:none}
+.secret svg{width:22px;height:22px;fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round}
+.secret::after{content:"";position:absolute;inset:2px;border-radius:50%;background:conic-gradient(var(--accent) calc(var(--h,0)*1turn),transparent 0);-webkit-mask:radial-gradient(circle,transparent 58%,#000 60%);mask:radial-gradient(circle,transparent 58%,#000 60%);opacity:0}
+.secret.hold{opacity:.9}.secret.hold::after{opacity:1;animation:rhold 2s linear forwards}
+@property --h{syntax:"<number>";inherits:false;initial-value:0}
+@keyframes rhold{to{--h:1}}
+.adjust .rtdesc{margin-top:6px}

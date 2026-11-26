@@ -31,7 +31,7 @@ G.lcards=function(p){ var ws=words().slice(0,T([4,6,99,99])), i=0;
     $("ptext").textContent=w.ko+(jong(w.ko)?"은 ":"는 ")+LANGS[S.lang].name+"로?"; S.prompt=$("ptext").textContent; S.againFn=function(){ sayL(wt(w)); }; say(w.ko+(jong(w.ko)?"은 ":"는 ")+LANGS[S.lang].name+"로",100); sayL(wt(w),1300,true); sayL(wt(w),2600,true); }
   showCard(); };
 /* 2. 듣고 고르기 */
-function listenPick(pool, showText){ var n=Math.min(NCH[TIER]+(TIER>=2?1:0),pool.length,4), w=pick(pool), opts=pickN(pool,n,w), cw=Math.min(220,900/n-20), x0=500-(n*(cw+20)-20)/2;
+function listenPick(pool, showText){ var n=Math.min(nch()+(TIER>=2?1:0),pool.length,4), w=pick(pool), opts=pickN(pool,n,w), cw=Math.min(220,900/n-20), x0=500-(n*(cw+20)-20)/2;
   opts.forEach(function(o,i){ var b=g(); setT(b,x0+i*(cw+20),140); el("rect",{x:0,y:0,width:cw,height:cw+(showText?70:0),rx:30,"class":"card"},b); wpic(o,cw*0.1,cw*0.08,cw*0.8,b); if(showText) txt(wt(o),cw/2,cw+40,34,b);
     if(o===w) setHint(function(){ hintNode(b); });
     tap(b,function(){ if(o===w){ b.classList.add("found"); langWin(w); } else { miss("그건 "+o.ko+"야"); sayL(wt(o),1600,true); } }); });

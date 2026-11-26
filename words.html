@@ -158,6 +158,7 @@ g.found{transform-box:fill-box}
 .kid.on{border-color:var(--accent)}
 .kpick{display:flex;flex-direction:column;align-items:flex-start;gap:4px;background:none;text-align:left;padding:0}
 .kpick b{font-weight:400;font-size:32px;color:var(--accent)} .kpick span{font-size:20px} .kpick small{font-family:var(--body);font-size:15px;color:var(--soft)}
+.adjnote{margin:0;font-size:14px;color:var(--soft)}
 .adj{display:flex;gap:6px;flex-wrap:wrap}
 .adj button{font-size:16px;background:var(--bg);border-radius:999px;padding:8px 12px}
 .adj button.on{background:var(--accent);color:#fff}
@@ -418,6 +419,13 @@ body[data-view="scan"]{overflow:hidden}
 .tgauge i{width:56px;height:12px;border-radius:999px;background:linear-gradient(90deg,#ffc83d calc(var(--f)*100%),#eee 0);display:block}
 .tgauge::before{content:"";width:22px;height:22px;background:url(art/sun.webp) center/contain no-repeat}
 @media (prefers-reduced-motion:reduce){.rov *{animation:none!important}}
+.secret{margin-left:auto;width:40px;height:40px;min-height:40px;padding:0;border:0;border-radius:50%;background:transparent;opacity:.22;position:relative;cursor:default;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;touch-action:none}
+.secret svg{width:22px;height:22px;fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round}
+.secret::after{content:"";position:absolute;inset:2px;border-radius:50%;background:conic-gradient(var(--accent) calc(var(--h,0)*1turn),transparent 0);-webkit-mask:radial-gradient(circle,transparent 58%,#000 60%);mask:radial-gradient(circle,transparent 58%,#000 60%);opacity:0}
+.secret.hold{opacity:.9}.secret.hold::after{opacity:1;animation:rhold 2s linear forwards}
+@property --h{syntax:"<number>";inherits:false;initial-value:0}
+@keyframes rhold{to{--h:1}}
+.adjust .rtdesc{margin-top:6px}
 </style>
 
 <div id="gate">
@@ -508,7 +516,7 @@ body[data-view="scan"]{overflow:hidden}
 </section>
 
 <section id="play" hidden>
-  <div class="pbar"><button id="backBook" class="back" type="button">← 놀이 목록</button><span id="ltitle"></span><span id="track"><span id="dots"></span></span><button id="again" type="button">다시 듣기</button></div>
+  <div class="pbar"><button id="backBook" class="back" type="button">← 놀이 목록</button><span id="ltitle"></span><span id="track"><span id="dots"></span></span><button id="again" type="button">다시 듣기</button><button class="secret" type="button" data-secret aria-label="부모님 놀이 조절, 2초 동안 꾹 누르기"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></button></div>
   <div class="prompt"><span class="pbud" data-buddy></span><span id="ptext"></span></div>
   <div id="stagewrap">
     <svg id="stage" viewBox="0 0 1000 620" preserveAspectRatio="xMidYMid meet"></svg>
@@ -763,17 +771,54 @@ function reportUI(box){ var o=st(), k=kid(); if(!k){ box.innerHTML='<p class="rn
     (good.length?'<p class="rnote2">잘하는 것: '+good.map(function(x){ return esc(x.a)+" ("+Math.round(x.r*100)+"%)"; }).join(", ")+'</p>':"")+
     '<h3>최근 7일</h3>'+rows+'<p class="rnote2">스티커 '+nstk(o)+'장 · 배지 '+Object.keys(o.bad).length+'개 · '+esc(R.eggInfo().name)+' · '+streakDays(o)+'일 연속</p>'; }
 
+/* ---------- 놀이 조절 (엄마만) ----------
+   단계·보기 개수·힌트·문제 수를 아이마다 저장해요. 놀이 화면은 R.fx.onAdjust 로 바로 다시 그려요. */
+var TIERNAME=["아기 공룡","꼬마 공룡","씩씩 공룡","대장 공룡"];
+var TIERDESC=["숫자 1~3 · 2개 중에 고르기 · 틀리면 바로 힌트","숫자 1~5 · 3개 중에 고르기","숫자 1~10 · 3개 중에 고르기","더 큰 수(최대 20) · 4개 중에 고르기 · 힌트 없음"];
+function months(ym){ var a=String(ym).split("-"), d=new Date(); return (d.getFullYear()-(+a[0]))*12+(d.getMonth()+1-(+a[1])); }
+function baseTier(m){ return m<36?0: m<48?1: m<60?2:3; }
+function tierOf(k){ return Math.max(0,Math.min(3,baseTier(months(k.ym))+(k.adj||0))); }
+var ADJ=[
+  ["nch","고를 보기 개수","답을 몇 개 중에서 고를지 정해요.",[[0,"단계대로"],[2,"2개"],[3,"3개"],[4,"4개"]]],
+  ["hint","힌트 주기","몇 번 틀리면 정답 쪽을 반짝여 줄지 정해요.",[[1,"1번 틀리면"],[0,"단계대로"],[3,"3번 틀리면"],[99,"주지 않기"]]],
+  ["rounds","한 놀이 문제 수","놀이 하나를 몇 문제로 끝낼지 정해요. 집중이 짧은 날은 적게 해 주세요.",[[0,"단계대로"],[1,"1문제"],[2,"2문제"],[3,"3문제"],[5,"5문제"]]]];
+function setKid(fn){ var o=rd(PKEY)||{}, k=(o.kids||[]).filter(function(x){ return x.id===o.cur; })[0]; if(!k) return; fn(k); wr(PKEY,o); if(R.fx.onAdjust) R.fx.onAdjust(); }
+function adjustUI(box){ var k=kid(); if(!k){ box.innerHTML='<p class="rnote2">먼저 아이를 등록해 주세요.</p>'; return; }
+  var bt=baseTier(months(k.ym)), t=tierOf(k);
+  box.innerHTML='<h3>단계</h3><p class="rnote2">'+esc(k.name)+(jong(k.name)?'은 ':'는 ')+months(k.ym)+'개월이라 <b>'+TIERNAME[bt]+'</b>가 기본이에요. 숫자 크기와 놀이 내용이 함께 바뀌어요.</p>'+
+    '<div class="rseg">'+TIERNAME.map(function(n,i){ return '<button type="button" data-t="'+i+'"'+(i===t?' class="on"':'')+'>'+n+(i===bt?' · 월령':'')+'</button>'; }).join("")+'</div><p class="rnote2 rtdesc">'+TIERDESC[t]+'</p>'+
+    ADJ.map(function(a){ var cur=k[a[0]]||0; return '<h3>'+a[1]+'</h3><p class="rnote2">'+a[2]+'</p><div class="rseg">'+a[3].map(function(x){ return '<button type="button" data-o="'+a[0]+'" data-v="'+x[0]+'"'+(x[0]===cur?' class="on"':'')+'>'+x[1]+'</button>'; }).join("")+'</div>'; }).join("")+
+    '<div class="rrow left"><button type="button" class="rpill ghost" data-reset>모두 처음대로</button></div>';
+  each("[data-t]",function(b){ b.onclick=function(){ setKid(function(x){ x.adj=+b.dataset.t-bt; }); adjustUI(box); toast("<span><b>"+TIERNAME[+b.dataset.t]+" 단계로 바꿨어요</b></span>"); }; },box);
+  each("[data-o]",function(b){ b.onclick=function(){ var v=+b.dataset.v; setKid(function(x){ if(v) x[b.dataset.o]=v; else delete x[b.dataset.o]; }); adjustUI(box); }; },box);
+  box.querySelector("[data-reset]").onclick=function(){ setKid(function(x){ x.adj=0; delete x.nch; delete x.hint; delete x.rounds; }); adjustUI(box); toast("<span><b>월령에 맞게 되돌렸어요</b></span>"); }; }
+R.adjustMenu=function(){ var k=kid(), P=R.fx.play, inPlay=P&&view()==="play"&&!(R.fx.S&&R.fx.S.diag);
+  var o=ov("parent adjust",'<h2>놀이 조절'+(k?' · '+esc(k.name):'')+'</h2>'+
+    (inPlay?'<h3>지금 하는 놀이</h3><div class="rrow left"><button type="button" class="rpill" data-p="skip">이 문제 넘기기</button><button type="button" class="rpill" data-p="restart">처음부터 다시</button><button type="button" class="rpill" data-p="pass">성공으로 치기</button><button type="button" class="rpill ghost" data-p="home">오늘은 그만</button></div>':'')+
+    '<div data-adj></div><div class="rrow"><button type="button" class="rpill main" data-done>다 했어요</button></div>');
+  adjustUI(o.box.querySelector("[data-adj]"));
+  each("[data-p]",function(b){ b.onclick=function(){ o.close(); setTimeout(function(){ P[b.dataset.p](); },220); }; },o.box);
+  o.box.querySelector("[data-done]").onclick=function(){ o.close(); }; };
+/* 숨은 단추: 2초 꾹 누르면 부모님 확인 → 놀이 조절 */
+(function(){ var T=null, el=null;
+  function end(){ clearTimeout(T); T=null; if(el){ el.classList.remove("hold"); el=null; } }
+  document.addEventListener("pointerdown",function(e){ var t=e.target.closest&&e.target.closest("[data-secret]"); if(!t) return; e.preventDefault(); end(); el=t; t.classList.add("hold");
+    T=setTimeout(function(){ end(); try{ navigator.vibrate&&navigator.vibrate(30); }catch(x){} R.gate(R.adjustMenu); },2000); });
+  ["pointerup","pointercancel","pointerleave"].forEach(function(ev){ document.addEventListener(ev,function(e){ if(el&&(ev!=="pointerleave"||e.target===el)) end(); },true); });
+  document.addEventListener("contextmenu",function(e){ if(e.target.closest&&e.target.closest("[data-secret]")) e.preventDefault(); }); })();
+
 /* ---------- 부모 메뉴 ---------- */
 R.parentMenu=function(){ var s=SET(), k=kid(), o=st();
   var lim=[[10,"10분"],[15,"15분"],[20,"20분"],[30,"30분"],[45,"45분"],[0,"끄기"]];
   var box=ov("parent",'<h2>부모님 메뉴</h2>'+
     '<details open><summary>하루 놀이 시간</summary><p class="rnote2">시간이 다 되면 하던 놀이까지만 하고 졸린 공룡이 나와요. 2분 전에 미리 알려 줘요.'+(k?' 오늘 '+Math.round(used(o)/60)+'분 놀았어요.':'')+'</p><div class="rseg">'+lim.map(function(x){ return '<button type="button" data-l="'+x[0]+'"'+(s.limit===x[0]?' class="on"':'')+'>'+x[1]+'</button>'; }).join("")+'</div></details>'+
+    '<details><summary>놀이 조절 (단계·힌트·문제 수)</summary><div data-adj></div></details>'+
     '<details><summary>아이 기록과 한 줄 메모</summary><div data-rep></div></details>'+
     '<details><summary>엄마·아빠 목소리 녹음</summary><div data-rec></div></details>'+
     '<details><summary>가족 쪽지 보내기</summary><p class="rnote2">할머니, 아빠가 보낸 칭찬을 적어 두면 다음에 놀이를 시작할 때 공룡이 읽어 줘요.</p><div class="rnoteform"><select data-from><option>엄마</option><option>아빠</option><option>할머니</option><option>할아버지</option><option>이모</option><option>삼촌</option></select><input data-text maxlength="60" placeholder="예: 어제 숫자 놀이 정말 잘했어! 사랑해"><button type="button" class="rmini" data-send>보내기</button></div><p class="rnote2" data-q></p></details>'+
     '<details><summary>아이 등록·캐릭터</summary><p class="rnote2">아이를 더하거나 얼굴 캐릭터를 다시 만들 수 있어요.</p><div class="rrow left"><a class="rpill" href="mathdino.html#kids">아이 등록·바꾸기</a><a class="rpill" href="mathdino.html#avatar">캐릭터 만들기</a></div></details>');
   var b=box.box; each("[data-l]",function(bt){ bt.onclick=function(){ var x=SET(); x.limit=+bt.dataset.l; wr("goyu-parent",x); each("[data-l]",function(y){ y.classList.toggle("on",y===bt); },b); TM.warned=false; if(R.timeLeft()>0){ R.tired=false; } gauge(st()); }; },b);
-  reportUI(b.querySelector("[data-rep]")); recUI(b.querySelector("[data-rec]"));
+  adjustUI(b.querySelector("[data-adj]")); reportUI(b.querySelector("[data-rep]")); recUI(b.querySelector("[data-rec]"));
   function q(){ var oo=st(); b.querySelector("[data-q]").textContent= oo.notes.length? "기다리는 쪽지 "+oo.notes.length+"개" : ""; } q();
   b.querySelector("[data-send]").onclick=function(){ var t=b.querySelector("[data-text]").value.trim(); if(!t||!kid()) return; var oo=st(); oo.notes.push({from:b.querySelector("[data-from]").value,text:t,d:day()}); sv(oo); b.querySelector("[data-text]").value=""; q(); toast("<span><b>쪽지를 넣어 두었어요</b><small>다음에 시작할 때 읽어 줘요</small></span>"); }; };
 document.addEventListener("click",function(e){ var t=e.target.closest&&e.target.closest("[data-parent]"); if(t){ e.preventDefault(); R.gate(R.parentMenu); } });
@@ -955,6 +1000,10 @@ var svg = $("stage"), cv = $("pad"), lay = null, chl = null, tpl = null; /* lay:
 var S = { book:null, li:0, round:0, rounds:3, lock:false, voice:null, muted:false, miss:0, hintFn:null };
 /* 월령 단계: 0 아기(24~35개월) 1 꼬마(36~47) 2 씩씩(48~59) 3 대장(60~) */
 var TIER=2, CAPS=[3,5,10,20], NCH=[2,3,3,4], HINTAT=[1,2,3,99], ROUNDS=[2,3,3,3];
+/* 엄마가 '놀이 조절'에서 바꾼 값(보기 개수·힌트·문제 수). 수학 키 재기 중에는 쓰지 않아요 */
+var OV={};
+function nch(){ return (!S.diag&&OV.nch)||NCH[TIER]; }
+function hintAt(){ return (!S.diag&&OV.hint)||HINTAT[TIER]; }
 function T(a){ return a[TIER]; }
 function cap(){ return CAPS[TIER]; }
 function clampN(n){ return n>cap()? rnd(1,cap()) : n; }
@@ -1060,7 +1109,7 @@ function choices(vals, correct, render){
     tap(b,go); if(typeof v==="number") S.nch[v]=go; /* 손뼉·말로 대답할 때 씀 */
   });
 }
-function numChoices(n, lo, hi){ var k=NCH[TIER], pool=[]; hi=Math.max(hi,n+2); for(var v=Math.max(lo,n-3); v<=Math.min(hi,n+3); v++) if(v!==n) pool.push(v); return shuffle([n].concat(shuffle(pool).slice(0,k-1))); }
+function numChoices(n, lo, hi){ var k=nch(), pool=[]; hi=Math.max(hi,n+2); for(var v=Math.max(lo,n-3); v<=Math.min(hi,n+3); v++) if(v!==n) pool.push(v); return shuffle([n].concat(shuffle(pool).slice(0,k-1))); }
 function panel(x,y,w,h,parent){ return el("rect",{x:x,y:y,width:w,height:h,rx:30,"class":"panel"},parent); }
 
 /* ---------- 소리 ---------- */
@@ -1099,8 +1148,8 @@ function burst(){ var box=$("fx"); var cols=["#ff6b6b","#ffc83d","#5bb8f2","#6cc
   for(var i=0;i<46;i++){ var p=document.createElement("i"); p.className="cf"; p.style.left=(10+Math.random()*80)+"%"; p.style.background=pick(cols); p.style.animationDelay=(Math.random()*0.35)+"s"; p.style.setProperty("--dx",(Math.random()*200-100)+"px"); p.style.setProperty("--r",(Math.random()*720)+"deg"); box.appendChild(p); setTimeout((function(q){return function(){ q.remove(); };})(p),2200); } }
 function bubble(text, kind){ var b=$("bubble"); b.textContent=text; b.className="bubble show "+kind; clearTimeout(bubble._t); bubble._t=setTimeout(function(){ b.className="bubble"; }, kind==="yay"?1700:1500); }
 function curG(){ var lv=S.book&&S.book.levels[S.li]; return lv? gameFor(lv) : null; }
-function miss(msg){ if(S.diag){ if(S.lock) return; diagAnswer(false); return; } buddyPose("dizzy",1600); S.miss++; if(window.ROOM) ROOM.onMiss(curG()); var hintNow=S.hintFn&&S.miss>=HINTAT[TIER]; if(hintNow) setTimeout(S.hintFn,900); boing(); wahwah(); bubble("띠용~ 뿌엥뿌엥~","oops"); say("뿌엥뿌엥~ "+(msg||"다시 해 볼까?"),700); S.streak=0;
-  if(hintNow&&S.miss===HINTAT[TIER]) say(pick(LINES.hint),750,true); else if(!hintNow) cheerUp(); var st=$("stagewrap"); st.classList.remove("shake"); void st.offsetWidth; st.classList.add("shake"); }
+function miss(msg){ if(S.diag){ if(S.lock) return; diagAnswer(false); return; } buddyPose("dizzy",1600); S.miss++; if(window.ROOM) ROOM.onMiss(curG()); var hintNow=S.hintFn&&S.miss>=hintAt(); if(hintNow) setTimeout(S.hintFn,900); boing(); wahwah(); bubble("띠용~ 뿌엥뿌엥~","oops"); say("뿌엥뿌엥~ "+(msg||"다시 해 볼까?"),700); S.streak=0;
+  if(hintNow&&S.miss===hintAt()) say(pick(LINES.hint),750,true); else if(!hintNow) cheerUp(); var st=$("stagewrap"); st.classList.remove("shake"); void st.offsetWidth; st.classList.add("shake"); }
 function good(){ ding(); }
 function win(){ if(S.lock) return; if(S.diag){ diagAnswer(true); return; } S.lock=true; applause(); burst(); var p=pick(PRAISE), pc=window.ROOM&&ROOM.onWin(curG()); bubble(p,"yay"); if(!pc) say(p,150); buddyPose("cheer",2000); $("ptext").textContent=p; var extra=streakTalk();
   setTimeout(function(){ S.lock=false; S.round++; updDots(); if(S.round>=S.rounds) levelDone(); else playRound(); }, 2100+extra); }
@@ -1186,7 +1235,7 @@ G.pattern=function(p){ var sets=[["apple","ball"],["star","star","heart"],["fish
   var pat=(p.rows&&S.round<p.rows.length)? p.rows[S.round] : pick(sets); if(TIER===0&&pat.length!==2) pat=pick(sets.filter(function(x){ return x.length===2; })); var seq=[]; for(var i=0;i<7;i++) seq.push(pat[i%pat.length]); var ans=seq[6];
   for(var i=0;i<7;i++){ if(i<6) icon(seq[i],40+i*135,120,120); else { el("rect",{x:40+i*135,y:115,width:125,height:125,rx:24,"class":"qbox"}); txt("?",40+i*135+62,205,80,null,"#5b3fa8"); } }
   prompt("규칙을 찾아봐! 물음표에는 뭐가 올까?"); var opts=[ans]; var pool=["apple","ball","star","heart","fish","duck","circle","triangle","square","sun","moon","dog","cat","car","grape","strawberry"];
-  while(opts.length<NCH[TIER]){ var c=pick(pool); if(opts.indexOf(c)<0) opts.push(c); } choices(shuffle(opts),ans,function(v,b,w){ icon(v,w/2-55,10,110,b); }); };
+  while(opts.length<nch()){ var c=pick(pool); if(opts.indexOf(c)<0) opts.push(c); } choices(shuffle(opts),ans,function(v,b,w){ icon(v,w/2-55,10,110,b); }); };
 
 G.bingo=function(p){ var shapes=p.kind==="shape", items=shapes?["circle","triangle","square","star","heart","rect","circle","triangle","square"]:shuffle([1,2,3,4,5,6,7,8,9]); if(shapes) items=shuffle(items);
   var cs=140, x0=290, y0=20, marked=[]; var cells=[];
@@ -1330,7 +1379,7 @@ G.heavy=function(p){ var pairs=[["rock","feather"],["melon","balloon"],["car","l
 
 function clockFace(h,x,y,r,parent){ var b=g(parent); setT(b,x,y); el("circle",{cx:0,cy:0,r:r,"class":"clock"},b); for(var k=1;k<=12;k++){ var a=k*Math.PI/6; txt(k,(r-24)*Math.sin(a),-(r-24)*Math.cos(a)+10,26,b); }
   el("line",{x1:0,y1:0,x2:0,y2:-(r-40),"class":"hand long"},b); var a=h*Math.PI/6; el("line",{x1:0,y1:0,x2:(r-62)*Math.sin(a),y2:-(r-62)*Math.cos(a),"class":"hand"},b); el("circle",{cx:0,cy:0,r:8,fill:"#3b2f2a"},b); return b; }
-G.clock=function(p){ var hs=shuffle(TIER<=1?[12,3,6,9]:[1,2,3,4,5,6,7,8,9,10,11,12]).slice(0,Math.min(3,NCH[TIER])), t=hs[0]; prompt(t+"시를 가리키는 시계를 눌러 줘");
+G.clock=function(p){ var hs=shuffle(TIER<=1?[12,3,6,9]:[1,2,3,4,5,6,7,8,9,10,11,12]).slice(0,Math.min(3,nch())), t=hs[0]; prompt(t+"시를 가리키는 시계를 눌러 줘");
   shuffle(hs).forEach(function(h,i){ var b=clockFace(h,500-hs.length*155+155+i*310,230,140); if(h===t) setHint(function(){ hintNode(b); }); tap(b,function(){ if(h===t){ b.classList.add("pop"); win(); } else miss("짧은 바늘이 "+eul(String(t))+" 가리켜야 해"); }); });
   txt("짧은 바늘이 가리키는 숫자를 봐",500,520,34,null,"#7a6b62"); };
 
@@ -1634,7 +1683,7 @@ G.lcards=function(p){ var ws=words().slice(0,T([4,6,99,99])), i=0;
     $("ptext").textContent=w.ko+(jong(w.ko)?"은 ":"는 ")+LANGS[S.lang].name+"로?"; S.prompt=$("ptext").textContent; S.againFn=function(){ sayL(wt(w)); }; say(w.ko+(jong(w.ko)?"은 ":"는 ")+LANGS[S.lang].name+"로",100); sayL(wt(w),1300,true); sayL(wt(w),2600,true); }
   showCard(); };
 /* 2. 듣고 고르기 */
-function listenPick(pool, showText){ var n=Math.min(NCH[TIER]+(TIER>=2?1:0),pool.length,4), w=pick(pool), opts=pickN(pool,n,w), cw=Math.min(220,900/n-20), x0=500-(n*(cw+20)-20)/2;
+function listenPick(pool, showText){ var n=Math.min(nch()+(TIER>=2?1:0),pool.length,4), w=pick(pool), opts=pickN(pool,n,w), cw=Math.min(220,900/n-20), x0=500-(n*(cw+20)-20)/2;
   opts.forEach(function(o,i){ var b=g(); setT(b,x0+i*(cw+20),140); el("rect",{x:0,y:0,width:cw,height:cw+(showText?70:0),rx:30,"class":"card"},b); wpic(o,cw*0.1,cw*0.08,cw*0.8,b); if(showText) txt(wt(o),cw/2,cw+40,34,b);
     if(o===w) setHint(function(){ hintNode(b); });
     tap(b,function(){ if(o===w){ b.classList.add("found"); langWin(w); } else { miss("그건 "+o.ko+"야"); sayL(wt(o),1600,true); } }); });
@@ -1682,7 +1731,7 @@ function saveP(p){ var o=all(), k=progKey(); if(!o.cur) return; o[k]=o[k]||{}; o
 function months(ym){ var a=String(ym).split("-"), d=new Date(); return (d.getFullYear()-(+a[0]))*12+(d.getMonth()+1-(+a[1])); }
 function baseTier(m){ return m<36?0: m<48?1: m<60?2:3; }
 function kidTier(k){ return Math.max(0,Math.min(3,baseTier(months(k.ym))+(k.adj||0))); }
-function applyKid(){ var k=curKid(); TIER= k? kidTier(k) : 2; var c=$("kidchip");
+function applyKid(){ var k=curKid(); TIER= k? kidTier(k) : 2; OV= k? {nch:k.nch||0, hint:k.hint||0, rounds:k.rounds||0} : {}; var c=$("kidchip");
   if(c) c.innerHTML= k? '<b>'+esc(k.name)+'</b><span>'+months(k.ym)+'개월 · '+TIERNAME[TIER]+'</span><i>바꾸기</i>' : '<b>누가 놀까?</b><i>고르기</i>'; }
 function esc(t){ return String(t).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 
@@ -1692,14 +1741,12 @@ function renderVoicePick(){ var sel=$("vSel"); if(!sel) return; pickVoice(); var
 function renderKids(){ renderVoicePick(); var o=all(), box=$("kidlist"); box.innerHTML="";
   o.kids.forEach(function(k){ var t=kidTier(k), m=months(k.ym); var d=document.createElement("div"); d.className="kid"+(k.id===o.cur?" on":"");
     d.innerHTML='<div class="kav" data-kav></div><button class="kpick" type="button"><b>'+esc(k.name)+'</b><span>'+m+'개월 · '+TIERNAME[t]+'</span><small>'+TIERDESC[t]+'</small></button>'+
-      '<div class="adj" role="group" aria-label="난이도 조절"><button type="button" data-a="-1">더 쉽게</button><button type="button" data-a="0">월령대로</button><button type="button" data-a="1">더 어렵게</button></div>'+
+      '<p class="adjnote">난이도는 부모님 메뉴의 \'놀이 조절\'에서 바꿔요</p>'+
       '<div class="seg small kvk" role="group" aria-label="목소리"><button type="button" data-vk="girl">여자아이 목소리</button><button type="button" data-vk="boy">남자아이 목소리</button></div>'+
       '<div class="krow"><button class="kav-btn" type="button">'+(avLoad(k.id)?"캐릭터 바꾸기":"캐릭터 만들기")+'</button>'+(k.diag?'<span class="kdiag">수학 키 재기 '+k.diag.d+' · '+TIERNAME[k.diag.rec]+'</span>':'')+'<button class="kdel" type="button">지우기</button></div>';
     d.querySelector("[data-kav]").innerHTML=avatarSVG(avLoad(k.id)||{suit:k.suit||0},"pose-idle"); d.querySelector(".kav-btn").addEventListener("click",function(){ avEditOpen(k); });
     Array.prototype.forEach.call(d.querySelectorAll(".kvk button"),function(b){ if(b.dataset.vk===(k.vk||"girl")) b.classList.add("on");
       b.addEventListener("click",function(){ k.vk=b.dataset.vk; saveAll(o); if(k.id===o.cur) renderBuddies(); renderKids(); hearKind(k.vk, k.name+", 같이 놀자!"); }); });
-    Array.prototype.forEach.call(d.querySelectorAll(".adj button"),function(b){ if(+b.dataset.a===(k.adj||0)) b.classList.add("on");
-      b.addEventListener("click",function(){ k.adj=+b.dataset.a; saveAll(o); renderKids(); }); });
     d.querySelector(".kpick").addEventListener("click",function(){ o.cur=k.id; saveAll(o); applyKid(); renderHome(); show("home"); say(voc(k.name)+", 같이 놀자!"); });
     d.querySelector(".kdel").addEventListener("click",function(){ if(!confirm(k.name+" 기록을 지울까요? 성공한 놀이 기록도 함께 지워져요.")) return; o.kids=o.kids.filter(function(x){ return x!==k; }); delete o.prog[k.id]; if(o.cur===k.id) o.cur=o.kids[0]?o.kids[0].id:null; saveAll(o); applyKid(); renderKids(); });
     box.appendChild(d); });
@@ -1737,7 +1784,7 @@ function updDots(){ var d=$("dots"); d.innerHTML=""; for(var i=0;i<S.rounds;i++)
 /* 아기 단계에서 어려운 놀이는 쉬운 놀이로 바꿔 줌 */
 var SWAP0={ bingo:function(lv){ return lv.p&&lv.p.kind==="shape"?"shapefind":"findnum"; }, calendar:"findnum", clock:"routine", graph:"compare" };
 function gameFor(lv){ var s=TIER===0&&SWAP0[lv.g]; if(!s) return lv.g; return typeof s==="function"? s(lv) : s; }
-function startLevel(i){ S.li=i; S.round=0; S.lock=false; show("play"); var lv=S.book.levels[i]; $("ltitle").textContent=lv.name; $("play").style.setProperty("--c",S.book.color); S.rounds = ONE_ROUND[lv.g]?1:ROUNDS[TIER]; updDots(); playRound(); }
+function startLevel(i){ S.li=i; S.round=0; S.lock=false; show("play"); var lv=S.book.levels[i]; $("ltitle").textContent=lv.name; $("play").style.setProperty("--c",S.book.color); S.rounds = ONE_ROUND[lv.g]?1:(OV.rounds||ROUNDS[TIER]); updDots(); playRound(); }
 function playRound(){ if(S.diag||!S.book||!S.book.levels[S.li]) return; clear(); S.miss=0; S.hintFn=null; S.againFn=null; var lv=S.book.levels[S.li], gn=gameFor(lv); (G[gn]||G.count)(gn===lv.g?(lv.p||{}):{}); idleArm(); ansBar(); }
 /* 숫자 고르기 문제는 손뼉이나 말로도 대답할 수 있어요 */
 function ansBar(){ var on=window.ROOM&&Object.keys(S.nch||{}).length>0; $("ansbar").hidden=!(on&&(ROOM.canClap()||ROOM.canListen())); if(on){ $("ansClap").hidden=!ROOM.canClap(); $("ansMic").hidden=!ROOM.canListen()||!!window.__NOMIC; } }
@@ -1816,7 +1863,12 @@ $("dbook").addEventListener("click",function(){ openBook(S.book); });
 $("dhome").addEventListener("click",function(){ renderHome(); show("home"); });
 $("dbrag").addEventListener("click",function(){ if(window.ROOM) ROOM.brag(); });
 $("dteach").addEventListener("click",function(){ if(window.ROOM) ROOM.teach(); });
-if(window.ROOM){ ROOM.fx={say:function(t){ say(t); },avatarSVG:avatarSVG,curAv:curAv,S:S,clipStop:clipStop}; ROOM.applyColors(); ROOM.gauge(); }
+if(window.ROOM){ ROOM.fx={say:function(t){ say(t); },avatarSVG:avatarSVG,curAv:curAv,S:S,clipStop:clipStop,
+    /* 엄마가 놀이 조절에서 값을 바꾸면 바로 반영하고, 놀던 문제는 새 설정으로 다시 내요 */
+    onAdjust:function(){ MEM=null; applyKid(); if(document.body.dataset.view==="play"&&!S.diag&&S.book){ var lv=S.book.levels[S.li]; S.rounds=ONE_ROUND[lv.g]?1:(OV.rounds||ROUNDS[TIER]); if(S.round>=S.rounds) S.round=S.rounds-1; updDots(); S.lock=false; playRound(); } else if(document.body.dataset.view==="home") renderHome(); },
+    play:{ skip:function(){ S.lock=false; S.round++; updDots(); if(S.round>=S.rounds) levelDone(); else playRound(); },
+      restart:function(){ startLevel(S.li); }, pass:function(){ S.lock=false; levelDone(); },
+      home:function(){ try{ speechSynthesis.cancel(); }catch(e){} renderHome(); show("home"); } } }; ROOM.applyColors(); ROOM.gauge(); }
 $("mute").addEventListener("click",function(){ S.muted=!S.muted; this.setAttribute("aria-pressed",S.muted); this.textContent=S.muted?"소리 켜기":"소리 끄기"; if(S.muted) try{speechSynthesis.cancel();}catch(e){} });
 document.addEventListener("gesturestart",function(e){ e.preventDefault(); });
 if(window.__NOSCAN) $("scanBtn").hidden=true; if(window.__NODIAG) $("diagBtn").hidden=true; if(window.__NOHUB) Array.prototype.forEach.call(document.querySelectorAll(".tohub"),function(a){ a.hidden=true; });

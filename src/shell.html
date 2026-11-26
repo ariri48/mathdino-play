@@ -139,6 +139,7 @@ g.found{transform-box:fill-box}
 .kid.on{border-color:var(--accent)}
 .kpick{display:flex;flex-direction:column;align-items:flex-start;gap:4px;background:none;text-align:left;padding:0}
 .kpick b{font-weight:400;font-size:32px;color:var(--accent)} .kpick span{font-size:20px} .kpick small{font-family:var(--body);font-size:15px;color:var(--soft)}
+.adjnote{margin:0;font-size:14px;color:var(--soft)}
 .adj{display:flex;gap:6px;flex-wrap:wrap}
 .adj button{font-size:16px;background:var(--bg);border-radius:999px;padding:8px 12px}
 .adj button.on{background:var(--accent);color:#fff}
@@ -396,7 +397,7 @@ body[data-view="scan"]{overflow:hidden}
 </section>
 
 <section id="play" hidden>
-  <div class="pbar"><button id="backBook" class="back" type="button">← 놀이 목록</button><span id="ltitle"></span><span id="track"><span id="dots"></span></span><button id="again" type="button">다시 듣기</button></div>
+  <div class="pbar"><button id="backBook" class="back" type="button">← 놀이 목록</button><span id="ltitle"></span><span id="track"><span id="dots"></span></span><button id="again" type="button">다시 듣기</button><button class="secret" type="button" data-secret aria-label="부모님 놀이 조절, 2초 동안 꾹 누르기"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></button></div>
   <div class="prompt"><span class="pbud" data-buddy></span><span id="ptext"></span></div>
   <div id="stagewrap">
     <svg id="stage" viewBox="0 0 1000 620" preserveAspectRatio="xMidYMid meet"></svg>

@@ -8,6 +8,10 @@ var svg = $("stage"), cv = $("pad"), lay = null, chl = null, tpl = null; /* lay:
 var S = { book:null, li:0, round:0, rounds:3, lock:false, voice:null, muted:false, miss:0, hintFn:null };
 /* 월령 단계: 0 아기(24~35개월) 1 꼬마(36~47) 2 씩씩(48~59) 3 대장(60~) */
 var TIER=2, CAPS=[3,5,10,20], NCH=[2,3,3,4], HINTAT=[1,2,3,99], ROUNDS=[2,3,3,3];
+/* 엄마가 '놀이 조절'에서 바꾼 값(보기 개수·힌트·문제 수). 수학 키 재기 중에는 쓰지 않아요 */
+var OV={};
+function nch(){ return (!S.diag&&OV.nch)||NCH[TIER]; }
+function hintAt(){ return (!S.diag&&OV.hint)||HINTAT[TIER]; }
 function T(a){ return a[TIER]; }
 function cap(){ return CAPS[TIER]; }
 function clampN(n){ return n>cap()? rnd(1,cap()) : n; }
@@ -113,7 +117,7 @@ function choices(vals, correct, render){
     tap(b,go); if(typeof v==="number") S.nch[v]=go; /* 손뼉·말로 대답할 때 씀 */
   });
 }
-function numChoices(n, lo, hi){ var k=NCH[TIER], pool=[]; hi=Math.max(hi,n+2); for(var v=Math.max(lo,n-3); v<=Math.min(hi,n+3); v++) if(v!==n) pool.push(v); return shuffle([n].concat(shuffle(pool).slice(0,k-1))); }
+function numChoices(n, lo, hi){ var k=nch(), pool=[]; hi=Math.max(hi,n+2); for(var v=Math.max(lo,n-3); v<=Math.min(hi,n+3); v++) if(v!==n) pool.push(v); return shuffle([n].concat(shuffle(pool).slice(0,k-1))); }
 function panel(x,y,w,h,parent){ return el("rect",{x:x,y:y,width:w,height:h,rx:30,"class":"panel"},parent); }
 
 /* ---------- 소리 ---------- */
@@ -152,8 +156,8 @@ function burst(){ var box=$("fx"); var cols=["#ff6b6b","#ffc83d","#5bb8f2","#6cc
   for(var i=0;i<46;i++){ var p=document.createElement("i"); p.className="cf"; p.style.left=(10+Math.random()*80)+"%"; p.style.background=pick(cols); p.style.animationDelay=(Math.random()*0.35)+"s"; p.style.setProperty("--dx",(Math.random()*200-100)+"px"); p.style.setProperty("--r",(Math.random()*720)+"deg"); box.appendChild(p); setTimeout((function(q){return function(){ q.remove(); };})(p),2200); } }
 function bubble(text, kind){ var b=$("bubble"); b.textContent=text; b.className="bubble show "+kind; clearTimeout(bubble._t); bubble._t=setTimeout(function(){ b.className="bubble"; }, kind==="yay"?1700:1500); }
 function curG(){ var lv=S.book&&S.book.levels[S.li]; return lv? gameFor(lv) : null; }
-function miss(msg){ if(S.diag){ if(S.lock) return; diagAnswer(false); return; } buddyPose("dizzy",1600); S.miss++; if(window.ROOM) ROOM.onMiss(curG()); var hintNow=S.hintFn&&S.miss>=HINTAT[TIER]; if(hintNow) setTimeout(S.hintFn,900); boing(); wahwah(); bubble("띠용~ 뿌엥뿌엥~","oops"); say("뿌엥뿌엥~ "+(msg||"다시 해 볼까?"),700); S.streak=0;
-  if(hintNow&&S.miss===HINTAT[TIER]) say(pick(LINES.hint),750,true); else if(!hintNow) cheerUp(); var st=$("stagewrap"); st.classList.remove("shake"); void st.offsetWidth; st.classList.add("shake"); }
+function miss(msg){ if(S.diag){ if(S.lock) return; diagAnswer(false); return; } buddyPose("dizzy",1600); S.miss++; if(window.ROOM) ROOM.onMiss(curG()); var hintNow=S.hintFn&&S.miss>=hintAt(); if(hintNow) setTimeout(S.hintFn,900); boing(); wahwah(); bubble("띠용~ 뿌엥뿌엥~","oops"); say("뿌엥뿌엥~ "+(msg||"다시 해 볼까?"),700); S.streak=0;
+  if(hintNow&&S.miss===hintAt()) say(pick(LINES.hint),750,true); else if(!hintNow) cheerUp(); var st=$("stagewrap"); st.classList.remove("shake"); void st.offsetWidth; st.classList.add("shake"); }
 function good(){ ding(); }
 function win(){ if(S.lock) return; if(S.diag){ diagAnswer(true); return; } S.lock=true; applause(); burst(); var p=pick(PRAISE), pc=window.ROOM&&ROOM.onWin(curG()); bubble(p,"yay"); if(!pc) say(p,150); buddyPose("cheer",2000); $("ptext").textContent=p; var extra=streakTalk();
   setTimeout(function(){ S.lock=false; S.round++; updDots(); if(S.round>=S.rounds) levelDone(); else playRound(); }, 2100+extra); }
@@ -239,7 +243,7 @@ G.pattern=function(p){ var sets=[["apple","ball"],["star","star","heart"],["fish
   var pat=(p.rows&&S.round<p.rows.length)? p.rows[S.round] : pick(sets); if(TIER===0&&pat.length!==2) pat=pick(sets.filter(function(x){ return x.length===2; })); var seq=[]; for(var i=0;i<7;i++) seq.push(pat[i%pat.length]); var ans=seq[6];
   for(var i=0;i<7;i++){ if(i<6) icon(seq[i],40+i*135,120,120); else { el("rect",{x:40+i*135,y:115,width:125,height:125,rx:24,"class":"qbox"}); txt("?",40+i*135+62,205,80,null,"#5b3fa8"); } }
   prompt("규칙을 찾아봐! 물음표에는 뭐가 올까?"); var opts=[ans]; var pool=["apple","ball","star","heart","fish","duck","circle","triangle","square","sun","moon","dog","cat","car","grape","strawberry"];
-  while(opts.length<NCH[TIER]){ var c=pick(pool); if(opts.indexOf(c)<0) opts.push(c); } choices(shuffle(opts),ans,function(v,b,w){ icon(v,w/2-55,10,110,b); }); };
+  while(opts.length<nch()){ var c=pick(pool); if(opts.indexOf(c)<0) opts.push(c); } choices(shuffle(opts),ans,function(v,b,w){ icon(v,w/2-55,10,110,b); }); };
 
 G.bingo=function(p){ var shapes=p.kind==="shape", items=shapes?["circle","triangle","square","star","heart","rect","circle","triangle","square"]:shuffle([1,2,3,4,5,6,7,8,9]); if(shapes) items=shuffle(items);
   var cs=140, x0=290, y0=20, marked=[]; var cells=[];
@@ -383,7 +387,7 @@ G.heavy=function(p){ var pairs=[["rock","feather"],["melon","balloon"],["car","l
 
 function clockFace(h,x,y,r,parent){ var b=g(parent); setT(b,x,y); el("circle",{cx:0,cy:0,r:r,"class":"clock"},b); for(var k=1;k<=12;k++){ var a=k*Math.PI/6; txt(k,(r-24)*Math.sin(a),-(r-24)*Math.cos(a)+10,26,b); }
   el("line",{x1:0,y1:0,x2:0,y2:-(r-40),"class":"hand long"},b); var a=h*Math.PI/6; el("line",{x1:0,y1:0,x2:(r-62)*Math.sin(a),y2:-(r-62)*Math.cos(a),"class":"hand"},b); el("circle",{cx:0,cy:0,r:8,fill:"#3b2f2a"},b); return b; }
-G.clock=function(p){ var hs=shuffle(TIER<=1?[12,3,6,9]:[1,2,3,4,5,6,7,8,9,10,11,12]).slice(0,Math.min(3,NCH[TIER])), t=hs[0]; prompt(t+"시를 가리키는 시계를 눌러 줘");
+G.clock=function(p){ var hs=shuffle(TIER<=1?[12,3,6,9]:[1,2,3,4,5,6,7,8,9,10,11,12]).slice(0,Math.min(3,nch())), t=hs[0]; prompt(t+"시를 가리키는 시계를 눌러 줘");
   shuffle(hs).forEach(function(h,i){ var b=clockFace(h,500-hs.length*155+155+i*310,230,140); if(h===t) setHint(function(){ hintNode(b); }); tap(b,function(){ if(h===t){ b.classList.add("pop"); win(); } else miss("짧은 바늘이 "+eul(String(t))+" 가리켜야 해"); }); });
   txt("짧은 바늘이 가리키는 숫자를 봐",500,520,34,null,"#7a6b62"); };
 
